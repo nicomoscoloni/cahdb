@@ -26,17 +26,17 @@ class DebitoAutomaticoController extends Controller
                     [     
                         'actions' => ['administrar','view','generar'],
                         'allow' => true,
-                        'roles' => ['gestionDebitosAutomaticos'],
+                        //'roles' => ['gestionDebitosAutomaticos'],
                     ], 
                     [     
                         'actions' => ['procesar'],
                         'allow' => true,
-                        'roles' => ['gestionDebitosAutomaticos'],
+                        //'roles' => ['gestionDebitosAutomaticos'],
                     ],
                     [     
                         'actions' => ['descargar-archivo-envio','descarga-txt','descarga-excel','convertir-a-excel'],
                         'allow' => true,
-                        'roles' => ['gestionDebitosAutomaticos'],
+                        //'roles' => ['gestionDebitosAutomaticos'],
                     ],  
                 ],
             ],  
@@ -73,9 +73,13 @@ class DebitoAutomaticoController extends Controller
      * @return mixed
      */
     public function actionAdministrar(){
-        $searchModel = new DebitoAutomaticoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        try{
+            $searchModel = new DebitoAutomaticoSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        } catch (Exception $ex) {
+            Yii::error('Administración Debitos Automatico '.$e);
+            Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
+        }
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -86,43 +90,23 @@ class DebitoAutomaticoController extends Controller
     /*****************************************************************/
     public function actionView($id){
         try{
-            $model = $this->findModel($id);
-            
-            if(isset($_FILES['DebitoAutomatico']))
-            {   
-                $transaction = Yii::$app->db->beginTransaction(); 
-                
-                if($modelDebito->tipo_archivo=='CBU')
-                    $carp_cont = Yii::getAlias('@webroot') . "/archivos_generados/patagonia/cbu/devoluciones";
-                else
-                    $carp_cont = Yii::getAlias('@webroot') . "/archivos_generados/patagonia/tc/devoluciones";
-                
-                $nombre = 'debitos-'.$model->id;
-                
-                $model->archivoentrante = UploadedFile::getInstance($model, 'archivoentrante');   
-                $resultado = $model->archivoentrante->saveAs($carp_cont."/$nombre.txt");
-                
-                if($resultado){
-                    $transaction->commit();                    
-                    return $this->redirect(['procesar-devolucion','id'=>$id]);   
-                }
-            }
-            
+            $model = $this->findModel($id);            
+           
             $searchItemsDebitos = new \app\models\search\ServicioDebitoAutomaticoSearch();
             $searchItemsDebitos->id_debitoautomatico = $model->id;             
-            $dataMisDebitos = $searchItemsDebitos->search(Yii::$app->request->queryParams);
-                 
-            return $this->render('view',[
-                    'model'=>$model,
-                    'searchItemsDebito' => $searchItemsDebitos,
-                    'dataMisDebitos' => $dataMisDebitos,
-            ]);
+            $dataMisDebitos = $searchItemsDebitos->search(Yii::$app->request->queryParams);  
         }
         catch(Exception $e)
         {
-                Yii::app()->user->setFlash('error','ERROR SEVERO EN LA CARGA DEL ARCHIVO!!!');
-                $this->redirect(array('view'));   
+            Yii::app()->user->setFlash('error','ERROR SEVERO EN LA CARGA DEL ARCHIVO!!!');
+            $this->redirect(array('view'));   
         }
+        
+        return $this->render('view',[
+            'model'=>$model,
+            'searchItemsDebito' => $searchItemsDebitos,
+            'dataMisDebitos' => $dataMisDebitos,
+        ]);
     }
     
     /*****************************************************************/
@@ -158,16 +142,16 @@ class DebitoAutomaticoController extends Controller
                     $transaction->rollBack();
                     Yii::$app->session->setFlash('error', 'No se puede generar el archivo. No existen servicios en el periodo mencionado.');
                 }
-            }
-            
-            return $this->render('create',[
-			'model'=>$model,                        
-		]);
+            }   
         }
         catch (Exception $e){
             Yii::$app->session->setFlash('error','ATENCION!!! <br /> Se Produjo un error severo');
             $this->redirect(['admin']);
         }
+        
+        return $this->render('create',[
+            'model'=>$model,                        
+        ]);
     }    
     
     private function generarArchivoDebito($id){
@@ -219,11 +203,11 @@ class DebitoAutomaticoController extends Controller
                          INNER JOIN grupo_familiar f ON (f.id = a.id_grupofamiliar) 
                           WHERE (f.id_pago_asociado = 5) 
                      ) a ON (a.nrofamilia = cp.id_familia)
-                     WHERE (ccp.pagada='0') and (ccp.fecha_establecida>='". $periodoIni ."' and ccp.fecha_establecida<='". $periodoFin ."' )
+                     WHERE (ccp.estado='A') and (ccp.fecha_establecida>='". $periodoIni ."' and ccp.fecha_establecida<='". $periodoFin ."' )
                 ) 
                 UNION
                 (
-                     SELECT a.nrofamilia as nrofamilia, a.nrotarjeta, sa.id as idservicio, 
+                    SELECT a.nrofamilia as nrofamilia, a.nrotarjeta, sa.id as idservicio, 
                             (sa.importe_servicio - sa.importe_descuento - sa.importe_abonado) as monto, 
                             'SERVICIOS' as tiposervicio
                         FROM servicio_alumno sa 
@@ -232,10 +216,10 @@ class DebitoAutomaticoController extends Controller
                              FROM alumno a INNER JOIN grupo_familiar f ON (f.id = a.id_grupofamiliar) 
                               WHERE (f.id_pago_asociado = 5) 
                         ) a ON (a.idalumno = sa.id_alumno) 
-                        INNER JOIN servicio_establecimiento se ON (se.id = sa.id_servicio)
-                        INNER JOIN servicio_ofrecido so ON (so.id = se.id_servicio)                     
-                        INNER JOIN tipo_servicio cts ON (cts.id = so.id_tiposervicio) 
-                     WHERE (sa.estado = 'A') and (sa.liquidado = '0') 
+                        
+                        INNER JOIN servicio_ofrecido so ON (so.id = sa.id_servicio)                     
+                        INNER JOIN categoria_servicio_ofrecido cts ON (cts.id = so.id_tiposervicio) 
+                     WHERE (sa.estado = 'A') 
                      and ((so.fecha_vencimiento >= '".$periodoIni."') and (so.fecha_vencimiento <= '".$periodoFin."'))
                 ) 
             ) as D
@@ -270,7 +254,8 @@ class DebitoAutomaticoController extends Controller
                 $cantidad = 0;
                 $procesa = true;   
                 
-                //variables que mantiene las cantidades y totales de servicios se la familia actualmdela linea
+                //variables que mantiene la cantidad y totales de servicios de cada 
+                //familia en cada linea, para cada familia solo se manda un regln; no se puede detallar cada servicio por separado
                 $nroServicioFamilia = 1;
                 $nroFamiliaAnterior = $result[0]['nrofamilia'];
                 $nrotarjetaAnterior = $result[0]['nrotarjeta'];
@@ -373,7 +358,8 @@ class DebitoAutomaticoController extends Controller
     private function devolverLinea_PATAGONIA_TC($nrofamilia, $nrotarjeta, $cantidad, $monto, $fecha_vencimiento_pago){
         $contenido='';
         $contenido.="1";
-        $contenido.=str_replace("","0",$nrotarjeta);
+        $nrotarjeta = str_replace("","0",$nrotarjeta);
+        $contenido.=str_pad($nrotarjeta,16," ",STR_PAD_LEFT);                
         $contenido.="   ";
         $contenido.=str_pad($nrofamilia,8,"0",STR_PAD_LEFT); 
         $fechavencimiento = $fecha_vencimiento_pago;
@@ -903,11 +889,9 @@ class DebitoAutomaticoController extends Controller
             
             Yii::$app->response->format = 'json';
             return ['result_error' => '0', 'result_texto' => $url_pdf];
-          
-                        
         }catch (Exception $e) {
-                Yii::$app->response->format = 'json';
-                return ['result_error' => '1', 'result_texto' => 'ERROR'];
+            Yii::$app->response->format = 'json';
+            return ['result_error' => '1', 'result_texto' => 'ERROR'];
         }
     }
     

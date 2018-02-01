@@ -2,9 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-use app\assets\grupoFamiliar;
-grupoFamiliar::register($this);
-
+use app\assets\GrupoFamiliarAsset;
+GrupoFamiliarAsset::register($this);
 ?>
 
 <p>

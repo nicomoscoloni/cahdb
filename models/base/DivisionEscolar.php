@@ -14,7 +14,8 @@ use Yii;
  * @property integer $id_establecimiento
  *
  * @property \app\models\Alumno[] $alumnos
- * @property \app\models\Establecimiento $idEstablecimiento
+ * @property \app\models\Establecimiento $establecimiento
+ * @property \app\models\ServicioEstablecimiento[] $servicioEstablecimientos
  * @property string $aliasModel
  */
 abstract class DivisionEscolar extends \yii\db\ActiveRecord
@@ -67,9 +68,17 @@ abstract class DivisionEscolar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdEstablecimiento()
+    public function getEstablecimiento()
     {
         return $this->hasOne(\app\models\Establecimiento::className(), ['id' => 'id_establecimiento']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getServicioEstablecimientos()
+    {
+        return $this->hasMany(\app\models\ServicioEstablecimiento::className(), ['id_divisionescolar' => 'id']);
     }
 
 

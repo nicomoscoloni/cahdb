@@ -16,18 +16,6 @@ $this->params['breadcrumbs'][] = ['label' => 'Grupo Familiars', 'url' => ['index
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-
-<?php
-    yii\bootstrap\Modal::begin([        
-        'id'=>'modalAsignacionResponsable',
-        'header'=>'Asignación de Responsable',
-        'class' =>'modal-scrollbar', 
-        'size' => 'modal-lg',
-        ]);
-        echo "<div id='modalContent'></div>";
-    yii\bootstrap\Modal::end();
-?>
-
 <div class="box box-solid box-colegio" id="grupo-familiar-index">
     <div class="box-header with-border">
         <i class="fa fa-users"></i> <h3 class="box-title"> FAMILIA Nº <?= $model->id;?> </h3>       

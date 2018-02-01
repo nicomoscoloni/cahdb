@@ -12,6 +12,7 @@ use app\models\ServicioEstablecimiento;
  */
 class ServicioEstablecimientoSearch extends ServicioEstablecimiento
 {
+    public $establecimiento;
     /**
      * @inheritdoc
      */
@@ -19,6 +20,8 @@ class ServicioEstablecimientoSearch extends ServicioEstablecimiento
     {
         return [
             [['id', 'id_servicio', 'id_divisionescolar'], 'integer'],
+            [['establecimiento'], 'safe'],
+            
         ];
     }
 
@@ -41,6 +44,7 @@ class ServicioEstablecimientoSearch extends ServicioEstablecimiento
     public function search($params)
     {
         $query = ServicioEstablecimiento::find();
+        $query->joinWith(['miDivisionescolar d']);
 
         // add conditions that should always apply here
 
@@ -61,6 +65,7 @@ class ServicioEstablecimientoSearch extends ServicioEstablecimiento
             'id' => $this->id,
             'id_servicio' => $this->id_servicio,
             'id_divisionescolar' => $this->id_divisionescolar,
+            'd.id_establecimiento' => $this->establecimiento,
         ]);
 
         return $dataProvider;

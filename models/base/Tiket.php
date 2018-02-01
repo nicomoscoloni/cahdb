@@ -17,8 +17,8 @@ use Yii;
  * @property integer $id_cliente
  *
  * @property \app\models\ServicioTiket[] $servicioTikets
- * @property \app\models\GrupoFamiliar $idCliente
- * @property \app\models\FormaPago $idFormapago
+ * @property \app\models\GrupoFamiliar $cliente
+ * @property \app\models\FormaPago $formapago
  * @property string $aliasModel
  */
 abstract class Tiket extends \yii\db\ActiveRecord
@@ -77,7 +77,7 @@ abstract class Tiket extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdCliente()
+    public function getCliente()
     {
         return $this->hasOne(\app\models\GrupoFamiliar::className(), ['id' => 'id_cliente']);
     }
@@ -85,7 +85,7 @@ abstract class Tiket extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdFormapago()
+    public function getFormapago()
     {
         return $this->hasOne(\app\models\FormaPago::className(), ['id' => 'id_formapago']);
     }

@@ -19,7 +19,8 @@ use Yii;
  * @property string $tarjeta_banco
  *
  * @property \app\models\Alumno[] $alumnos
- * @property \app\models\FormaPago $idPagoAsociado
+ * @property \app\models\ConvenioPago[] $convenioPagos
+ * @property \app\models\FormaPago $pagoAsociado
  * @property \app\models\Responsable[] $responsables
  * @property \app\models\Tiket[] $tikets
  * @property string $aliasModel
@@ -84,7 +85,15 @@ abstract class GrupoFamiliar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPagoAsociado()
+    public function getConvenioPagos()
+    {
+        return $this->hasMany(\app\models\ConvenioPago::className(), ['id_familia' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPagoAsociado()
     {
         return $this->hasOne(\app\models\FormaPago::className(), ['id' => 'id_pago_asociado']);
     }

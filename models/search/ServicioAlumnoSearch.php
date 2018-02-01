@@ -23,9 +23,8 @@ class ServicioAlumnoSearch extends ServicioAlumno
     {
         return [
             [['id', 'id_servicio', 'id_alumno'], 'integer'],
-            [['fecha_otorgamiento', 'fecha_cancelamiento','familia','folioFamilia','apellidoFamilia','division_escolar','servicio_ofrecido','establecimiento'], 'safe'],
-            [['importe_servicio', 'importe_descuento', 'importe_abonado'], 'number'],
-           
+            [['estado','fecha_otorgamiento', 'fecha_cancelamiento','familia','folioFamilia','apellidoFamilia','division_escolar','servicio_ofrecido','establecimiento'], 'safe'],
+            [['importe_servicio', 'importe_descuento', 'importe_abonado'], 'number'],           
             [['apellidoAlumno', 'nombreAlumno','documentoAlumno'], 'safe'],
         ];
     }
@@ -54,7 +53,7 @@ class ServicioAlumnoSearch extends ServicioAlumno
         $query = ServicioAlumno::find();
         $query->alias("s"); 
        
-        $query->joinWith(['miAlumno a','miAlumno.miPersona p','miAlumno.miGrupofamiliar f','miServicio se','miServicio.miServicio so']);
+        $query->joinWith(['miAlumno a','miAlumno.idDivisionescolar div','miAlumno.miPersona p','miAlumno.miGrupofamiliar f','miServicio se','miServicio.miServicio so']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,            
@@ -82,12 +81,17 @@ class ServicioAlumnoSearch extends ServicioAlumno
             'fecha_cancelamiento' => $this->fecha_cancelamiento,
             'importe_servicio' => $this->importe_servicio,
             'importe_descuento' => $this->importe_descuento,
-            'importe_abonado' => $this->importe_abonado,
+            'importe_abonado' => $this->importe_abonado,   
+            'estado' => $this->estado,   
             
         ]);
-        
+        //datos de familia
         $query->andFilterWhere(['like', 'f.apellidos', $this->apellidoFamilia]);
-        $query->andFilterWhere(['like', 'f.folio', $this->folioFamilia]);     
+        $query->andFilterWhere(['like', 'f.folio', $this->folioFamilia]);  
+        //datos de alumno
+        $query->andFilterWhere(['like', 'p.apellido', $this->apellidoAlumno]);
+        $query->andFilterWhere(['like', 'p.nombre', $this->nombreAlumno]);        
+        $query->andFilterWhere(['like', 'p.nro_documento', $this->documentoAlumno]);
         
         
         if(!empty($this->familia)){
@@ -99,8 +103,6 @@ class ServicioAlumnoSearch extends ServicioAlumno
                 'f.id' => $this->familia
             ]);
         }
-            
-        
         
         if(!empty($this->servicio_ofrecido))
             $query->andFilterWhere([
@@ -112,10 +114,14 @@ class ServicioAlumnoSearch extends ServicioAlumno
                 'a.id_divisionescolar' => $this->division_escolar,
             ]);
         }
+        
+        if(!empty($this->establecimiento)){
+            $query->andFilterWhere([
+                'div.id_establecimiento' => $this->establecimiento,
+            ]);
+        }
                 
-        $query->andFilterWhere(['like', 'p.apellido', $this->apellidoAlumno]);
-        $query->andFilterWhere(['like', 'p.nombre', $this->nombreAlumno]);        
-        $query->andFilterWhere(['like', 'p.nro_documento', $this->documentoAlumno]);
+        
 
         $dataProvider->sort->attributes['familia'] = [           
             'asc' => ['a.id_grupofamiliar' => SORT_ASC],

@@ -7,7 +7,7 @@ use yii\web\AssetBundle;
 /**
  * Main backend application asset bundle.
  */
-class grupoFamiliar extends AssetBundle
+class EstablecimientoAssets extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
@@ -15,7 +15,7 @@ class grupoFamiliar extends AssetBundle
         'css/site.css',
     ];
     public $js = [
-        'js/grupoFamiliar.js',
+        'js/establecimiento.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

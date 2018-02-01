@@ -113,3 +113,21 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+
+/***************************/
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 4px 6px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+.btn-link-app{padding: 0px !important; background-color: transparent;}
+
+.label-sa-abonado{background-color: #3c8dbc !important;}
+.label-sa-abierto{background-color: #3aadbc !important;}
+.label label-sa-enCP{background-color: #998dbc !important;}
+.label label-sa-enDA{background-color: #118dbc !important;}
+
+.todo-list-alumnos > li .tools-alumnos{display: block !important;}
+.todo-list-responsables > li .tools-responsables{display: block !important;}

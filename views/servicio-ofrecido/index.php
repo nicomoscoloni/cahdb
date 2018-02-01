@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">
         <div class="pull-right">
-            <p> <?=  Html::a('<i class="glyphicon glyphicon-plus"></i> CARGAR', ['alta'], ['class' => 'btn btn-success btn-alta']); ?> </p>
+            <p> <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['alta'], ['class' => 'btn btn-xs btn-success btn-alta']); ?> </p>
         </div>
         <div class="row">
             <div class="col-sm-12">

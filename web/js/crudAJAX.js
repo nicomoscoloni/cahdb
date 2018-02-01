@@ -1,9 +1,4 @@
-function cargaAjax(xhref,grilla=null){    
-    if(grilla == null)
-        $('#grilla-ajax').val('#pjax-grid');
-    else
-        $('#grilla-ajax').val(grilla); 
-    
+function cargaAjax(xhref){    
     $.ajax({
         url    : xhref,                 
         dataType: "json",
@@ -38,12 +33,7 @@ function cargaAjax(xhref,grilla=null){
     return false;   
 }
 
-function editAjax(xhref,grilla=null){
-    if(grilla == null)
-        $('#grilla-ajax').val('#pjax-grid');
-    else
-        $('#grilla-ajax').val(grilla);
-    
+function editAjax(xhref){
     $.ajax({
         url    : xhref,                 
         dataType: "json",
@@ -80,12 +70,7 @@ function editAjax(xhref,grilla=null){
 
 
 
-function deleteAjax(xhref,grilla=null){
-    if(grilla == null)
-        $('#grilla-ajax').val('#pjax-grid');
-    else
-        $('#grilla-ajax').val(grilla);    
-    
+function deleteAjax(xhref){
     bootbox.confirm({
         message: "Esta seguro que dea realizar la eliminacion?",
         buttons: {
@@ -113,10 +98,8 @@ function deleteAjax(xhref,grilla=null){
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'success'
                             });
-                            grillaajax = $('#grilla-ajax').val();
                             $.pjax.reload({container:"#pjax-grid",timeout:false});
-                            
-                         }else{                             
+                        }else{                             
                             new PNotify({
                                 title: 'Error',
                                 text: response.message,
@@ -189,14 +172,13 @@ $(document).ready(function () {
                                 type: 'success'
                             });
                         $("#ModalCrudAjax").modal("toggle");
-                        grillaajax = $('#grilla-ajax').val();                        
-                        $.pjax.reload({container: grillaajax, timeout:false});                        
+                        $.pjax.reload({container: "#pjax-grid", timeout:false});                        
                     }
                 }
                 else{                    
                     new PNotify({
                                 title: 'ERROR',
-                                text: response.message,
+                                text: response.mensaje,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'error'
                             });
@@ -225,5 +207,3 @@ $(document).ready(function () {
     }); 
         
 });
-
-   

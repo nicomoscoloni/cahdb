@@ -21,7 +21,6 @@ class DebitoAutomaticoSearch extends DebitoAutomatico
             [['id', 'registros_enviados', 'registros_correctos'], 'integer'],
             [['nombre', 'banco', 'tipo_archivo', 'fecha_creacion', 'fecha_procesamiento', 'inicio_periodo', 'fin_periodo', 'fecha_debito'], 'safe'],
             [['procesado'], 'boolean'],
-            [['saldo_enviado', 'saldo_entrante'], 'number'],
         ];
     }
 
@@ -49,6 +48,11 @@ class DebitoAutomaticoSearch extends DebitoAutomatico
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ]
+            ],  
         ]);
 
         $this->load($params);
@@ -70,8 +74,6 @@ class DebitoAutomaticoSearch extends DebitoAutomatico
             'procesado' => $this->procesado,
             'registros_enviados' => $this->registros_enviados,
             'registros_correctos' => $this->registros_correctos,
-            'saldo_enviado' => $this->saldo_enviado,
-            'saldo_entrante' => $this->saldo_entrante,
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre])

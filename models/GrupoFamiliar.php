@@ -140,7 +140,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
 
     public function getDatosMisHijos(){
         $detalle='';
-        $misHijos = Alumno::find()->where('activo=\'1\' and id_grupofamiliar='.$this->id)->all();
+        $misHijos = $this->alumnosActivos;
         
         if(!empty($misHijos)){
             $i=0;
@@ -155,7 +155,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
     
     public function getDetalleNombreMisHijos(){
         $detalle='';
-        $misHijos = Alumno::find()->where('activo=\'1\' and id_grupofamiliar='.$this->id)->all();
+        $misHijos = $this->alumnosActivos;
         
         if(!empty($misHijos)){
             $i=0;

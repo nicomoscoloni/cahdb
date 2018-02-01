@@ -5,10 +5,6 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
 
-
-
-
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\DivisionEscolar */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -17,51 +13,50 @@ $this->title = 'Division Escolars';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php Pjax::begin([
-                    'id'=>'pjax-divisionesservicios',
-                    'class'=>'pjax-loading',
-                    'enablePushState' => false,
-                    'timeout'=>false,                    
-                    ]); ?>    
-    <?= GridView::widget([
-        'id'=>'grid-divisiones-con-servicio',
-        'dataProvider' => $divisionesConServicio,       
+<?php
+    Pjax::begin([
+        'id' => 'pjax-divisionesservicios',
+        'class' => 'pjax-loading',
+        'enablePushState' => false,
+        'timeout' => false,
+    ]);
+?>   
+
+    <?=
+    GridView::widget([
+        'id' => 'grid-divisiones',
+        'dataProvider' => $dataProviderDivisiones,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             'id',
             'nombre',
-        ],
-    ]); ?>
-
-
-    <?= GridView::widget([
-        'id'=>'grid-divisiones-sin-servicio',
-        'dataProvider' => $divisionesSinServicio,      
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'id',
-            'nombre',         
             ['class' => 'yii\grid\ActionColumn',
-                            'template'=>'{quitar}',
-                            'headerOptions' => ['class'=>'btnquitar'],
-                            'buttons' => 
-                            [
-                              'quitar' => function ($url, $model) use ($servicio){                                        
-                                               return Html::a( '<i class="glyphicon glyphicon-trash"></i>',
-                                                                      ['establecimiento/asignar-servicio-division', 'division'=>$model->id, 'servicio'=>$servicio],
-                                                                      ['class'=>'btn btn-xs btn-danger',
-                                                                       'onclick'=>'js:{asignarServicioDivision("'.Url::to(['establecimiento/asignar-servicio-division', 'division'=>$model->id,'servicio'=>$servicio]) .'"); return false;}'   ]
-                                                              );
-                                           },
-
-
-                            ],
-                           
-                                                   
-                           ],
+                'template' => '{asignar}{quitar}',
+                'headerOptions' => ['class' => 'btnquitar'],
+                'buttons' =>
+                [
+                'asignar' => function ($url, $model) use ($modelServicio, $divisionesConServicio){
+                    if(array_key_exists($model->id, $divisionesConServicio)==FALSE)
+                        return Html::button( '<i class="glyphicon glyphicon-eyes"></i>',                            
+                            ['class' => 'btn btn-xs btn-danger',
+                                'onclick' => 'js:asignarServicioDivision("'.Url::to(['establecimiento/asignar-servicio-division', 'division' => $model->id, 'servicio' => $modelServicio->id]) .'");']
+                            );
+                        },
+                'quitar' => function ($url, $model) use ($modelServicio, $divisionesConServicio){
+                    if(array_key_exists($model->id, $divisionesConServicio))        
+                        return Html::button( '<i class="glyphicon glyphicon-trash"></i>',                            
+                            ['class' => 'btn btn-xs btn-danger',
+                                'onclick' => 'js:quitarServicioDivision("'.Url::to(['establecimiento/quitar-servicio-division', 'division' => $model->id, 'servicio' => $modelServicio->id]) .'");']
+                            );
+                        },
+                ],
+            ],
         ],
-    ]); ?>
+    ]);
+    ?>
 <?php Pjax::end(); ?>
+
+<input type="hidden" name="urlreloadservicios" id="urlreloadservicios" value="<?= Url::to(['establecimiento/get-servicios','idEst'=>$modelEstablecimiento->id,'idServ'=>$modelServicio->id]); ?>" />
+
 <?php 
 $this->registerJsFile('@web/js/servicios-establecimiento.js', ['depends'=>[app\assets\AppAsset::className()]]);
 ?>

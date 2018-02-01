@@ -47,7 +47,7 @@ abstract class DebitoAutomatico extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'banco', 'tipo_archivo', 'fecha_creacion', 'inicio_periodo', 'fin_periodo', 'fecha_debito', 'saldo_enviado', 'saldo_entrante'], 'required'],
+            [['nombre', 'banco', 'tipo_archivo', 'fecha_creacion', 'inicio_periodo', 'fin_periodo', 'fecha_debito', 'saldo_enviado'], 'required'],
             [['fecha_creacion', 'fecha_procesamiento', 'inicio_periodo', 'fin_periodo', 'fecha_debito'], 'safe'],
             [['procesado'], 'boolean'],
             [['registros_enviados', 'registros_correctos'], 'integer'],

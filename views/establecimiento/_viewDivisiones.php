@@ -9,7 +9,7 @@ use app\assets\CRUDAjaxAsset;
 CRUDAjaxAsset::register($this);
 
 ?>
-<br />
+
 <div class="row">
     <div class="col-xs-8 col-xs-offset-2"> 
         <div class="box box-warning divisiones-index">

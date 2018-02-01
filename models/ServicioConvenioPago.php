@@ -17,7 +17,7 @@ public function behaviors()
         return ArrayHelper::merge(
             parent::behaviors(),
             [
-                # custom behaviors
+                'bedezign\yii2\audit\AuditTrailBehavior'
             ]
         );
     }

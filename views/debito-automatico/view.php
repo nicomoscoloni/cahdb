@@ -93,7 +93,7 @@ yii\bootstrap\Modal::end();
             <p>
                 <?= Html::button('<i class="glyphicon glyphicon-floppy-save"></i>  ARCHIVO A ENVIAR', ['class' => 'btn btn-primary',
                         'onclick'=>'js:{downListado("'.Url::to(['debito-automatico/descargar-archivo-envio','id'=>$model->id]) .'");}']); ?>
-                <?= Html::button('<i class="glyphicon glyphicon-hand-right"></i>  VERIFICAR ARCHIVO', ['value'=>yii\helpers\Url::to(['convertir-a-excel', 'id' => $model->id]), 'class' => 'btn btn-success','id'=>'btn-verificar']) ?>
+                <?= Html::button('<i class="glyphicon glyphicon-hand-right"></i>  CONVERTIR A EXCEL', ['value'=>yii\helpers\Url::to(['convertir-a-excel', 'id' => $model->id]), 'class' => 'btn btn-success','id'=>'btn-verificar']) ?>
             
                <?= Html::button('PROCESAR ARCHIVO', ['value'=> yii\helpers\Url::to(['procesar','id'=>$model->id]), 'class' => 'btn btn-primary', 'id'=>'btn-procesa']) ?>
             </p>    

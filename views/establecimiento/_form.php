@@ -12,17 +12,16 @@ use kartik\widgets\DatePicker;
 
 <div class="establecimiento-form">
 
-    <?php $form = ActiveForm::begin(['id'=>'form-establecimiento']); ?>
+    <?php $form = ActiveForm::begin([
+        'id'=>'form-establecimiento',
+        'type'=> kartik\form\ActiveForm::TYPE_HORIZONTAL,
+        'formConfig'=> ['labelSpan'=>2,]
+    ]); ?>
     
 
-    <div class="row">
-        <div class="col-sm-5">
+   
             <?= $form->field($model, 'nombre') ?>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-3">
+        
             <?= $form->field($model, 'xfecha_apertura')->widget(
                     DatePicker::className(),([
                                         'language'=>'es',                                        
@@ -32,38 +31,27 @@ use kartik\widgets\DatePicker;
                                         ]
                                     ])
                     );?>
-        </div>
-    </div>
+        
 
-    <div class="row">
-        <div class="col-sm-5">
+   
             <?= $form->field($model, 'calle') ?>
-        </div>
-    </div>
+       
 
-    <div class="row">
-        <div class="col-sm-5">
+    
             <?= $form->field($model, 'telefono',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
-        </div>
-    </div>
+        
     
-    <div class="row">
-        <div class="col-sm-5">
+   
             <?= $form->field($model, 'celular',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
-        </div>
-    </div>
+        
     
-    <div class="row">
-        <div class="col-sm-5">
+    
             <?= $form->field($model, 'mail',['addon' => ['prepend' => ['content'=>'@']]])->input('email') ?>
-        </div>
-    </div>
+        
 
-    <div class="row">
-        <div class="col-sm-5">
+    
             <?= $form->field($model, 'nivel_educativo'); ?>
-        </div>
-    </div>
+        
 
     <div class="form-group">
         <?= Html::submitButton("<i class='fa fa-save'></i> ".' GUARDAR', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary','id'=>'btn-envio']) ?>

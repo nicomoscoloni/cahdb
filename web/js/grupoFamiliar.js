@@ -5,30 +5,22 @@
  * la segunda es la funcion encarga de asignaciòn
  */
 $("#btn-asignar-responsable").click(function(){     
-    xhref = $(this).attr("value");
+    xhref = $(this).attr("value");    
     $.ajax({
-        url    : xhref,                 
+        url    : xhref, 
         dataType: "json",
-        success: function (response){            
-            if(response.error==='0'){
-                $('#modalAsignacionResponsable').modal('show').find('#modalContent').html(response.vista);   
-            }else{
-                new PNotify({
-                    title: 'Error',
-                    text: response.message,
-                    icon: 'glyphicon glyphicon-envelope',
-                    type: 'error'
-                });
-            }
+        success: function (response){                
+                $('#modalAsignacionResponsable').modal('show').find('#modalContent').html(response.vista); 
         },
         error: function(error){
-                new PNotify({
+            new PNotify({
                     title: 'Error',
                     text: 'Error al querer asignar responsables. Intente nuevamente y en caso de persistir el error comuniquese con su administrador',
                     icon: 'glyphicon glyphicon-envelope',
                     type: 'error'
                 });
-        }
+        },
+        
     });
     
 });
@@ -41,32 +33,18 @@ function asignarResponsable(btn){
         url    : xhref,
         type   : "get",
         data   : {"tipores": $('#tipores').val(), "familia": $('#familia').val(), "idresponsable": responsbale},
-        dataType: "json",
         success: function (response) {
-            if(response.error == 0){                                   
-                if(response.carga == 1){  
-                    $("#modalAsignacionResponsable").modal("toggle"); 
-                    grillaajax = '#pjax-responsable';
-                    $.pjax.reload({container:grillaajax, timeout:false});                    
-                }
-                else
-                if (response.carga==0){                    
-                    $("#modalAsignacionResponsable").modal("show").find("#modalContent").html("");
-                    $("#modalAsignacionResponsable").modal("show").find("#modalContent").html(response.vista);
-                }
-            }
-            else{    
+                $("#modalAsignacionResponsable").modal("toggle");                 
+                $.pjax.reload({container:'#pjax-responsables', timeout:false}); 
+        },
+        error  : function (error) {
+                console.log(error);
                 new PNotify({
-                    title: 'ERROR',
-                    text: response.mensaje,
+                    title: 'Error',
+                    text: 'Error al querer asignar responsables. Intente nuevamente y en caso de persistir el error comuniquese con su administrador',
                     icon: 'glyphicon glyphicon-envelope',
                     type: 'error'
                 });
-                $("#modalAsignacionResponsable").modal("toggle");                                           
-            }
-        },
-        error  : function () {
-            console.log("internal server error");
         }
     }).done($("body").loading('stop'));
 }
@@ -132,7 +110,7 @@ function actualizarResponsable(xhref){
 
 function quitarResponsable(xhref){       
     bootbox.confirm({
-        message: "Esta seguro que desea realizar la eliminación?",
+        message: "Está seguro que deséea realizar la eliminación?",
         buttons: {
             confirm: {
                 label: '<i class="glyphicon glyphicon-ok"></i> Si',
@@ -148,7 +126,7 @@ function quitarResponsable(xhref){
             if(result===true){                
                 $.ajax({
                      url    : xhref,
-                     type   : "post",            
+                     type   : "get",            
                      dataType: "json",
                      success: function (response){
                          if(response.error==0){                             
@@ -158,31 +136,23 @@ function quitarResponsable(xhref){
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'success'
                             });                            
-                            $.pjax.reload({container:"#pjax-responsable",timeout:false});                            
-                         }else{                             
-                            new PNotify({
-                                title: 'Error',
-                                text: response.mensaje,
-                                icon: 'glyphicon glyphicon-envelope',
-                                type: 'error'
-                            });
+                            $.pjax.reload({container:"#pjax-responsables",timeout:false});                            
                          }
                      },
-                     error  : function (error) {                            
-                            if(error.status == 403 && error.statusText=='Forbidden') 
-                                mensaje = 'Usted no dispone de los permisos suficientes para realizar esta tarea';
-                            else
-                                mensaje = 'Se produjo un error en la ejecucion de la tarea. Intente nuevamente y si persiste el error comuniquese con su administrador';
-
+                     error  : function (error) { 
+                           
+                            $.pjax.reload({container:"#pjax-responsables",timeout:false}); 
                             new PNotify({
                                 title: 'Error',
-                                text: mensaje,
+                                text: 'Error al intentar desvincular al responsbale del Grupo Familiar.',
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'error'
                             });      
                      }
                 }).done(function(o) {
                     $("body").loading('stop');       
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    alert("ddd");
                 });
             }else{
                 $("body").loading('stop');    

@@ -1,8 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+//use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
+
 
 
 /* @var $this yii\web\View */
@@ -10,9 +12,11 @@ use kartik\widgets\DatePicker;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <div class="servicio-ofrecido-form">
-
-    <?php $form = ActiveForm::begin(['id'=>'form-servicios']); ?>   
-
+    <?php $form = ActiveForm::begin([
+        'id'=>'form-servicioofrecido',
+        
+    ]); ?>
+   
     <div class="row">
         <div class="col-sm-6">
             <?= $form->field($model, 'id_tiposervicio')->dropDownList(app\models\CategoriaServicioOfrecido::getTipoServicios() ,['prompt'=>'Seleccione..']) ?>
@@ -33,13 +37,13 @@ use kartik\widgets\DatePicker;
     
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'importe') ?>
+            <?= $form->field($model, 'importe',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
         </div>
     </div>
     
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'importe_hijoprofesor') ?>
+            <?= $form->field($model, 'importe_hijoprofesor',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
         </div>
     </div>
     
@@ -96,6 +100,11 @@ use kartik\widgets\DatePicker;
     <?php ActiveForm::end(); ?>
 
 </div>
+<style type="text/css">
+   #form-servicioofrecido .form-group {
+    margin-bottom: 6px;
+}
+</style>
 <?php
 $this->registerJs('
 $(document).ready(function(){
@@ -110,7 +119,6 @@ $(document).ready(function(){
             $("#btn-envio").html("<i class=\'fa fa-save\'></i> Guardar...");
         }
     });
-    
 });         
-', \yii\web\View::POS_READY,'js-empadronamiento');
+', \yii\web\View::POS_READY,'js-preventsubmit');
 ?>

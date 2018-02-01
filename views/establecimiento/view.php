@@ -6,6 +6,9 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Pjax;
 
+use app\assets\EstablecimientoAssets;
+EstablecimientoAssets::register($this);
+
 /* @var $this yii\web\View */
 /* @var $model common\models\Establecimiento */
 
@@ -27,6 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'method' => 'post',
                 ],
             ]) ?>
+            
+            <?= Html::button('<i class="fa fa-pencil"></i>   DivisionesEscolares', ['id' => $model->id, 'class' => 'btn btn-primary',
+                   'onclick'=>'js:establecimiento.misDivisionesEscolares("'.Url::to(['establecimiento/mis-divisiones-escolares','establecimiento'=>$model->id]) .'");']) ?>
+            
+            <?= Html::button('<i class="fa fa-pencil"></i>   SERVICIOS', ['id' => $model->id, 'class' => 'btn btn-primary',
+                   'onclick'=>'js:establecimiento.misServicios("'.Url::to(['establecimiento/mis-servicios-ofrecidos','establecimiento'=>$model->id]) .'");']) ?>
         </p>
         <div class="row"> <!-- row dettales delconvenio -->
             <div class="col-sm-8 col-sm-offset-2 col-xs-12">
@@ -47,47 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div> <!-- fin row dettales del establecimiento -->
         
-       
+        <div id="datosEst">
+            asd
+        </div>
         
         <br />        
         
-        <div id="tabs-views">
-            <?php
-            echo 
-            \yii\bootstrap\Tabs::widget
-            ([   'encodeLabels' => false,
-                'items' => [
-                    [
-                        'label' => '<i class="fa fa-users"></i> Alumnos',                        
-                        'content' => $this->render('_viewAlumnos',
-                                ['dataProviderAlumnos' =>$dataProviderAlumnos,
-                                 'searchModelAlumnos' => $searchModelAlumnos, 
-                                 'modelPersona'=> $modelPersona,
-                                 'establecimiento'=>$model->id
-                                ]),  
-                        'active' => true
-                    ],
-                    [
-                        'label' => '<i class="fa fa-users"></i> Divisiones Escolares',                         
-                        'content' => $this->render('_viewDivisiones',
-                                ['dataProviderDivisiones' =>$dataProviderDivisiones,
-                                 'searchModelDivisiones' => $searchModelDivisiones, 
-                                 'establecimiento'=>$model->id   
-                                ]),
-                        
-                    ],                                      
-                    [
-                    'label' => '<i class="fa fa-briefcase"></i>    Servicios',
-                    'content' => $this->render('_viewServicios',
-                            ['dataProviderSerEst' =>$dataProviderSerEst,
-                             'searchModelSerEst' => $searchModelSerEst, 
-                             'establecimiento'=> $model->id,
-                            ]),          
-                    ],
-
-                ],
-            ]);
-            ?>  
-        </div>
+        
     </div>
 </div>

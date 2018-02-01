@@ -39,7 +39,7 @@ class m170927_214510_tablesCobrosCuentas extends Migration
         $this->addForeignKey('fk_movimientosCuentas_cuenta', 'movimiento_cuenta', 'id_cuenta', 'cuentas', 'id');
         $this->addForeignKey('fk_movimientosCuentas_formaPago', 'movimiento_cuenta', 'id_tipopago', 'forma_pago', 'id'); 
         
-        
+        /*
         //create table Establecimiento
         $this->createTable('{{%tiket}}', [
             'id' => $this->primaryKey(),
@@ -63,7 +63,7 @@ class m170927_214510_tablesCobrosCuentas extends Migration
         ], $tableOptions);
         
         //ForeignKey Tabla Personas        
-        $this->addForeignKey('fk_servicioTiket_Tiket', 'servicio_tiket', 'id_tiket', 'tiket', 'id');
+        $this->addForeignKey('fk_servicioTiket_Tiket', 'servicio_tiket', 'id_tiket', 'tiket', 'id');*/
     }
 
     public function safeDown()

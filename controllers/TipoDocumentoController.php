@@ -25,7 +25,7 @@ class TipoDocumentoController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        //'roles' => ['admlDocumentos'],
+                        //'roles' => ['gestorDocumentos'],
                     ],
                 ],
             ], 
@@ -107,7 +107,7 @@ class TipoDocumentoController extends Controller
                     $transaction->commit();
                     if (Yii::$app->request->isAjax){
                         Yii::$app->response->format = 'json';
-                        return ['carga' => '1', 'form'=>'0', 'error' => '0', 'message' => $mensaje, 'id'=>$model->id];
+                        return ['carga' => '1', 'form'=>'0', 'error' => '0', 'mensaje' => $mensaje, 'id'=>$model->id];
                     }else{
                         Yii::$app->session->setFlash('ok',$mensaje);
                         return $this->redirect(['view', 'id' => $model->id]);
@@ -115,7 +115,17 @@ class TipoDocumentoController extends Controller
                 }else
                     $mensaje = Yii::$app->params['operacionFallida'];
             }
-            
+                        
+        }catch(\Exception $e){
+            Yii::error('Tipo Documentos - actionCreate'.$e);
+            $transaction->rollBack();
+            if (Yii::$app->request->isAjax){
+                Yii::$app->response->format = 'json';
+                return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+            }else{
+                Yii::$app->session->setFlash('error',Yii::$app->params['errorExcepcion']);                
+            }            
+        } 
             //renderizamos las vistas, formulario de carga
             if (Yii::$app->request->isAjax){
                 Yii::$app->response->format = 'json';
@@ -126,17 +136,7 @@ class TipoDocumentoController extends Controller
                 return $this->render('create', [
                     'model' => $model,
                 ]);
-            }            
-        }catch(\Exception $e){
-            Yii::error('Tipo Documentos - actionCreate'.$e);
-            $transaction->rollBack();
-            if (Yii::$app->request->isAjax){
-                Yii::$app->response->format = 'json';
-                return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
-            }else{
-                Yii::$app->session->setFlash('error',Yii::$app->params['errorExcepcion']);                
-            }            
-        }        
+            }
     } //fin createAjax
 
     
@@ -150,17 +150,15 @@ class TipoDocumentoController extends Controller
     {
         try{
             $searchModel = new TipoDocumentoSearch;
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);    
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);                
         }catch(\Exception $e){
             Yii::error('Index TipoDocumento'.$e);
             Yii::$app->session->setFlash('error',Yii::$app->params['errorExcepcion']);
-            return $this->redirect(['site/index']);    
         }
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
         
     }
     

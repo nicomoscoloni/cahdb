@@ -8,71 +8,92 @@ use yii\helpers\Url;
 /* @var $model app\models\search\ServicioAlumnoSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="box  box-solid box-primary">
-    <div class="box-header with-border">
-        <i class="glyphicon glyphicon-search"></i> <h3 class="box-title"> Busqueda Avanzada </h3>    
-    </div>
-    <div class="box-body">
+
+    <div class="box-body" id="seachSA">
 
             <?php $form = ActiveForm::begin([                            
                             'method' => 'POST',
                         ]); 
             ?>
-    
-        <div class="row">
-            <div class="col-sm-3">
-                <?= $form->field($model, 'apellidoFamilia'); ?>
+       
+        <div class="row form-group required">
+            <div class="col-sm-3">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'folioFamilia', ['label'=>'Folio', 'class' => 'control-label'])?> </span>
+                    <?=  Html::activeInput('text', $model, 'folioFamilia',['class'=>'form-control','aria-required'=>"true"]); ?>
+                </div>                
             </div>
-            <div class="col-sm-2">
-                <?= $form->field($model, 'folioFamilia'); ?>
+            <div class="col-sm-4">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'apellidoFamilia', ['label'=>'Apellido', 'class' => 'control-label'])?> </span>
+                    <?=  Html::activeInput('text', $model, 'apellidoFamilia',['class'=>'form-control','aria-required'=>"true"]); ?>
+                </div>                
+            </div>            
+        </div>
+        
+        <div class="row form-group required">
+            <div class="col-sm-3">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'documentoAlumno', ['label'=>'Doc', 'class' => 'control-label'])?> </span>
+                    <?=  Html::activeInput('text', $model, 'documentoAlumno',['class'=>'form-control','aria-required'=>"true"]); ?>
+                </div>                
+            </div>
+            <div class="col-sm-4">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'apellidoAlumno', ['label'=>'Apellido', 'class' => 'control-label'])?> </span>
+                    <?=  Html::activeInput('text', $model, 'apellidoAlumno',['class'=>'form-control','aria-required'=>"true"]); ?>
+                </div>                
+            </div>
+            <div class="col-sm-4">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'nombreAlumno', ['label'=>'Nombre', 'class' => 'control-label'])?> </span>
+                    <?=  Html::activeInput('text', $model, 'nombreAlumno',['class'=>'form-control','aria-required'=>"true"]); ?>
+                </div>                
             </div>
         </div>
-           
-           
-        <div class="row">
-            <div class="col-sm-3">
-                <?= $form->field($model, 'documentoAlumno'); ?>
-            </div>
-            <div class="col-sm-3">
-                <?= $form->field($model, 'apellidoAlumno'); ?>
-            </div>
-            <div class="col-sm-3">
-                <?= $form->field($model, 'nombreAlumno'); ?>
-            </div>
-        </div>
-    
-        <div class="row">
-            <?php   
-                $divisiones = array();
-            ?>
-            <div class="col-sm-3">
-                <?= $form->field($model, 'establecimiento')->dropDownList(app\models\Establecimiento::getEstablecimientos(),
-                        [
-                        'prompt'=>'Seleccione',
-                        'onchange'=>'
-                            $.get( "'. \yii\helpers\Url::toRoute('establecimiento/mis-divisionesescolares').'", { idEst: $(this).val() } )
+        
+        <div class="row form-group required">
+            <div class="col-sm-4">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'sexo', ['label'=>'Estb','class' => 'control-label']) ?> </span>
+                    <?php echo Html::activeDropDownList($model, 'establecimiento', app\models\Establecimiento::getEstablecimientos(), 
+                            ['class'=>'form-control','prompt'=>'Seleccione',
+                            'onchange'=>'
+                                     $.get( "'. \yii\helpers\Url::toRoute('establecimiento/drop-mis-divisionesescolares').'", { idEst: $(this).val() } )
                                         .done(function( data )
                                         {
 
                                             $("#servicioalumnosearch-division_escolar").html(data);
-                                        });'
-                        ]);
-                ?>
+                                        });']); ?>
+                </div>
+                
             </div>
-
-            <div class="col-sm-3">
-                <?= $form->field($model, 'division_escolar')->dropDownList($divisiones,['prompt'=>'Seleccione Estab']) ?>
+            <div class="col-sm-4">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'division_escolar', ['label'=>'Division','class' => 'control-label']) ?> </span>
+                    <?php echo Html::activeDropDownList($model, 'division_escolar', app\models\Establecimiento::getEstablecimientos(), 
+                            ['class'=>'form-control','prompt'=>'Seleccione',
+                            ]); ?>
+                </div>
+               
             </div>
-        </div> 
+        </div>
+        
+        <div class="row form-group required">           
+            <div class="col-sm-4">        
+                <div class="input-group">
+                    <span class="input-group-addon"> <?= Html::activeLabel($model, 'estado', ['label'=>'Estado','class' => 'control-label']) ?> </span>
+                    <?php echo Html::activeDropDownList($model, 'estado', $filtro_estados, 
+                            ['class'=>'form-control', 'prompt'=>'Seleccione']); ?>
+                </div>
+               
+            </div>
+        </div>
         
         <div class="row">
-            
-           
-                <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
-            
+            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
         
     </div>
-</div>

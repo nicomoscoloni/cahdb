@@ -59,16 +59,14 @@ class ConvenioPagoController extends Controller
         try{
             $searchModel = new ConvenioPagoSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);    
         }catch(\Exception $e){
             Yii::error('Administrar Convenio Pago '.$e);
             Yii::$app->session->setFlash('error','ERROR SEVERO!!!');
-            $this->redirect(['administrar']);
         } 
+        return $this->render('admin', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]); 
         
     }    
     
@@ -196,31 +194,31 @@ class ConvenioPagoController extends Controller
                       ->andFilterWhere(['like', 'folio', $modelGrupoFamiliar->folio]);
                 $query->andFilterWhere(['like', 'p.apellido', $modelGrupoFamiliar->responsable]);
             }
-
-            return $this->render('alta',array(
-                                'modelGrupoFamiliar'=>$modelGrupoFamiliar, 
-                                'dataClientes'=>$dataProvider,   
-            ));
-             
         }
         catch (\Exception $e){ 
             Yii::error('Alta Convenio Pago '.$e);
             Yii::$app->session->setFlash('error','ATENCION!!! <br /> Se Produjo un error severo');
-            $this->redirect(['site/index']);
+            
         }
+        return $this->render('alta',[
+            'modelGrupoFamiliar'=>$modelGrupoFamiliar, 
+            'dataClientes'=>$dataProvider,   
+        ]);
     } //fin actionALTA    
     
     
-    
+    /*
+     * seleccion de servicios a integrar en el convenio de pago
+     */
     public function actionAltaServicios(){
-        try{
-            $familia = Yii::$app->request->get('familia');
+        
+        $familia = Yii::$app->request->get('familia');
+
+        $modelFamilia = \app\models\GrupoFamiliar::findOne($familia);  
+        if(!$modelFamilia)
+            throw new NotFoundHttpException('Grupo Familiar inexistente.');
             
-            $modelFamilia = \app\models\GrupoFamiliar::findOne($familia);  
-            if(!$modelFamilia)
-                throw new \yii\web\BadRequestHttpException('Grupo Familiar inexitentes.');
-            
-            
+        try{    
             $serviciosImpagos = \app\models\ServicioAlumno::DevolverServiciosImpagosLibres($modelFamilia->id);
             
             /*
@@ -229,6 +227,9 @@ class ConvenioPagoController extends Controller
             $seleccion = Yii::$app->session->get('srvpagar');
             
             $noselects = Yii::$app->request->post('noselects');
+            $selects = Yii::$app->request->post('selects');
+            $selection = Yii::$app->request->post('selection');
+            
             if(!empty($noselects)) {
                $noselect = explode(",", $noselects);
                foreach($noselect as $sel){
@@ -236,38 +237,33 @@ class ConvenioPagoController extends Controller
                }
             }
             
-            $selects = Yii::$app->request->post('selects');
-            if( !empty($selects) ){
+            if(!empty($selects)){
                $select = explode(",", $selects);
                foreach($select as $sel){
                    $seleccion[$sel] = $sel; 
                }    
-            }
-            
+            }            
             
             if(isset($_POST['selection'])){                                
                 foreach ($_POST['selection'] as $arow){  
                     $seleccion[$arow] = $arow;                  
                 }         
-                Yii::$app->session->set('srvpagar',$seleccion);
-                return $this->redirect(['generar-plan-pago','familia'=>$cliente]);
-            }else
-                if(!empty($_POST)){
-                    return $this->redirect(['generar-plan-pago','familia'=>$cliente]);
-                }
+            }
             
+            Yii::$app->session->set('srvpagar',$seleccion);
             
-            Yii::$app->session->set('srvpagar',$seleccion);            
-            
-            return $this->render('alta-servicios',[
-                                    'modelFamilia'=>$modelFamilia,
-                                    'serviciosImpagos'=>$serviciosImpagos 
-                    ]);   
+            $envios = Yii::$app->request->post('envios');
+            if(isset($_POST['envios'])){
+                return $this->redirect(['generar-plan-pago','familia'=>$familia]);
+            }
         }catch(\Exception $e){
             Yii::error('AltaServicios Convenio Pago '.$e);
             Yii::$app->session->setFlash('error','ATENCION!!! <br /> Se Produjo un error severo');
-            $this->redirect(['site/index']);
-        }         
+        }   
+        return $this->render('alta-servicios',[
+            'modelFamilia'=>$modelFamilia,
+            'serviciosImpagos'=>$serviciosImpagos 
+        ]); 
     }
     
     public function actionGenerarPlanPago($familia){ 

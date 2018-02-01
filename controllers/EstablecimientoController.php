@@ -38,12 +38,12 @@ class EstablecimientoController extends Controller
                         //'roles' => ['abmlEstablecimientos'],
                     ],
                     [     
-                        'actions' => ['nuevo-servicio','servicios-division','eliminar-servicio','hola','asignar-servicio-division'],
+                        'actions' => ['nuevo-servicio','servicios-division','quitar-servicio-division','get-servicios','asignar-servicio-division','mis-servicios-ofrecidos'],
                         'allow' => true,
                         //'roles' => ['perServiciosEstablecimientos'],
                     ],
                     [     
-                        'actions' => ['cargar-division','actualizar-division','eliminar-division'],
+                        'actions' => ['cargar-division','actualizar-division','eliminar-division','mis-divisiones-escolares','drop-mis-divisionesescolares'],
                         'allow' => true,
                         //'roles' => ['gestionarDivisionEscolar'],
                     ],
@@ -96,16 +96,15 @@ class EstablecimientoController extends Controller
         try{
             $searchModel = new EstablecimientoSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);    
         }catch (\Exception $e) { 
             Yii::error('Establecimiento Index '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
             return $this->redirect(['view','id'=>$id]);                        
         }
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
     
     /************************************************************************/
@@ -126,17 +125,14 @@ class EstablecimientoController extends Controller
                 $transaction->commit();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-            
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-            
         }catch (\Exception $e) {
             Yii::error('Establecimiento Alta '.$e);
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
-            return $this->redirect(['index']);                        
         }
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
     
 
@@ -150,8 +146,7 @@ class EstablecimientoController extends Controller
      */
     public function actionUpdate($id)
     {
-        $transaction = Yii::$app->db->beginTransaction();
-        
+        $transaction = Yii::$app->db->beginTransaction();        
         try{
             $model = $this->findModel($id);
 
@@ -160,16 +155,15 @@ class EstablecimientoController extends Controller
                 $transaction->commit();
                 return $this->redirect(['view', 'id' => $model->id]);
             } 
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-            
         }catch (\Exception $e) {
             Yii::error('Establecimiento Update '.$e);
             $transaction->rollBack(); 
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
-            return $this->redirect(['index']);
         }
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+
     }
     
     /************************************************************************/
@@ -183,39 +177,13 @@ class EstablecimientoController extends Controller
     {
         try{            
             $model = $this->findModel($id);
-
-            //modelo y dataprovider de Divisiones Escolares del Establecimiento
-            $searchModelDivisiones = new DivisionEscolarSearch();
-            $searchModelDivisiones->id_establecimiento = $id;
-            $dataProviderDivisiones = $searchModelDivisiones->search(Yii::$app->request->queryParams);
-
-            //modelo y dataprovider de Alumnos del Establecimiento
-            $modelPersona =  new Persona();
-            $modelPersona->load(Yii::$app->request->queryParams); 
-            $searchModelAlumnos = new AlumnoSearch();
-            $searchModelAlumnos->establecimiento = $id;
-            $dataProviderAlumnos = $searchModelAlumnos->search(Yii::$app->request->queryParams,$modelPersona);
-
-            //modelo y dataprovider de Servicios Establecimiento
-            $searchModelSerEst = new ServicioEstablecimientoSearch();
-            $searchModelSerEst->establecimiento = $id;
-            $dataProviderSerEst = $searchModelSerEst->search(Yii::$app->request->queryParams);
-
-            return $this->render('view', [
-                    'model' => $this->findModel($id),                    
-                    'dataProviderDivisiones' =>$dataProviderDivisiones,
-                    'searchModelDivisiones' => $searchModelDivisiones,                      
-                    'modelPersona'=> $modelPersona,
-                    'dataProviderAlumnos' =>$dataProviderAlumnos,
-                    'searchModelAlumnos' => $searchModelAlumnos,                    
-                    'dataProviderSerEst' =>$dataProviderSerEst,
-                    'searchModelSerEst' => $searchModelSerEst,            
-                ]);    
         }catch (\Exception $e) {
             Yii::error('Establecimiento View '.$e);           
-            Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
-            return $this->redirect(['index']);
-        }          
+            Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);            
+        }         
+        return $this->render('view', [
+            'model' => $this->findModel($id),  
+        ]);    
     } 
     
     /************************************************************************/
@@ -239,8 +207,7 @@ class EstablecimientoController extends Controller
     /************************************************************************/
     /************************************************************************/
     /**************************** DIVISIONES ESCOLARES **********************/
-    
-    public function actionMisDivisionesescolares($idEst){
+    public function actionDropMisDivisionesescolares($idEst){
         
         $countDivisiones = DivisionEscolar::find()
                 ->where(['id_establecimiento' => $idEst])
@@ -263,8 +230,32 @@ class EstablecimientoController extends Controller
     }
     
     /************************************************************************/
-    public function actionCargarDivision($est){
-        
+    /**************************DIVISIONES ESCO*******************************/
+    /*
+     * Retorna un dataprovider de division escolares
+     */
+    public function actionMisDivisionesEscolares(){
+        try{
+            $establecimiento = Yii::$app->request->get('establecimiento');        
+            $modelEstablecimiento = $this->findModel($establecimiento);
+
+            //modelo y dataprovider de Divisiones Escolares del Establecimiento
+            $searchModelDivisiones = new DivisionEscolarSearch();
+            $searchModelDivisiones->id_establecimiento = $establecimiento;
+            $dataProviderDivisiones = $searchModelDivisiones->search(Yii::$app->request->queryParams);        
+
+            return $this->renderAjax('_misDivisiones', [
+                'modelEstablecimiento' => $modelEstablecimiento,                    
+                'dataProviderDivisiones' =>$dataProviderDivisiones,
+            ]); 
+        }catch(\Exception $e){
+            Yii::error('Establecimiento - Cargar Division '.$e);            
+            Yii::$app->response->format = 'json';
+            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+        }
+    }
+    
+    public function actionCargarDivision($est){        
         $transaction = Yii::$app->db->beginTransaction();        
         try{
             $modelEstablecimiento = $this->findModel($est);
@@ -277,14 +268,13 @@ class EstablecimientoController extends Controller
                     $transaction->commit();
                     Yii::$app->response->format = 'json';
                     return ['carga' => '1', 'form' => '0', 'error' => '0', 'mensaje' => $mensaje, 'id'=>$model->id];    
-            }                
-            
+            } 
             //renderizamos las vistas, formulario de carga
             Yii::$app->response->format = 'json';
             return ['form' => '1', 'error'=>'0',
-                    'vista' => $this->renderAjax('_formDivision', [
-                        'model' => $model,
-                ])];         
+                'vista' => $this->renderAjax('_formDivision', [
+                    'model' => $model,
+            ])];
         }catch(\Exception $e){
             Yii::error('Establecimiento - Cargar Division '.$e);
             $transaction->rollBack();
@@ -293,9 +283,7 @@ class EstablecimientoController extends Controller
         }
     }
     
-    /************************************************************************/
-    public function actionActualizarDivision($id){
-        
+    public function actionActualizarDivision($id){        
         $transaction = Yii::$app->db->beginTransaction();        
         try{
             $model =  DivisionEscolar::findOne($id); 
@@ -305,23 +293,16 @@ class EstablecimientoController extends Controller
                     $mensaje = Yii::$app->params['cargaCorrecta'];
                     $transaction->commit();
                     Yii::$app->response->format = 'json';
-                    return ['carga' => '1', 'error' => '0', 'message' => $mensaje, 'id'=>$model->id];    
-                }else{
-                    $transaction->rollBack();
-                    Yii::$app->response->format = 'json';
-                    return ['carga' => '0', 'error' => '0', 'message' => Yii::$app->params['operacionFallida'], 
-                                'vista' => $this->renderAjax('_formDivision', [
-                                        'model' => $model,
-                                ])];
+                    return ['carga' => '1', 'form' => '0', 'error' => '0', 'message' => $mensaje, 'id'=>$model->id];    
                 }
             }
             
-                    //renderizamos las vistas, formulario de carga
-                    Yii::$app->response->format = 'json';
-                    return ['carga' => '0', 'error' => '0', 
-                                'vista' => $this->renderAjax('_formDivision', [
-                                        'model' => $model,
-                                ])];         
+            //renderizamos las vistas, formulario de carga
+            Yii::$app->response->format = 'json';
+            return  ['form' => '1', 'error'=>'0',
+                        'vista' => $this->renderAjax('_formDivision', [
+                                'model' => $model,
+                    ])];         
         }catch(\Exception $e){
             Yii::error('Establecimiento - actionActualizarDivision '.$e);
             $transaction->rollBack();
@@ -330,7 +311,6 @@ class EstablecimientoController extends Controller
         }
     } 
       
-    /************************************************************************/
     public function actionEliminarDivision($id)
     {
         $transaction = Yii::$app->db->beginTransaction(); 
@@ -362,87 +342,72 @@ class EstablecimientoController extends Controller
     /************************************************************************/
     /************************************************************************/
     /**************************** SERVICIOS OFRECIDOS  **********************/
-    public function actionNuevoServicio($est){
-        
-        $modelEstablecimiento = $this->findModel($est);
-            
-        $transaction = Yii::$app->db->beginTransaction();
+    public function actionMisServiciosOfrecidos(){
+        try{
+            $establecimiento = Yii::$app->request->get('establecimiento');        
+            $modelEstablecimiento = $this->findModel($establecimiento);
+
+            //modelo y dataprovider de Servicios Establecimiento
+            $searchModelSerEst = new ServicioEstablecimientoSearch();
+            $searchModelSerEst->establecimiento = $establecimiento;
+            $dataProviderSerEst = $searchModelSerEst->search(Yii::$app->request->queryParams);  
+
+            return $this->renderAjax('_misServicios', [
+                'modelEstablecimiento' => $modelEstablecimiento,                    
+                'dataProviderSerEst' =>$dataProviderSerEst,
+                'searchModelSerEst' => $searchModelSerEst,                 
+            ]); 
+        }catch(\Exception $e){
+            Yii::error('Establecimiento - Cargar Division '.$e);            
+            Yii::$app->response->format = 'json';
+            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+        }
+    }
+    
+    public function actionNuevoServicio(){        
+        $modelEstablecimiento = $this->findModel(Yii::$app->request->get('est'));        
         try{
             $model = new ServicioEstablecimiento();
             $model->establecimiento  = $modelEstablecimiento->id;
-            
-            if ($model->load(Yii::$app->request->post())){
-                $valid = true;
-                
-                //buscamos los servicios
-                if(!empty($model->divisiones)){
-                    foreach($model->divisiones as $key => $value){
-                        $modelSE = new ServicioEstablecimiento();
-                        $modelSE->id_divisionescolar = $value;
-                        $modelSE->id_servicio = $model->id_servicio;
-                        $valid = $valid && $modelSE->save();
-                    }
-                    
-                    if($valid){
-                        $transaction->commit();
-                        Yii::$app->session->setFlash('ok', Yii::$app->params['cargaCorrecta']);
-                        return $this->redirect(['establecimiento/view','id'=>$est]);
-                    }
-                }else
-                    $model->addError('divisiones','Ingrese al menos una division');    
-            }
-            return $this->render('_createServicio', [
-                    'model' => $model,
-                ]);
         }
         catch (\Exception $e){
-                Yii::error('Establecimiento - actionNuevoServicio '.$e);
-                $transaction->rollBack();
-                Yii::$app->session->setFlash('error', 'NO SE PUDO CARGAR EL SERVICIO AL ESTABLECIMIENTO');
-                return $this->redirect(['establecimiento/view','id'=>$est]);
+            Yii::error('Establecimiento - actionNuevoServicio '.$e);
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', 'NO SE PUDO CARGAR EL SERVICIO AL ESTABLECIMIENTO');
         }
-        
+        return $this->render('_createServicio', [
+            'model' => $model,
+        ]);
     }
     
-    /************************************************************************/
-   
-    
-    
-    public function actionHola($idEst,$idServ){
-        try{            
+    public function actionGetServicios(){
+        $modelEstablecimiento = $this->findModel(Yii::$app->request->get('idEst'));
+        
+        $modelServicio = \app\models\ServicioOfrecido::findOne(Yii::$app->request->get('idServ'));
+        if(empty($modelServicio))
+           throw new NotFoundHttpException('Servicio Ofrecido inexistente.');
+        
+        try{
+            $queryDivisiones = DivisionEscolar::find()->andWhere(['id_establecimiento' => $modelEstablecimiento->id]);            
+            $dataProviderDivisiones = new ActiveDataProvider([
+                'query' => $queryDivisiones,           
+                'pagination' => false
+            ]);
+            
             $queryDivisionesConServicio = DivisionEscolar::find()->joinWith(['miServicios s']);
-            $queryDivisionesConServicio
-                ->andWhere(['id_establecimiento' => (int) $idEst])
-                ->andWhere(['is','s.id_servicio' , $idServ]);
-            
-            $queryDivisionesSinServicio = DivisionEscolar::find()->joinWith(['miServicios s']);
-            $queryDivisionesSinServicio
-                ->andWhere(['id_establecimiento' => (int) $idEst])
-                ->andWhere(['is','s.id_servicio' , null]);
-            
-            $divisionesConServicio = new ActiveDataProvider([
-                'query' => $queryDivisionesConServicio,           
-                'pagination' => false
-            ]);
-            
-            $divisionesSinServicio = new ActiveDataProvider([
-                'query' => $queryDivisionesSinServicio,           
-                'pagination' => false
-            ]);
+            $divisionesConServicio = $queryDivisionesConServicio 
+                ->andFilterWhere(['id_establecimiento' => $modelEstablecimiento->id])
+                ->andFilterWhere(['s.id_servicio' => $modelServicio->id])->asArray()->all();
+            $divisionesConServicio = \yii\helpers\ArrayHelper::map($divisionesConServicio, 'id','nombre');
             
             Yii::$app->response->format = 'json';
             return ['error' => '0',
                 'vista' => $this->renderAjax('_divisionesServicio', [
-                    'divisionesConServicio' => $divisionesConServicio,
-                    'divisionesSinServicio' => $divisionesSinServicio,
-                    'servicio'=>$idServ,
+                    'modelEstablecimiento'=>$modelEstablecimiento,
+                    'modelServicio'=>$modelServicio,
+                    'dataProviderDivisiones' => $dataProviderDivisiones,
+                    'divisionesConServicio' => $divisionesConServicio,                    
             ])];
-            
-            
-            
-            
-           
-           
         }catch (\Exception $e) {
             Yii::error('Establecimiento - actionHola '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
@@ -456,21 +421,20 @@ class EstablecimientoController extends Controller
     /***********************************************************/
     public function actionAsignarServicioDivision()
     {
-        try{
-            $transaction = Yii::$app->db->beginTransaction();
-        
-            $division = Yii::$app->request->get('division');
-            $servicio = Yii::$app->request->get('servicio');
-            
-            $modelServicio = \app\models\ServicioOfrecido::findOne($servicio);
-            if(!$modelServicio)
-                throw new NotFoundHttpException('Servicio Ofrecido inexistente.');
-            
-            $modelDivision = \app\models\DivisionEscolar::findOne($division);
-            if(!$modelDivision)
-                throw new NotFoundHttpException('Divisiòn escolar inexistente.');
+        $transaction = Yii::$app->db->beginTransaction();
 
-            
+        $division = Yii::$app->request->get('division');
+        $servicio = Yii::$app->request->get('servicio');
+
+        $modelServicio = \app\models\ServicioOfrecido::findOne($servicio);
+        if(!$modelServicio)
+            throw new NotFoundHttpException('Servicio Ofrecido inexistente.');
+
+        $modelDivision = \app\models\DivisionEscolar::findOne($division);
+        if(!$modelDivision)
+            throw new NotFoundHttpException('Divisiòn escolar inexistente.');
+
+        try{
             $modelServicioEstablecimiento = new ServicioEstablecimiento();
             $modelServicioEstablecimiento->id_servicio = $modelServicio->id;
             $modelServicioEstablecimiento->id_divisionescolar = $modelDivision->id;
@@ -488,47 +452,86 @@ class EstablecimientoController extends Controller
             Yii::error('Asignar Servicio Orden Pago' . $e); 
             $transaction->rollBack();
             Yii::$app->response->format = 'json';
-            return ['error' => '1'];
-            
-        }    
-            
-        
-    }
+            return ['error' => '1'];            
+        }   
+    }    
     
-
-    /***********************************************************/
-    /***********************************************************/
-    public function actionQuitarServicio($idOrden=null,$idServicio=null)
+    public function actionQuitarServicioDivision()
     {
-        try{
-            $transaction = Yii::$app->db->beginTransaction();
-        
-            $modelServicio = \app\models\ServicioPagado::findOne($idServicio);
-            if(!$modelServicio)
-                throw new NotFoundHttpException('No existe el Servicio Pagado.');
+        $transaction = Yii::$app->db->beginTransaction();
 
-            $modelOrdenPago = \app\models\OrdenPago::findOne($idOrden);
-            if(!$modelOrdenPago)
-                throw new NotFoundHttpException('No existe la Orden de Pago.');
+        $division = Yii::$app->request->get('division');
+        $servicio = Yii::$app->request->get('servicio');
+
+        $modelServicio = \app\models\ServicioOfrecido::findOne($servicio);
+        if(!$modelServicio)
+            throw new NotFoundHttpException('Servicio Ofrecido inexistente.');
+
+        $modelDivision = \app\models\DivisionEscolar::findOne($division);
+        if(!$modelDivision)
+            throw new NotFoundHttpException('Divisiòn escolar inexistente.');
+
+        try{
             
-            $modelServicio->id_ordenpago = null;
-            $valid = $modelServicio->save();
-            //a  veces tira problema suma o resta ambas veces
-            $modelOrdenPago->saldo = $modelOrdenPago->sumaTotalServicios; 
-            if($valid && $modelOrdenPago->save()){
+            
+            $modelServicioEscolar = \app\models\ServicioEstablecimiento::find()
+                   ->andWhere(['id_divisionescolar' => $division])
+                   ->andWhere(['id_servicio' => $servicio])->one();
+                    
+            if($modelServicioEscolar->delete()){
                 $transaction->commit();
                 Yii::$app->response->format = 'json';
                 return ['error' => '0'];                
+            }else{
+                $transaction->rollBack();
+                Yii::$app->response->format = 'json';
+                return ['error' => '1'];         
             }   
         }catch (\Exception $e){
-            Yii::error('Quitarr Servicio Orden Pago' . $e); 
+            Yii::error('Asignar Servicio Orden Pago' . $e); 
             $transaction->rollBack();
             Yii::$app->response->format = 'json';
-            return ['error' => '1'];
+            return ['error' => '1'];            
+        }   
+    }
+    
+    
+        /************************************************************************/
+    /************************************************************************/
+    /**************************** SERVICIOS OFRECIDOS  **********************/
+    public function actionMisAlumnos(){
+        try{
             
-        }    
             
-        
-    }    
+            //modelo y dataprovider de Alumnos del Establecimiento
+            $modelPersona =  new Persona();
+            $modelPersona->load(Yii::$app->request->queryParams); 
+            $searchModelAlumnos = new AlumnoSearch();
+            $searchModelAlumnos->establecimiento = $id;
+            $dataProviderAlumnos = $searchModelAlumnos->search(Yii::$app->request->queryParams,$modelPersona);
+            
+            
+            $establecimiento = Yii::$app->request->get('establecimiento');        
+            $modelEstablecimiento = $this->findModel($establecimiento);
+
+            //modelo y dataprovider de Servicios Establecimiento
+            $searchModelSerEst = new ServicioEstablecimientoSearch();
+            $searchModelSerEst->establecimiento = $establecimiento;
+            $dataProviderSerEst = $searchModelSerEst->search(Yii::$app->request->queryParams);  
+
+            return $this->renderAjax('_misServicios', [
+                'modelEstablecimiento' => $modelEstablecimiento,                    
+                'dataProviderSerEst' =>$dataProviderSerEst,
+                'searchModelSerEst' => $searchModelSerEst,                 
+            ]); 
+        }catch(\Exception $e){
+            Yii::error('Establecimiento - Cargar Division '.$e);            
+            Yii::$app->response->format = 'json';
+            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+        }
+    }
+ 
+
+    
     
 }

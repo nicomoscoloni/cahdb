@@ -22,7 +22,7 @@ use Yii;
  *
  * @property \app\models\ServicioAlumno[] $servicioAlumnos
  * @property \app\models\ServicioEstablecimiento[] $servicioEstablecimientos
- * @property \app\models\CategoriaServicioOfrecido $idTiposervicio
+ * @property \app\models\CategoriaServicioOfrecido $tiposervicio
  * @property string $aliasModel
  */
 abstract class ServicioOfrecido extends \yii\db\ActiveRecord
@@ -94,7 +94,7 @@ abstract class ServicioOfrecido extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdTiposervicio()
+    public function getTiposervicio()
     {
         return $this->hasOne(\app\models\CategoriaServicioOfrecido::className(), ['id' => 'id_tiposervicio']);
     }

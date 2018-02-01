@@ -18,7 +18,7 @@ CRUDAjaxAsset::register($this);
     <div class="box-body">
             <div class="pull-right">
                 <p>
-                <?=  Html::a('<i class="fa fa-plus-square"></i> Cargar Servicio', ['establecimiento/nuevo-servicio','est'=>$establecimiento], 
+                <?=  Html::a('<i class="fa fa-plus-square"></i> Cargar Servicio', ['establecimiento/nuevo-servicio','est'=>$modelEstablecimiento->id], 
                         ['class' => 'btn btn-primary btn-alta']); ?>
                 </p>
             </div>
@@ -38,14 +38,14 @@ CRUDAjaxAsset::register($this);
                         [
                             'label' => 'Servicio',
                             'attribute'=>'id_servicio',
-                            'filter'=> dmstr\helpers\Html::activeDropDownList($searchModelSerEst, 'id_servicio', \app\models\ServicioEstablecimiento::getServiciosxEstablecimiento($establecimiento), ['prompt'=>'','class'=>'form-control']),                  
+                            'filter'=> dmstr\helpers\Html::activeDropDownList($searchModelSerEst, 'id_servicio', \app\models\ServicioEstablecimiento::getServiciosxEstablecimiento($modelEstablecimiento->id), ['prompt'=>'','class'=>'form-control']),                  
                             'value' => function($model) {
                                 return $model->miServicio->detalleServicio  ;
                             },
                         ],
                         [
                             'label' => 'División Escolar',
-                            'filter'=> dmstr\helpers\Html::activeDropDownList($searchModelSerEst, 'id_divisionescolar', \app\models\DivisionEscolar::getDivisionesEstablecimiento($establecimiento), ['prompt'=>'','class'=>'form-control']),                  
+                            'filter'=> dmstr\helpers\Html::activeDropDownList($searchModelSerEst, 'id_divisionescolar', \app\models\DivisionEscolar::getDivisionesEstablecimiento($modelEstablecimiento->id), ['prompt'=>'','class'=>'form-control']),                  
                             'attribute'=>'id_divisionescolar',
                             'value' => function($model) {
                                 return $model->miDivisionescolar->nombre;

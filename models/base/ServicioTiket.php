@@ -15,7 +15,7 @@ use Yii;
  * @property string $tipo_servicio
  * @property string $importe
  *
- * @property \app\models\Tiket $idTiket
+ * @property \app\models\Tiket $tiket
  * @property string $aliasModel
  */
 abstract class ServicioTiket extends \yii\db\ActiveRecord
@@ -63,7 +63,7 @@ abstract class ServicioTiket extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdTiket()
+    public function getTiket()
     {
         return $this->hasOne(\app\models\Tiket::className(), ['id' => 'id_tiket']);
     }

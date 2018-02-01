@@ -16,6 +16,7 @@ use Yii;
  * @property boolean $activa
  *
  * @property \app\models\BonificacionAlumno[] $bonificacionAlumnos
+ * @property \app\models\BonificacionServicioAlumno[] $bonificacionServicioAlumnos
  * @property string $aliasModel
  */
 abstract class CategoriaBonificacion extends \yii\db\ActiveRecord
@@ -65,6 +66,14 @@ abstract class CategoriaBonificacion extends \yii\db\ActiveRecord
     public function getBonificacionAlumnos()
     {
         return $this->hasMany(\app\models\BonificacionAlumno::className(), ['id_bonificacion' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBonificacionServicioAlumnos()
+    {
+        return $this->hasMany(\app\models\BonificacionServicioAlumno::className(), ['id_bonificacion' => 'id']);
     }
 
 

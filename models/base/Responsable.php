@@ -14,8 +14,8 @@ use Yii;
  * @property integer $id_persona
  * @property integer $tipo_responsable
  *
- * @property \app\models\GrupoFamiliar $idGrupofamiliar
- * @property \app\models\Persona $idPersona
+ * @property \app\models\GrupoFamiliar $grupofamiliar
+ * @property \app\models\Persona $persona
  * @property \app\models\TipoResponsable $tipoResponsable
  * @property string $aliasModel
  */
@@ -63,7 +63,7 @@ abstract class Responsable extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdGrupofamiliar()
+    public function getGrupofamiliar()
     {
         return $this->hasOne(\app\models\GrupoFamiliar::className(), ['id' => 'id_grupofamiliar']);
     }
@@ -71,7 +71,7 @@ abstract class Responsable extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPersona()
+    public function getPersona()
     {
         return $this->hasOne(\app\models\Persona::className(), ['id' => 'id_persona']);
     }

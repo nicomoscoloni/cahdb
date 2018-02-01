@@ -13,8 +13,8 @@ use Yii;
  * @property integer $id_servicio
  * @property integer $id_divisionescolar
  *
- * @property \app\models\DivisionEscolar $idDivisionescolar
- * @property \app\models\ServicioOfrecido $idServicio
+ * @property \app\models\DivisionEscolar $divisionescolar
+ * @property \app\models\ServicioOfrecido $servicio
  * @property string $aliasModel
  */
 abstract class ServicioEstablecimiento extends \yii\db\ActiveRecord
@@ -59,7 +59,7 @@ abstract class ServicioEstablecimiento extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdDivisionescolar()
+    public function getDivisionescolar()
     {
         return $this->hasOne(\app\models\DivisionEscolar::className(), ['id' => 'id_divisionescolar']);
     }
@@ -67,7 +67,7 @@ abstract class ServicioEstablecimiento extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdServicio()
+    public function getServicio()
     {
         return $this->hasOne(\app\models\ServicioOfrecido::className(), ['id' => 'id_servicio']);
     }

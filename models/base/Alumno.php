@@ -18,9 +18,11 @@ use Yii;
  * @property boolean $activo
  * @property boolean $hijo_profesor
  *
- * @property \app\models\DivisionEscolar $idDivisionescolar
- * @property \app\models\GrupoFamiliar $idGrupofamiliar
- * @property \app\models\Persona $idPersona
+ * @property \app\models\DivisionEscolar $divisionescolar
+ * @property \app\models\GrupoFamiliar $grupofamiliar
+ * @property \app\models\Persona $persona
+ * @property \app\models\BonificacionAlumno[] $bonificacionAlumnos
+ * @property \app\models\ServicioAlumno[] $servicioAlumnos
  * @property string $aliasModel
  */
 abstract class Alumno extends \yii\db\ActiveRecord
@@ -74,7 +76,7 @@ abstract class Alumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdDivisionescolar()
+    public function getDivisionescolar()
     {
         return $this->hasOne(\app\models\DivisionEscolar::className(), ['id' => 'id_divisionescolar']);
     }
@@ -82,7 +84,7 @@ abstract class Alumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdGrupofamiliar()
+    public function getGrupofamiliar()
     {
         return $this->hasOne(\app\models\GrupoFamiliar::className(), ['id' => 'id_grupofamiliar']);
     }
@@ -90,9 +92,25 @@ abstract class Alumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPersona()
+    public function getPersona()
     {
         return $this->hasOne(\app\models\Persona::className(), ['id' => 'id_persona']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBonificacionAlumnos()
+    {
+        return $this->hasMany(\app\models\BonificacionAlumno::className(), ['id_alumno' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getServicioAlumnos()
+    {
+        return $this->hasMany(\app\models\ServicioAlumno::className(), ['id_alumno' => 'id']);
     }
 
 

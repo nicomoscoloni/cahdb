@@ -12,14 +12,13 @@ use Yii;
  * @property integer $id
  * @property integer $id_conveniopago
  * @property string $fecha_establecida
- * @property string $pagada
  * @property integer $nro_cuota
  * @property string $monto
  * @property string $estado
  * @property integer $id_tiket
  * @property string $importe_abonado
  *
- * @property \app\models\ConvenioPago $idConveniopago
+ * @property \app\models\ConvenioPago $conveniopago
  * @property string $aliasModel
  */
 abstract class CuotaConvenioPago extends \yii\db\ActiveRecord
@@ -46,7 +45,6 @@ abstract class CuotaConvenioPago extends \yii\db\ActiveRecord
             [['id_conveniopago', 'nro_cuota', 'id_tiket'], 'integer'],
             [['fecha_establecida'], 'safe'],
             [['monto', 'importe_abonado'], 'number'],
-            [['pagada'], 'string', 'max' => 2],
             [['estado'], 'string', 'max' => 255],
             [['id_conveniopago'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\ConvenioPago::className(), 'targetAttribute' => ['id_conveniopago' => 'id']]
         ];
@@ -61,7 +59,6 @@ abstract class CuotaConvenioPago extends \yii\db\ActiveRecord
             'id' => 'ID',
             'id_conveniopago' => 'Id Conveniopago',
             'fecha_establecida' => 'Fecha Establecida',
-            'pagada' => 'Pagada',
             'nro_cuota' => 'Nro Cuota',
             'monto' => 'Monto',
             'estado' => 'Estado',
@@ -73,7 +70,7 @@ abstract class CuotaConvenioPago extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdConveniopago()
+    public function getConveniopago()
     {
         return $this->hasOne(\app\models\ConvenioPago::className(), ['id' => 'id_conveniopago']);
     }

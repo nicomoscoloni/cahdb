@@ -17,7 +17,7 @@ class ConvenioPago extends BaseConvenioPago
         return ArrayHelper::merge(
             parent::behaviors(),
             [
-                # custom behaviors
+               'bedezign\yii2\audit\AuditTrailBehavior'
             ]
         );
     }

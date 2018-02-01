@@ -21,8 +21,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
         'js/multiselect/css/multi-select.css',
         'plugins/jqueryloading/src/loading.css',
-        'plugins/introjs/introjs.css', 
-        
+        'plugins/introjs/introjs.css',         
     ];
     public $js = [
         'js/app.js',

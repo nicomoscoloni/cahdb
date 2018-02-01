@@ -6,159 +6,97 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Pjax;
 
-use app\assets\CRUDAjaxAsset;
-CRUDAjaxAsset::register($this);
+use app\assets\GrupoFamiliarAsset;
+GrupoFamiliarAsset::register($this);
+?>
+<?php
+    yii\bootstrap\Modal::begin([        
+        'id'=>'modalAsignacionResponsable',
+        'header'=>'Asignación de Responsable',
+        'class' =>'modal-scrollbar', 
+        'size' => 'modal-lg',
+        ]);
+        echo "<div id='modalContent'></div>";
+    yii\bootstrap\Modal::end();
 ?>
 
-
 <div class="row">
-    <div class="col-xs-12">
+    <!--col alumnos-->
+    <div class="col-xs-6">
+        <div class="box box-solid box-colegio" id="grupo-familiar-index">
+            <div class="box-header with-border">
+                <i class="fa fa-users"></i> 
+                    <h3 class="box-title"> Alumnos / Hijos </h3>       
+            </div>
+            <div class="box-body">
+                <?php
+                Pjax::begin(['id' => 'pjax-alumnos',
+                    'enablePushState' => false,
+                    'timeout' => false]);
 
-        <?php
-       
-        //if(Yii::$app->user->can('abmlResponsables')){
-            echo "<span class='title-h3'> Responsables </span>" . 
+                $alumnos = $dataProviderAlumnos->getModels();
+                if(count($alumnos)>0){
+                ?>
+                <ul class="todo-list todo-list-alumnos">                    
+                    <?php foreach($alumnos as $alumno){                
+                            echo "<li>". Html::a('<i class="fa fa-eye"></i> '. $alumno->miPersona->apellido ."; ".$alumno->miPersona->nombre, ['alumno/view', 'id' => $alumno->id], []);
+                            echo '
+                                <div class="tools tools-alumnos">'.
+                                        Html::a('<i class="fa fa-edit"></i>', ['alumno/empadronamiento', 'id' => $alumno->id], []).
+                                    '
+                                </div>';
+                            echo "</li>";
+                        }
+                    }?>
+                </ul>
+                <?php Pjax::end(); ?> 
+            </div> <!-- box body -->
+        </div>
+    </div>
+    
+    <!-- col responsbales -->
+    <div class="col-sm-6">
+        <div class="box box-solid box-colegio" id="grupo-familiar-index">
+            <div class="box-header with-border">
+                <i class="fa fa-users"></i> 
+                    <h3 class="box-title"> Responsbales</h3> 
+                    <?php
+            //if(Yii::$app->user->can('abmlResponsables')){
+            echo 
                 Html::button('<i class="fa fa-share-square-o"></i> Asignar Responsable', 
                         ['value' => Url::to(['grupo-familiar/asignar-responsable', 'familia' => $familia]), 
                          'class' => 'btn btn-success btn-xs', 'id' => 'btn-asignar-responsable']);
-       // }
-        
-        
-        
-        Pjax::begin(['id' => 'pjax-responsable',
-            'enablePushState' => false,
-            'timeout' => false]);
+            // } ?>
+               </div>
+            <div class="box-body">
+                <?php
+                Pjax::begin(['id' => 'pjax-responsables',
+                    'enablePushState' => false,
+                    'timeout' => false]);
 
-        echo GridView::widget([
-            'id' => 'grid-responsables',
-            'dataProvider' => $dataProviderResponsables,
-            'columns' => [
-                    [
-                    'label' => 'T.Responsable',
-                    'value' => function($model) {
-                        return $model->tipoResponsable->nombre;
-                    },
-                ],
-                    [
-                    'label' => 'Documento',
-                    'value' => function($model) {
-                        return $model->miPersona->nro_documento;
-                    },
-                ],
-                    [
-                    'label' => 'Apellido',
-                    'value' => function($model) {
-                        return $model->miPersona->apellido;
-                    },
-                ],
-                    [
-                    'label' => 'Nombre',
-                    'value' => function($model) {
-                        return $model->miPersona->nombre;
-                    },
-                ],
-                    [
-                    'label' => 'Domicilio',
-                    'value' => function($model) {
-                        return $model->miPersona->miDomicilio;
-                    },
-                ],
-                    [
-                    'label' => 'F.Nac',
-                    'value' => function($model) {
-                        return Yii::$app->formatter->asDate($model->miPersona->fecha_nacimiento);
-                    },
-                ],
-                    [
-                    'label' => 'Telefonos',
-                    'value' => function($model) {
-                        return $model->miPersona->miTelContacto;
-                    },
-                ],
-                    ['class' => 'yii\grid\ActionColumn',
-                    'template' => '{update} {delete}',
-                    'headerOptions' => ['width' => '70'],
-                    'buttons' =>
-                        [
-                        'update' => function ($url, $model) {
-                            return Html::a('<i class="glyphicon glyphicon-pencil"></i>', ['grupo-familiar/actualizar-responsable', 'id' => $model['id']], ['class' => 'btn btn-xs btn-warning editAjax',
-                                        'onclick' => 'js:{actualizarResponsable("' . Url::to(['grupo-familiar/actualizar-responsable', 'id' => $model['id']]) . '","#pjax-responsable"); return false;}']
-                            );
-                        },
-                        'delete' => function ($url, $model) {
-                            return Html::a('<i class="glyphicon glyphicon-remove"></i>', ['grupo-familiar/quitar-responsable', 'id' => $model['id']], ['class' => 'btn btn-xs btn-danger',
-                                        'onclick' => 'js:{quitarResponsable("' . Url::to(['grupo-familiar/quitar-responsable', 'id' => $model['id']]) . '"); return false;}']
-                            );
-                        },
-                    ],
-                   // 'visible' => Yii::$app->user->can('abmlResponsables')            
-                ],
-            ],
-        ]);
-        Pjax::end();
-        ?>
-        <input type="hidden" name="familia" id="familia" value="<?= $familia; ?>" />
+                $responsables = $dataProviderResponsables->getModels();
+                if(count($responsables)>0){
+                    echo '<ul class="todo-list todo-list-responsables">';
+                    foreach($responsables as $responsable){                
+                        echo "<li>". $responsable->tipoResponsable->nombre . " ". $responsable->miPersona->apellido .
+                                "; ".$responsable->miPersona->nombre;
+                        echo "<div class='tools tools-responsables'>";
+                        echo    Html::a('<i class="fa fa-edit"></i>', 'javascript:void(0)' ,[
+                                    'class' => '',
+                                    'onclick' => 'js:actualizarResponsable("' . Url::to(['grupo-familiar/actualizar-responsable', 'id' => $responsable->id]) . '");']);
+                        echo    Html::a('<i class="fa fa-trash-o"></i>', 'javascript:void(0)',[
+                                    'class' => '',
+                                    'onclick' => 'js:quitarResponsable("' . Url::to(['grupo-familiar/quitar-responsable', 'id' => $responsable->id]) . '");']);   
+                        echo "</div></li>";
+                    }
+                    echo "</ul>";
+                }
 
-        <?php
-            echo "<h3> Alumnos</h3>";
-        Pjax::begin(['id' => 'pjax-alumnos',
-            'enablePushState' => false,
-            'timeout' => false]);
-        echo GridView::widget([
-            'id' => 'grid-alumnos',
-            'summary' => '',
-            'dataProvider' => $dataProviderAlumnos,
-            'columns' => [
-                    [
-                    'label' => 'Documento',
-                    'value' => function($model) {
-                        return $model->miPersona->nro_documento;
-                    },
-                ],
-                [
-                    'label' => 'Apellido',
-                    'value' => function($model) {
-                        return $model->miPersona->apellido;
-                    },
-                ],
-                    [
-                    'label' => 'Nombre',
-                    'value' => function($model) {
-                        return $model->miPersona->nombre;
-                    },
-                ],
-                    [
-                    'label' => 'Domicilio',
-                    'value' => function($model) {
-                        return $model->miPersona->miDomicilio;
-                    },
-                ],
-                    [
-                    'label' => 'Nacimiento',
-                    'value' => function($model) {
-                        return Yii::$app->formatter->asDate($model->miPersona->fecha_nacimiento);
-                    },
-                ],
-                    [
-                    'label' => 'Division',
-                    'value' => function($model) {
-                        return $model->miDivisionescolar->nombre . " - " . $model->miDivisionescolar->idEstablecimiento->nombre;
-                    },
-                ],
-                    ['class' => 'yii\grid\ActionColumn',
-                    'template' => '{view}',
-                    'buttons' =>
-                        [
-                        'view' => function ($url, $model) {
-                            return Html::a('<i class="glyphicon glyphicon-eye-open"></i>', ['alumno/view', 'id' => $model['id']], []
-                            );
-                        },
-                    ],
-                                'visible' => Yii::$app->user->can('abmlAlumnos')
-                ],
-            ],
-        ]);
-        ?>
-        <?php Pjax::end(); ?>
+                ?>
+                <?php Pjax::end(); ?> 
+            </div> <!-- box body -->
+        </div>
     </div>
 </div>
+    
+<input type="hidden" name="familia" id="familia" value="<?= $familia; ?>" />

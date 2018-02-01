@@ -6,8 +6,8 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\web\View;
 
-use app\assets\grupoFamiliar;
-grupoFamiliar::register($this); 
+use app\assets\GrupoFamiliarAsset;
+GrupoFamiliarAsset::register($this); 
 
 
 /* @var $this yii\web\View */
@@ -26,7 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <?php echo $this->render('_viewDatosFamilia', ['model' => $model]); ?>
     
-        <?= app\widgets\buscadorServiciosAlumno\BuscadorServiciosAlumno::widget(['searchModel' => $searchModel,'dataProvider'=>$dataProvider,'buscador'=>false]);
-                        ?>
+        <?= app\widgets\buscadorServiciosAlumno\BuscadorServiciosAlumno::widget(['searchModel' => $searchModel,'dataProvider'=>$dataProvider,'buscador'=>false]);                        ?>
     </div>
 </div>

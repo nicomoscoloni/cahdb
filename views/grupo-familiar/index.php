@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
        
         <div class="pull-right">
-            <p> <?= Html::a('<i class="fa fa-plus-square"></i> ALTA', ['alta'], ['class' => 'btn btn-primary']) ?> 
+            <p> <?= Html::a('<i class="fa fa-plus-square"></i>', ['alta'], ['class' => 'btn btn-primary']) ?> 
           <?= Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
                         'onclick'=>'js:{downListado("'.Url::to(['grupo-familiar/exportar-excel']) .'");}']) ?>
             </p>

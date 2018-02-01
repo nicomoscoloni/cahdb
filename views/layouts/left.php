@@ -4,8 +4,8 @@
        
         <?= dmstr\widgets\Menu::widget(
             [
-                'options' => ['class' => 'sidebar-menu'],
-                'items' => [                    
+                'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
+                'items' => [
                     [
                         'label' => 'Alumnos',
                         'icon' => 'users',
@@ -17,41 +17,23 @@
                         ],
                        // 'visible' => (Yii::$app->user->can('gestionarAlumnos') || Yii::$app->user->can('visualizarFamilias')),
                     ],
-                   
                     [   'label' => 'Establecimientos', 
                         'icon' => 'university', 
                         'url' => ['establecimiento/index'],
                       //  'visible' => Yii::$app->user->can('gestionarEstablecimientos')
                     ],
-                    [
-                        'label' => 'Caja',
-                        'icon' => 'share',
-                        'url' => '#',
-                        'items' => [
-                            ['label' => 'Cobrar Servicios', 'icon' => 'arrow-right', 'url' => ['caja/cobrar','oper'=>'1'],],
-                            ['label' => 'Cobrar Ingreso', 'icon' => 'arrow-right', 'url' => ['caja/cobrar','oper'=>'2'],],
-                            //['label' => 'Pago Servicios', 'icon' => 'arrow-right', 'url' => ['servicio-pagado/admin'],],
-                            
-                        ],
-                       // 'visible' => Yii::$app->user->can('cobrarServicios')
-                    ],
-                    [
-                        'label' => 'Reportes',
-                        'icon' => 'fa fa-share',
-                        'url' => '#',
-                        'items' => [
-                            ['label' => 'Servicios Brindados', 'icon' => 'fa fa-arrow-right', 'url' => ['servicio-alumno/reporte'],],                            
-                        ],
-                    ],
-                   [   'label' => 'Convenio Pago', 
-                        'icon' => 'fa fa-handshake-o', 
+                    [   'label' => 'Convenio Pago', 
+                        'icon' => 'university', 
                         'url' => ['convenio-pago/administrar'],
-                        //'visible' => Yii::$app->user->can('gestionarConveniosPagos')
+                      //  'visible' => Yii::$app->user->can('gestionarEstablecimientos')
                     ],
+                    ['label' => 'Debito Automatico', 'icon' => 'briefcase', 'url' => ['debito-automatico/admin']],
+                    
+                    ['label' => 'Servicios', 'icon' => 'briefcase', 'url' => ['servicio-ofrecido/admin']],
                     [
                         'label' => 'Configuraciones',
                         'icon' => 'cogs',
-                        'url' => '#',
+                        'url' => '',
                         'items' => [
                             ['label' => 'Tipo Documentos', 'icon' => 'arrow-right', 'url' => ['tipo-documento/index']],
                             ['label' => 'Tipo Sexos', 'icon' => 'arrow-right', 'url' => ['tipo-sexo/index']],
@@ -64,16 +46,35 @@
                        // 'visible'=>(Yii::$app->user->can('director') || Yii::$app->user->can('administrador') || Yii::$app->user->can('secretario')),                         
                         
                     ],
+                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
+                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
-                        'label' => 'Debito Auotmatico',
-                        'icon' => 'fa fa-handshake-o',
-                        'url' => ['debito-automatico/administrar'], 
-                        'visible' => Yii::$app->user->can('gestionDebitosAutomaticos')
-                    ],
-                    ['label' => 'Servicios', 'icon' => 'briefcase', 'url' => ['servicio-ofrecido/admin']],
- ['label' => 'Administrar',
-                     'url' => ['/user/admin/index'], 
-                   //  'visible'=>(Yii::$app->user->can('administrador')),     
+                        'label' => 'Some tools',
+                        'icon' => 'share',
+                        'url' => '#',
+                        'items' => [
+                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
+                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+                            [
+                                'label' => 'Level One',
+                                'icon' => 'circle-o',
+                                'url' => '#',
+                                'items' => [
+                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
+                                    [
+                                        'label' => 'Level Two',
+                                        'icon' => 'circle-o',
+                                        'url' => '#',
+                                        'items' => [
+                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ]

@@ -21,7 +21,7 @@ CRUDAjaxAsset::register($this);
         <div class="box-body">
             
                 <p class="pull-right">
-                    <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>ALTA NUEVA', ['create'], ['class' => 'btn btn-success',
+                    <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-xs btn-success',
                         'onclick'=>'js:{cargaAjax("'.Url::to(['forma-pago/create']) .'"); return false;}']) ?>
                 </p>
             <div class="row">

@@ -1,12 +1,12 @@
 function asignarServicioDivision(xhref){      
     $('body').loading({message: 'AGUARDE... procesando.'}); 
-    
+    urlreload = $('#urlreloadservicios').val();
     $.ajax({
         url    : xhref,                   
         dataType: 'json',
         success: function (response){                         
             if(response.error==0){
-                $.pjax({container: '#pjax-divisionesservicios', timeout: false}).done(function(){
+                $.pjax({container: '#pjax-divisionesservicios', timeout: false, replace:false,url: urlreload}).done(function(){
                     $('body').loading('stop')                   
                 });                            
             }else{
@@ -24,20 +24,19 @@ function asignarServicioDivision(xhref){
     return false;       
 } //fin deleteAjax 
 
-function quitarServicio(xhref){
+function quitarServicioDivision(xhref){
     
     $('body').loading({message: 'AGUARDE... procesando.'}); 
-    
+    urlreload = $('#urlreloadservicios').val();
     $.ajax({
         url    : xhref,
         type   : 'post',            
         dataType: 'json',
         success: function (response){                         
             if(response.error==0){
-                $.pjax({container: '#pjax-servicioslibres', timeout: false}).done(function(){ 
-                    $.pjax({container: '#pjax-serviciosadheridos', timeout: false}).done(function() { 
-                        $('body').loading('stop'); })});
-                            
+                $.pjax({container: '#pjax-divisionesservicios', timeout: false, replace:false,url: urlreload}).done(function(){
+                    $('body').loading('stop')                   
+                });                            
             }else{
                 $('body').loading('stop');
                 new PNotify({

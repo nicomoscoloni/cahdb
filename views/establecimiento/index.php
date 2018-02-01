@@ -1,6 +1,5 @@
 <?php
 
-
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -20,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">         
         <div class="pull-right">
           <p>
-            <?= Html::a('<i class="glyphicon glyphicon-plus"></i> Alta', ['alta'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('<i class="glyphicon glyphicon-plus"></i>', ['alta'], ['class' => 'btn btn-xs btn-success']) ?>
           </p>
         </div>
         <div class="row">
@@ -34,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
                     'columns' => [
                         'nombre',                        
                         'calle',

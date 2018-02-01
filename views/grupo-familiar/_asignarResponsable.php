@@ -9,29 +9,28 @@ use yii\grid\GridView;
     'id'=>'pjax-persona-busqueda',
     'enablePushState' => false,
     'enableReplaceState' => false,
-     'timeout'=>false,
+    'timeout'=>false,
 ]); 
 ?>
 
-<div class="clearfix crud-navigation">
-<?= Html::button(' <i class="fa fa-plus-square"></i> ALTA', 
-    ['value'=> Url::to(['grupo-familiar/carga-responsable', 'idFamilia'=>$familia]),
-     'class' => 'btn btn-primary',
-     'onclick'=>'js:{cargarResponsable(this);}'    
-    ]); 
-?> 
-    
+
 <input type='hidden' name='familia' id="familia" value="<?= $familia; ?>" />
         
 <div class="row">
     <div class="col-xs-12">
         <?php   echo \dmstr\helpers\Html::dropDownList('tipores','',app\models\TipoResponsable::getTipoResponsables(),['class'=>'','id'=>'tipores']); 
-                echo Html::button(' <i class="fa fa-plus-square"></i> ASIGNAR RESPONSABLE', 
+                echo Html::button(' <i class="fa fa-plus-square"></i> ASIGNAR', 
                     ['value'=> Url::to(['grupo-familiar/asignar-responsable']),
-                     'class' => 'btn btn-warning',
+                     'class' => 'btn btn-warningbtn-xs',
                      'onclick'=>'js:{asignarResponsable(this);}'    
                     ]); 
-        ?>
+                echo Html::button(' <i class="fa fa-plus-square"></i> ALTA', 
+                        ['value'=> Url::to(['grupo-familiar/carga-responsable', 'idFamilia'=>$familia]),
+                         'class' => 'btn btn-primary',
+                         'onclick'=>'js:{cargarResponsable(this);}'    
+                        ]); 
+                    ?> 
+       
     </div>
 </div>
     

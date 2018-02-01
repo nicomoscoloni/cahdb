@@ -20,8 +20,9 @@ use Yii;
  * @property string $estado
  *
  * @property \app\models\BonificacionServicioAlumno[] $bonificacionServicioAlumnos
- * @property \app\models\Alumno $idAlumno
- * @property \app\models\ServicioEstablecimiento $idServicio
+ * @property \app\models\Alumno $alumno
+ * @property \app\models\ServicioOfrecido $servicio
+ * @property \app\models\ServicioConvenioPago[] $servicioConvenioPagos
  * @property string $aliasModel
  */
 abstract class ServicioAlumno extends \yii\db\ActiveRecord
@@ -50,7 +51,7 @@ abstract class ServicioAlumno extends \yii\db\ActiveRecord
             [['importe_servicio', 'importe_descuento', 'importe_abonado'], 'number'],
             [['estado'], 'string', 'max' => 10],
             [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Alumno::className(), 'targetAttribute' => ['id_alumno' => 'id']],
-            [['id_servicio'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\ServicioEstablecimiento::className(), 'targetAttribute' => ['id_servicio' => 'id']]
+            [['id_servicio'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\ServicioOfrecido::className(), 'targetAttribute' => ['id_servicio' => 'id']]
         ];
     }
 
@@ -83,7 +84,7 @@ abstract class ServicioAlumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdAlumno()
+    public function getAlumno()
     {
         return $this->hasOne(\app\models\Alumno::className(), ['id' => 'id_alumno']);
     }
@@ -91,9 +92,17 @@ abstract class ServicioAlumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdServicio()
+    public function getServicio()
     {
-        return $this->hasOne(\app\models\ServicioEstablecimiento::className(), ['id' => 'id_servicio']);
+        return $this->hasOne(\app\models\ServicioOfrecido::className(), ['id' => 'id_servicio']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getServicioConvenioPagos()
+    {
+        return $this->hasMany(\app\models\ServicioConvenioPago::className(), ['id_servicio' => 'id']);
     }
 
 

@@ -18,7 +18,7 @@ use Yii;
  * @property string $descripcion
  * @property string $con_servicios
  *
- * @property \app\models\GrupoFamiliar $idFamilia
+ * @property \app\models\GrupoFamiliar $familia
  * @property \app\models\CuotaConvenioPago[] $cuotaConvenioPagos
  * @property \app\models\ServicioConvenioPago[] $servicioConvenioPagos
  * @property string $aliasModel
@@ -73,7 +73,7 @@ abstract class ConvenioPago extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdFamilia()
+    public function getFamilia()
     {
         return $this->hasOne(\app\models\GrupoFamiliar::className(), ['id' => 'id_familia']);
     }

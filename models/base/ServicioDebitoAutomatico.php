@@ -16,8 +16,7 @@ use Yii;
  * @property string $resultado_procesamiento
  * @property string $linea
  *
- * @property \app\models\DebitoAutomatico $idDebitoautomatico
- * @property \app\models\ServicioAlumno $idServicio
+ * @property \app\models\DebitoAutomatico $debitoautomatico
  * @property string $aliasModel
  */
 abstract class ServicioDebitoAutomatico extends \yii\db\ActiveRecord
@@ -43,8 +42,7 @@ abstract class ServicioDebitoAutomatico extends \yii\db\ActiveRecord
             [['id_debitoautomatico', 'id_servicio'], 'required'],
             [['id_debitoautomatico', 'id_servicio'], 'integer'],
             [['tiposervicio', 'resultado_procesamiento', 'linea'], 'string', 'max' => 255],
-            [['id_debitoautomatico'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\DebitoAutomatico::className(), 'targetAttribute' => ['id_debitoautomatico' => 'id']],
-          
+            [['id_debitoautomatico'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\DebitoAutomatico::className(), 'targetAttribute' => ['id_debitoautomatico' => 'id']]
         ];
     }
 
@@ -66,17 +64,9 @@ abstract class ServicioDebitoAutomatico extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdDebitoautomatico()
+    public function getDebitoautomatico()
     {
         return $this->hasOne(\app\models\DebitoAutomatico::className(), ['id' => 'id_debitoautomatico']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIdServicio()
-    {
-        return $this->hasOne(\app\models\ServicioAlumno::className(), ['id' => 'id_servicio']);
     }
 
 

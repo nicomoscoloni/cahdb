@@ -48,7 +48,7 @@ class GrupoFamiliarController extends Controller
                         //'roles' => ['exportarFamilias','gestionarGrupoFamiliar'],
                     ],
                     [     
-                        'actions' => ['carga-responsable','asignar-responsable','actualizar-responsable','quitar-responsable'],
+                        'actions' => ['carga-responsable','actualizar-responsable','quitar-responsable'],
                         'allow' => true,
                         //'roles' => ['abmlResponsables'],
                     ],
@@ -75,16 +75,14 @@ class GrupoFamiliarController extends Controller
         try{
             $searchModel = new GrupoFamiliarSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);    
         }catch (\Exception $e) {
             Yii::error('Administración Familias '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
-            return $this->redirect(['site/index']);            
-        }        
+        }   
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
     
     /**********************************************************************/
@@ -104,16 +102,14 @@ class GrupoFamiliarController extends Controller
                 $transaction->commit();
                 return $this->redirect(['view', 'id' => $model->id]);
             } 
-            
-            return $this->render('create', [
-                'model' => $model,
-            ]);           
         }catch (\Exception $e) {
             Yii::error('Alta Familias '.$e);
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
-            return $this->redirect(['admin']);            
         }
+        return $this->render('create', [
+            'model' => $model,
+        ]);   
     }
 
     /**********************************************************************/
@@ -134,16 +130,15 @@ class GrupoFamiliarController extends Controller
                 Yii::$app->session->setFlash('success', Yii::$app->params['actualizacionCorrecta']);
                 $transaction->commit();
                 return $this->redirect(['view', 'id' => $model->id]);
-            }             
-            return $this->render('create', [
-                'model' => $model,
-            ]);            
+            }                       
         }catch (\Exception $e) {
             Yii::error('Actualizar Familias '.$e);
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
-            return $this->redirect(['admin']);            
         }
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
     
     /**********************************************************************/
@@ -190,17 +185,15 @@ class GrupoFamiliarController extends Controller
             $dataProviderAlumnos = new ActiveDataProvider([
                 'query' => $queryAlumnos,
             ]);        
-        
-            return $this->render('view', [
-                'model' => $this->findModel($id),
-                'dataProviderResponsables' => $dataProviderResponsables,
-                'dataProviderAlumnos' => $dataProviderAlumnos,
-            ]);
         }catch (\Exception $e) {    
             Yii::error('View Familias '.$e);
             Yii::$app->session->setFlash('error', 'No se puede visualizar los datos de la Familia debido a un error.');
-            return $this->redirect(['admin']);            
         }   
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+            'dataProviderResponsables' => $dataProviderResponsables,
+            'dataProviderAlumnos' => $dataProviderAlumnos,
+        ]);
     }
 
     /**********************************************************************/
@@ -223,6 +216,63 @@ class GrupoFamiliarController extends Controller
     /**********************************************************************/
     /**********************************************************************/
     /************************ Responsables ********************************/
+    public function actionAsignarResponsable(){
+        try{
+            $familia = Yii::$app->request->get('familia');
+            $idresponsable = Yii::$app->request->get('idresponsable');
+            $tiporesponsable = Yii::$app->request->get('tipores');
+            
+            $modelFamilia = GrupoFamiliar::findOne($familia);        
+            if(!$modelFamilia)        
+                throw  new \Exception('Grupo Familiar inexistente.');        
+        
+            $transaction = Yii::$app->db->beginTransaction(); 
+            
+            $searchModel = new PersonaSearch();         
+            $searchModel->load(Yii::$app->request->get());    
+            
+            $queryPersonas = Persona::find();
+            $queryPersonas->joinWith(['alumnos a']);            
+            $dataProvider = new ActiveDataProvider([
+                'query' => $queryPersonas,
+            ]);            
+                $queryPersonas->andFilterWhere(['like', 'apellido', $searchModel->apellido])
+                    ->andFilterWhere(['like', 'nombre', $searchModel->nombre])
+                    ->andFilterWhere(['like', 'nro_documento', $searchModel->nro_documento]);
+             
+                $queryPersonas->andWhere(['is','a.id', null]);
+            
+            if ( !empty($familia) && !empty($tiporesponsable) &&
+                    !empty($idresponsable) ){
+                
+                $modelResponsable = new Responsable();
+                $modelResponsable->id_grupofamiliar = $familia;
+                $modelResponsable->id_persona = $idresponsable;
+                $modelResponsable->tipo_responsable = $tiporesponsable;
+                if($modelResponsable->save()){
+                    $transaction->commit();
+                    Yii::$app->response->format = 'json';
+                    return ['error' => '0','carga' => '1']; 
+                }else{
+                    Yii::$app->response->format = 'json';
+                    return ['error' => '1','carga' => '0','mensaje'=>'no se pudo realiza la asignacion del responsable']; 
+                }
+            }
+        }catch(\Exception $e){
+            Yii::error('Asignar Responsbale - GrupoFamiliar '.$e);
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            Yii::$app->response->statusCode=404;
+           return ['message'=>'Error al asignar el responsbale'];
+        }
+            Yii::$app->response->format = 'json';
+            return ['error' => '0',
+                'vista' => $this->renderAjax('_asignarResponsable', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+                'familia' => $familia
+            ])];  
+    }
+    
     
     public function actionCargaResponsable() {
         try {
@@ -274,8 +324,6 @@ class GrupoFamiliarController extends Controller
         }
     }
 
-    /**********************************************************************/
-    /**********************************************************************/
     public function  actionActualizarResponsable()
     {               
         try{
@@ -326,146 +374,38 @@ class GrupoFamiliarController extends Controller
     } //fin createAjax
 
     /**********************************************************************/
-    /**********************************************************************/
-    public function actionAsignarResponsable(){
-        $familia = Yii::$app->request->get('familia');
-        
-        $modelFamilia = GrupoFamiliar::findOne($familia);        
-        if(!$modelFamilia)        
-            throw new NotFoundHttpException('Grupo Familiar inexistente.');        
-        
-        try{
-            $transaction = Yii::$app->db->beginTransaction(); 
-            
-            $searchModel = new PersonaSearch();         
-            $searchModel->load(Yii::$app->request->get());    
-            
-            $queryPersonas = Persona::find();
-            $queryPersonas->joinWith(['alumnos a']);            
-            $dataProvider = new ActiveDataProvider([
-                'query' => $queryPersonas,
-            ]);
-            $queryPersonas->andFilterWhere(['like', 'apellido', $searchModel->apellido])
-            ->andFilterWhere(['like', 'nombre', $searchModel->nombre])
-            ->andFilterWhere(['like', 'nro_documento', $searchModel->nro_documento]);
-             
-            $queryPersonas->andWhere(['is','a.id', null]);
-            
-            if ( !empty(Yii::$app->request->get('familia')) && !empty(Yii::$app->request->get('tipores')) &&
-                    !empty(Yii::$app->request->get('idresponsable')) ){
-                
-                $modelResponsable = new Responsable();
-                $modelResponsable->id_grupofamiliar = (int) Yii::$app->request->get('familia');
-                $modelResponsable->id_persona = (int) Yii::$app->request->get('idresponsable');
-                $modelResponsable->tipo_responsable = Yii::$app->request->get('tipores');
-                if($modelResponsable->save()){
-                    $transaction->commit();
-                    Yii::$app->response->format = 'json';
-                    return ['error' => '0','carga' => '1']; 
-                }else{
-                    Yii::$app->response->format = 'json';
-                    return ['error' => '1','carga' => '0','mensaje'=>'no se pudo realiza la asignacion del responsable']; 
-                }
-            }
-                
-            Yii::$app->response->format = 'json';
-            return ['error' => '0',
-                'vista' => $this->renderAjax('_asignarResponsable', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'familia' => $familia
-            ])];           
-            
-        }catch(\Exception $e){
-           Yii::error('Asignar Responsbale - GrupoFamiliar '.$e);
-           throw new NotFoundHttpException('Grupo Familiar inexistente.');
-         }
-    }
-    
-    /**********************************************************************/
-    /**********************************************************************/
-    public function  actionQuitarResponsable($id)
+    public function  actionQuitarResponsable()
     {
-        $transaction = Yii::$app->db->beginTransaction();       
-        
         try{
-            if (($model = Responsable::findOne($id)) !== null) {
-                $model->delete();
-                $transaction->commit();
-                Yii::$app->response->format = 'json';
-                return ['error' => '0', 'mensaje' => Yii::$app->params['eliminacionCorrecta']];                
-            }else{
-                throw new NotFoundHttpException('EL Responsable que intenta eliminar no existe.');
-            }
+            $transaction = Yii::$app->db->beginTransaction();
+            $id=98798798;//Yii::$app->request->get('id');
+            $modelResponsable = Responsable::findOne($id);        
+            if(!$modelResponsable)        
+                throw  new \Exception('Responsable del Grupo Familiar inexistente.'); 
+            
+                   
+            
+            $modelResponsable->delete();
+            $transaction->commit();
+            Yii::$app->response->format = 'json';
+            return ['error' => '0', 'mensaje' => Yii::$app->params['eliminacionCorrecta']];               
         }catch(\Exception $e){
             Yii::error('Quitar Responsbale - GrupoFamiliar '.$e);
             $transaction->rollBack();
             Yii::$app->response->format = 'json';
-            return ['error' => '1', 'mensaje' => 'El Responsable que intenta eliminar no existe.'];
+            Yii::$app->response->statusCode = 500;
+            Yii::$app->response->statusText = "500sssss";
+            exit;
+              
+            $response = [
+                'code'=>400,
+                'message'=>'asdsd'
+            ];
+            return $response;
+                
         }        
     } //fin QuitarResponsable
-    /***********************   FIN RESPONSBALES ***************************/ 
-    
-    
-    /**********************************************************************/
-    /**********************************************************************/
-    /************************ Bonificaciones ******************************/
-    /*
-    public function actionAsignarBonificacion($familia){        
-        try{
-            $model = new \app\models\BonificacionFamiliar();
-            $model->id_grupoFamiliar = $familia;        
-
-                if ($model->load(Yii::$app->request->post())){
-                if(!empty(\app\models\BonificacionFamiliar::find()->where("id_grupofamiliar=$familia and  id_bonificacion=$model->id_bonificacion")->all())){
-                    Yii::$app->response->format = 'json';
-                    return ['error' => '0', 'carga' => '1','message' => 'No se pudo asignar la bonificación. La misma ya se encuentra asignada'];    
-                }else
-                if($model->save()){
-                    Yii::$app->response->format = 'json';
-                    return ['error' => '0', 'carga' => '1','message' => Yii::$app->params['cargaCorrecta']];    
-                }else{
-                    Yii::$app->response->format = 'json';
-                    return ['error' => '0', 'carga' => '0','message' => 'dfg',
-                        'vista' => $this->renderAjax('_formAsignacionBonificacion', [
-                                        'model' => $model,
-                                     ])];
-                }
-            }    
-        }catch(\Exception $e){
-            
-            Yii::$app->response->format = 'json';
-            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
-        }    
-        
-        
-        return $this->renderAjax('_formAsignacionBonificacion',['model'=>$model]);
-    }
-    */
-    /**********************************************************************/
-    /*
-    public function actionQuitarBonificacion($id)
-    {
-        $transaction = Yii::$app->db->beginTransaction(); 
-        try{
-            if ( \app\models\BonificacionFamiliar::findOne($id)->delete() ){
-                $transaction->commit();
-                if (Yii::$app->request->isAjax){                    
-                    Yii::$app->response->format = 'json';
-                    return ['error' => '0', 'message' => Yii::$app->params['eliminacionCorrecta']];
-                }
-            }
-        }
-        catch (\Exception $e){
-            $transaction->rollBack();
-            if (Yii::$app->request->isAjax){
-                Yii::$app->response->format = 'json';
-                return ['error' => '1', 'message' =>  Yii::$app->params['errorExcepcion']];
-            }
-        }
-    }    
-    */
-    /**********************************************************************/
+   
     /**********************************************************************/
     /************************  ******************************/
     public function actionServiciosFamilia($familia){        
@@ -485,8 +425,7 @@ class GrupoFamiliarController extends Controller
         catch (\Exception $e){
             Yii::$app->session->setFlash('error', 'No se puede visualizar los datos de la Familia debido a un error.');
             return $this->redirect(['view','id'=>$modelFamilia->id]);   
-        }
-        
+        }        
     }
     
     

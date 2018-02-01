@@ -13,8 +13,8 @@ use Yii;
  * @property integer $id_bonificacion
  * @property integer $id_servicioalumno
  *
- * @property \app\models\CategoriaBonificacion $idBonificacion
- * @property \app\models\ServicioAlumno $idServicioalumno
+ * @property \app\models\CategoriaBonificacion $bonificacion
+ * @property \app\models\ServicioAlumno $servicioalumno
  * @property string $aliasModel
  */
 abstract class BonificacionServicioAlumno extends \yii\db\ActiveRecord
@@ -59,7 +59,7 @@ abstract class BonificacionServicioAlumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdBonificacion()
+    public function getBonificacion()
     {
         return $this->hasOne(\app\models\CategoriaBonificacion::className(), ['id' => 'id_bonificacion']);
     }
@@ -67,7 +67,7 @@ abstract class BonificacionServicioAlumno extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdServicioalumno()
+    public function getServicioalumno()
     {
         return $this->hasOne(\app\models\ServicioAlumno::className(), ['id' => 'id_servicioalumno']);
     }

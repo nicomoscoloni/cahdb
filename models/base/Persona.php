@@ -26,8 +26,8 @@ use Yii;
  * @property string $mail
  *
  * @property \app\models\Alumno[] $alumnos
- * @property \app\models\TipoSexo $idSexo
- * @property \app\models\TipoDocumento $idTipodocumento
+ * @property \app\models\TipoSexo $sexo
+ * @property \app\models\TipoDocumento $tipodocumento
  * @property \app\models\Responsable[] $responsables
  * @property string $aliasModel
  */
@@ -97,7 +97,7 @@ abstract class Persona extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdSexo()
+    public function getSexo()
     {
         return $this->hasOne(\app\models\TipoSexo::className(), ['id' => 'id_sexo']);
     }
@@ -105,7 +105,7 @@ abstract class Persona extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdTipodocumento()
+    public function getTipodocumento()
     {
         return $this->hasOne(\app\models\TipoDocumento::className(), ['id' => 'id_tipodocumento']);
     }

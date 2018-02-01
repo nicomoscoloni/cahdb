@@ -80,6 +80,9 @@ $this->title = 'Alta Convenio Pago';
                          \yii\widgets\Pjax::end();
                         ?>
             <input type="hidden" name="envios" id="envios" value="0" />
+            <input type="hidden" name="noselects" id="noselects" value="" />
+            <input type="hidden" name="selects" id="selects" value="" />
+            
             <div class="form-group">
                 <?= Html::submitButton('<i class=\'fa fa-save\'></i> Generar Convenio', ['class' => 'btn btn-success','id'=>'btn-generar-convenio']) ?>
             </div>  
@@ -87,27 +90,6 @@ $this->title = 'Alta Convenio Pago';
 
         </div>
 </div>
-
-<?php
-$this->registerJs("    
-function getUncheckeds(){
-    var unch = [];
-    /*corrected typo: $('[name^=someChec]') => $('[name^=misservicios]') */
-    $('[name^=selection]').not(':checked,[name$=all]').each(function(){unch.push($(this).val());});
-    return unch.toString();
-}
-       
-$('#pjax-servicios-convenio').on('pjax:beforeSend', function (event, data, status, xhr, options) {
-    seleccionados = $('#gridServiviosCP').yiiGridView('getSelectedRows').toString();   
-    no_seleccionados = getUncheckeds();
-    status.data = status.data+'&selects='+seleccionados;
-    status.data = status.data+'&noselects='+no_seleccionados;       
-});
-
-
-", \yii\web\View::POS_READY,'selectpagos');
-?>
-
 <style type="text/css">
 .btn.btn-box-tool > a.pdfServ{color: #ad0808 !important;}
 .button-column > a.pdfServ{color: #ad0808 !important;}

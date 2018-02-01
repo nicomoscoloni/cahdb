@@ -19,14 +19,16 @@ CRUDAjaxAsset::register($this);
             <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Tipo Documentos </h3> 
         </div>
         <div class="box-body">
-            <p>
-            <?=  Html::a('<i class="glyphicon glyphicon-plus"></i> ALTA NUEVA', ['create'], ['class' => 'btn btn-success btn-alta','data-title'=>'Carga T.Documento',
+            <p class="pull-right">
+            <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-xs btn-success btn-alta','data-title'=>'Carga T.Documento',
                 'onclick'=>'js:{cargaAjax("'.Url::to(['tipo-documento/create']) .'"); return false;}']); ?>
             </p>
-            <?php Pjax::begin(['id'=>'pjax-grid',
-                'enablePushState' => false,]); ?>    
+            <?php Pjax::begin([
+                    'id'=>'pjax-grid',
+                    'enablePushState' => false,
+                    ]); ?>    
             <?=   GridView::widget([
-                'id'=>'grid_tsexos',
+                    'id'=>'grid-tsexos',
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
                     'columns' => [

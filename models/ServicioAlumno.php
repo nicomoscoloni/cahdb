@@ -6,20 +6,13 @@ use Yii;
 use \app\models\base\ServicioAlumno as BaseServicioAlumno;
 use yii\helpers\ArrayHelper;
 
+use \app\controllers\ConfController;
+
 /**
  * This is the model class for table "servicio_alumno".
  */
 class ServicioAlumno extends BaseServicioAlumno
 {
-    const  SERVICIO_ABIERTO = 'A';
-    const  SERVICIO_ABONADO = 'PA';    
-    const  SERVICIO_EN_DEBITO_AUTOMATICO = 'DA';
-    const  SERVICIO_ABONADO_DEBITO_AUTOMATICO = 'PA/DA';
-    
-    const  SERVICIO_EN_CONVENIO = 'CP';
-    const  SERVICIO_ABONADO_EN_CONVENIO = 'CP';
-    
-
     public function behaviors()
     {
         return ArrayHelper::merge(
@@ -62,7 +55,7 @@ class ServicioAlumno extends BaseServicioAlumno
     }    
     
     public function getDatosMiServicio(){
-        return "(". $this->idServicio->idServicio->idTiposervicio->descripcion. ") ". $this->idServicio->idServicio->nombre;
+        return "(". $this->idServicio->idTiposervicio->descripcion. ") ". $this->idServicio->nombre;
     }
     
     
@@ -78,13 +71,13 @@ class ServicioAlumno extends BaseServicioAlumno
     
     public function getDetalleEstado(){
         switch ($this->estado){
-            case self::SERVICIO_ABIERTO: $estado='ABIERTO';                break;
-            case self::SERVICIO_ABONADO: $estado='LIQUIDADO';break;
-            case self::SERVICIO_EN_CONVENIO: $estado=' EN CONVENIO PAGO';break;
-            case self::SERVICIO_ABONADO_EN_CONVENIO: $estado='LIQUIDADPO EN CONVENIO PAGO';break;
-            case self::SERVICIO_EN_DEBITO_AUTOMATICO: $estado='EN DEBITO AUTOMATICO';break;
-            case self::SERVICIO_ABONADO_DEBITO_AUTOMATICO: $estado='LIQUIDADPO EN DEBITO AUTOMATICO';break;
-                
+            case ConfController::estadoSA_ABIERTA: $estado='<span class="label label-sa-abierto"> ADEUDA</span>'; break;
+            case ConfController::estadoSA_ABONADA: $estado='<span class="label label-sa-abonado"> LIQUIDADO</span>'; break;
+            case ConfController::estadoSA_EN_CONVENIOPAGO: $estado='<span class="label label-sa-enCP">EN CONVENIO PAGO</span>'; break;
+            
+            case ConfController::estadoSA_EN_DEBITOAUTOMATICO: $estado='<span class="label label-sa-enDA">EN CONVENIO PAGO</span>'; break;
+            case ConfController::estadoSA_ABONADA_EN_DEBITOAUTOMATICO: $estado='<span class="label label-sa-abonado">LIQUIDADO DA</span>'; break;
+            case ConfController::estadoSA_ABONADA_EN_CONVENIOPAGO: $estado='<span class="label label-sa-abonado">LIQUIDADO CP</span>'; break;
         }
         return $estado;
         
@@ -112,13 +105,13 @@ class ServicioAlumno extends BaseServicioAlumno
             'query' => $query,
             'sort' => ['defaultOrder'=>'id desc'],
             'pagination' => [
-                'pageSize' => 10,
+                'pageSize' => 2,
             ],
         ]);
         
         $query->andFilterWhere([
             'a.id_grupofamiliar' => $cliente]);        
-            $query->andFilterWhere(['=', 'estado', 'A']);
+            $query->andFilterWhere(['=', 'estado', ConfController::estadoSA_ABIERTA]);
 
         return $dataProvider;
     }

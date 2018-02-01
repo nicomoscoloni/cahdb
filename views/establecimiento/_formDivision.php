@@ -11,6 +11,7 @@ use yii\widgets\ActiveForm;
 <div class="division-escolar-form">
 
     <?php $form = ActiveForm::begin([
+                    'id'=>'form-divisiones',
                     'enableClientValidation'=>true,
                     'options' => ['class' => 'form-ajax-crud']
                     ]); ?>

@@ -20,11 +20,20 @@ class BuscadorServiciosAlumno extends \yii\bootstrap\Widget
     
     public function run()
     {        
+        $filtro_estados=[
+            'A'=>'Adeuda',
+            'DA'=>'EN Deb.Aut',
+            'CP'=>'En Conv.Pago',
+            'PA/CP'=>'Abonada Conv.Pago',
+            'PA/DA'=>'Abonada Deb.Aut',
+            
+        ];
         echo $this->render('index', [
             'searchModel' => $this->searchModel,
             'dataProvider' => $this->dataProvider,
             'buscador'=>$this->buscador,
-            'filtrosgrilla'=>$this->filtrosgrilla
+            'filtrosgrilla'=>$this->filtrosgrilla,
+            'filtro_estados'=>$filtro_estados
         ]);
     }
     

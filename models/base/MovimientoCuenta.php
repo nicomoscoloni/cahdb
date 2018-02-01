@@ -19,8 +19,8 @@ use Yii;
  * @property integer $id_tipopago
  * @property integer $id_hijo
  *
- * @property \app\models\Cuentas $idCuenta
- * @property \app\models\FormaPago $idTipopago
+ * @property \app\models\Cuentas $cuenta
+ * @property \app\models\FormaPago $tipopago
  * @property string $aliasModel
  */
 abstract class MovimientoCuenta extends \yii\db\ActiveRecord
@@ -74,7 +74,7 @@ abstract class MovimientoCuenta extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdCuenta()
+    public function getCuenta()
     {
         return $this->hasOne(\app\models\Cuentas::className(), ['id' => 'id_cuenta']);
     }
@@ -82,7 +82,7 @@ abstract class MovimientoCuenta extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdTipopago()
+    public function getTipopago()
     {
         return $this->hasOne(\app\models\FormaPago::className(), ['id' => 'id_tipopago']);
     }
