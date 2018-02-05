@@ -47,7 +47,7 @@ class ServicioAlumno extends BaseServicioAlumno
     public function getMiServicio()
     {
   
-        return $this->hasOne(\app\models\ServicioEstablecimiento::className(), ['id' => 'id_servicio']);
+        return $this->hasOne(\app\models\ServicioOfrecido::className(), ['id' => 'id_servicio']);
     }
     
     public function getDatosMiAlumno(){
@@ -55,7 +55,7 @@ class ServicioAlumno extends BaseServicioAlumno
     }    
     
     public function getDatosMiServicio(){
-        return "(". $this->idServicio->idTiposervicio->descripcion. ") ". $this->idServicio->nombre;
+        return "(". $this->servicio->tiposervicio->descripcion. ") ". $this->servicio->nombre;
     }
     
     

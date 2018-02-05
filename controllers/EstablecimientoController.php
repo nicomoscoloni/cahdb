@@ -33,24 +33,24 @@ class EstablecimientoController extends Controller
                 'class' => \yii\filters\AccessControl::className(),
                 'rules' => [
                     [     
-                        'actions' => ['index','delete','alta','view','update','view'],
+                        'actions' => ['admin','delete','alta','view','update','view','mis-alumnos'],
                         'allow' => true,
-                        //'roles' => ['abmlEstablecimientos'],
+                        'roles' => ['abmlEstablecimientos'],
                     ],
                     [     
                         'actions' => ['nuevo-servicio','servicios-division','quitar-servicio-division','get-servicios','asignar-servicio-division','mis-servicios-ofrecidos'],
                         'allow' => true,
-                        //'roles' => ['perServiciosEstablecimientos'],
+                        'roles' => ['perServiciosEstablecimientos'],
                     ],
                     [     
                         'actions' => ['cargar-division','actualizar-division','eliminar-division','mis-divisiones-escolares','drop-mis-divisionesescolares'],
                         'allow' => true,
-                        //'roles' => ['gestionarDivisionEscolar'],
+                        'roles' => ['gestionarDivisionEscolar'],
                     ],
                     [     
                         'actions' => ['mis-divisionesescolares'],
                         'allow' => true,
-                        //'roles' => ['filtrarDivisionesxEstablecimiento'],
+                        'roles' => ['filtrarDivisionesxEstablecimiento'],
                     ],                    
                 ],
             ],  
@@ -77,7 +77,7 @@ class EstablecimientoController extends Controller
         try{
             $this->findModel($id)->delete();
             Yii::$app->session->setFlash('success',Yii::$app->params['eliminacionCorrecta']);
-            return $this->redirect(['index']);    
+            return $this->redirect(['admin']);    
         }catch (\Exception $e) { 
             Yii::error('Establecimiento Delete '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
@@ -91,7 +91,7 @@ class EstablecimientoController extends Controller
      * Lists all Establecimiento models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionAdmin()
     {
         try{
             $searchModel = new EstablecimientoSearch();
@@ -99,9 +99,8 @@ class EstablecimientoController extends Controller
         }catch (\Exception $e) { 
             Yii::error('Establecimiento Index '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
-            return $this->redirect(['view','id'=>$id]);                        
         }
-        return $this->render('index', [
+        return $this->render('admin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -160,7 +159,7 @@ class EstablecimientoController extends Controller
             $transaction->rollBack(); 
             Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
         }
-        return $this->render('update', [
+        return $this->render('create', [
             'model' => $model,
         ]);
 
@@ -251,7 +250,7 @@ class EstablecimientoController extends Controller
         }catch(\Exception $e){
             Yii::error('Establecimiento - Cargar Division '.$e);            
             Yii::$app->response->format = 'json';
-            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+            throw new \yii\web\HttpException(500,'No se puden mostrar las divisiones escolares.');
         }
     }
     
@@ -278,8 +277,7 @@ class EstablecimientoController extends Controller
         }catch(\Exception $e){
             Yii::error('Establecimiento - Cargar Division '.$e);
             $transaction->rollBack();
-            Yii::$app->response->format = 'json';
-            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+            throw new \yii\web\HttpException(500,'Error');
         }
     }
     
@@ -360,7 +358,7 @@ class EstablecimientoController extends Controller
         }catch(\Exception $e){
             Yii::error('Establecimiento - Cargar Division '.$e);            
             Yii::$app->response->format = 'json';
-            return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+            throw new \yii\web\HttpException(500,'No se puden mostrar los servicios del establecimiento.');            
         }
     }
     
@@ -375,10 +373,10 @@ class EstablecimientoController extends Controller
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'NO SE PUDO CARGAR EL SERVICIO AL ESTABLECIMIENTO');
         }
-        return $this->render('_createServicio', [
+        return $this->render('asignarServicio', [
             'model' => $model,
         ]);
-    }
+    }    
     
     public function actionGetServicios(){
         $modelEstablecimiento = $this->findModel(Yii::$app->request->get('idEst'));
@@ -402,7 +400,7 @@ class EstablecimientoController extends Controller
             
             Yii::$app->response->format = 'json';
             return ['error' => '0',
-                'vista' => $this->renderAjax('_divisionesServicio', [
+                'vista' => $this->renderAjax('_divisiones-del-servicio', [
                     'modelEstablecimiento'=>$modelEstablecimiento,
                     'modelServicio'=>$modelServicio,
                     'dataProviderDivisiones' => $dataProviderDivisiones,
@@ -414,11 +412,8 @@ class EstablecimientoController extends Controller
             return $this->redirect(['index']);
             exit;
         } 
-    }
-    
-    
-    /***********************************************************/
-    /***********************************************************/
+    }   
+   
     public function actionAsignarServicioDivision()
     {
         $transaction = Yii::$app->db->beginTransaction();
@@ -493,42 +488,37 @@ class EstablecimientoController extends Controller
             Yii::$app->response->format = 'json';
             return ['error' => '1'];            
         }   
-    }
+    }   
     
-    
-        /************************************************************************/
+    /************************************************************************/
     /************************************************************************/
     /**************************** SERVICIOS OFRECIDOS  **********************/
     public function actionMisAlumnos(){
         try{
+            $establecimiento = Yii::$app->request->get('establecimiento');        
+            $modelEstablecimiento = $this->findModel($establecimiento);
             
             
             //modelo y dataprovider de Alumnos del Establecimiento
             $modelPersona =  new Persona();
             $modelPersona->load(Yii::$app->request->queryParams); 
             $searchModelAlumnos = new AlumnoSearch();
-            $searchModelAlumnos->establecimiento = $id;
+            $searchModelAlumnos->establecimiento = $modelEstablecimiento->id;
             $dataProviderAlumnos = $searchModelAlumnos->search(Yii::$app->request->queryParams,$modelPersona);
-            
-            
-            $establecimiento = Yii::$app->request->get('establecimiento');        
-            $modelEstablecimiento = $this->findModel($establecimiento);
 
-            //modelo y dataprovider de Servicios Establecimiento
-            $searchModelSerEst = new ServicioEstablecimientoSearch();
-            $searchModelSerEst->establecimiento = $establecimiento;
-            $dataProviderSerEst = $searchModelSerEst->search(Yii::$app->request->queryParams);  
-
-            return $this->renderAjax('_misServicios', [
+            return $this->renderAjax('_misAlumnos', [
                 'modelEstablecimiento' => $modelEstablecimiento,                    
-                'dataProviderSerEst' =>$dataProviderSerEst,
-                'searchModelSerEst' => $searchModelSerEst,                 
+                'dataProviderAlumnos' =>$dataProviderAlumnos,
+                'searchModelAlumnos' => $searchModelAlumnos,   
+                'modelPersona' => $modelPersona,
             ]); 
         }catch(\Exception $e){
             Yii::error('Establecimiento - Cargar Division '.$e);            
             Yii::$app->response->format = 'json';
             return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
         }
+        
+            
     }
  
 

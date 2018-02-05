@@ -4,17 +4,24 @@
  * and open the template in the editor.
  */
 
+function reportarError(mensaje){
+    new PNotify({
+        title: 'Error',
+        text: mensaje,
+        icon: 'glyphicon glyphicon-envelope',
+        type: 'error'
+    });
+}
 
 var establecimiento = {
     misDivisionesEscolares: function(xhref){        
         $.ajax({
-            url    : xhref,             
-                        
-            success: function (response){              
-                $('#datosEst').html(response);
+            url    : xhref,       
+            success: function (response){               
+                $('#dataestablecimiento').html(response);
             },
-            error: function(error){            
-                            
+            error: function(error){ 
+                reportarError(error.responseJSON.message);
             }
         });    
         return false;    
@@ -23,9 +30,24 @@ var establecimiento = {
         $.ajax({
             url    : xhref,  
             success: function (response){              
-                $('#datosEst').html(response);
+                $('#dataestablecimiento').html(response);
             },
             error: function(error){ 
+                reportarError(error.responseJSON.message);
+            }
+        });    
+        return false;    
+    },
+    misAlumnos: function(xhref){     
+        alert("asd");
+        alert(xhref);
+        $.ajax({
+            url    : xhref,  
+            success: function (response){              
+                $('#dataestablecimiento').html(response);
+            },
+            error: function(error){ 
+                reportarError(error.responseJSON.message);
             }
         });    
         return false;    
@@ -42,12 +64,7 @@ var divisionescolar = {
                     $('#modal-divisiones').modal('show').find('#modalContent').html("");
                     $('#modal-divisiones').modal('show').find('#modalContent').html(response.vista);   
                 }else{
-                    new PNotify({
-                        title: 'Error',
-                        text: response.mensaje,
-                        icon: 'glyphicon glyphicon-envelope',
-                        type: 'error'
-                    });
+                    reportarError(response.mensaje);
                 }
             },
             error: function(error){            
@@ -55,13 +72,8 @@ var divisionescolar = {
                     mensaje = 'Usted no dispone de los permisos suficientes para realizar esta tarea';
                 else
                     mensaje = 'Se produjo un error en la ejecucion de la tarea. Intente nuevamente y si persiste el error comuniquese con su administrador';
-
-                new PNotify({
-                    title: 'Error',
-                    text: mensaje,
-                    icon: 'glyphicon glyphicon-envelope',
-                    type: 'error'
-                });            
+                
+                reportarError(mensaje);        
             }
         });
         return false;   
@@ -111,12 +123,7 @@ var divisionescolar = {
                                 else
                                     mensaje = 'Se produjo un error en la ejecucion de la tarea. Intente nuevamente y si persiste el error comuniquese con su administrador';
 
-                                new PNotify({
-                                    title: 'Error',
-                                    text: mensaje,
-                                    icon: 'glyphicon glyphicon-envelope',
-                                    type: 'error'
-                                });      
+                                reportarError(mensaje);    
                          }
                     }).done(function(o) {
                         $("body").loading('stop');       

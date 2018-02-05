@@ -19,8 +19,8 @@
                     ],
                     [   'label' => 'Establecimientos', 
                         'icon' => 'university', 
-                        'url' => ['establecimiento/index'],
-                      //  'visible' => Yii::$app->user->can('gestionarEstablecimientos')
+                        'url' => ['establecimiento/admin'],
+                        'visible' => Yii::$app->user->can('gestionarEstablecimientos')
                     ],
                     [   'label' => 'Convenio Pago', 
                         'icon' => 'university', 
@@ -29,7 +29,12 @@
                     ],
                     ['label' => 'Debito Automatico', 'icon' => 'briefcase', 'url' => ['debito-automatico/admin']],
                     
-                    ['label' => 'Servicios', 'icon' => 'briefcase', 'url' => ['servicio-ofrecido/admin']],
+                    [
+                        'label' => 'Servicios', 
+                        'icon' => 'briefcase', 
+                        'url' => ['servicio-ofrecido/admin'],
+                        'visible'=>Yii::$app->user->can('abmlServicioOfrecido'),  
+                    ],
                     [
                         'label' => 'Configuraciones',
                         'icon' => 'cogs',
@@ -46,36 +51,17 @@
                        // 'visible'=>(Yii::$app->user->can('director') || Yii::$app->user->can('administrador') || Yii::$app->user->can('secretario')),                         
                         
                     ],
-                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
-                        'label' => 'Some tools',
-                        'icon' => 'share',
+                        'label' => 'Usuarios',
+                        'icon' => 'cogs',
                         'url' => '#',
                         'items' => [
-                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
-                            [
-                                'label' => 'Level One',
-                                'icon' => 'circle-o',
-                                'url' => '#',
-                                'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
-                                    [
-                                        'label' => 'Level Two',
-                                        'icon' => 'circle-o',
-                                        'url' => '#',
-                                        'items' => [
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                        ],
-                                    ],
-                                ],
-                            ],
+                            ['label' => 'Nuevo Usuario', 'icon' => 'arrow-right', 'url' => ['user/registration/register'],],
+                            ['label' => 'Index', 'icon' => 'arrow-right', 'url' => ['/user/admin/index'],],
                         ],
-                    ],
+                        //'visible' => Yii::$app->user->can('adminSistema')
+                    ],       
+                    
                 ],
             ]
         ) ?>

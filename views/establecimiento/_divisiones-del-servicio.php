@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'id' => 'grid-divisiones',
         'dataProvider' => $dataProviderDivisiones,
         'columns' => [
-            'id',
+           
             'nombre',
             ['class' => 'yii\grid\ActionColumn',
                 'template' => '{asignar}{quitar}',
@@ -36,14 +36,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                 'asignar' => function ($url, $model) use ($modelServicio, $divisionesConServicio){
                     if(array_key_exists($model->id, $divisionesConServicio)==FALSE)
-                        return Html::button( '<i class="glyphicon glyphicon-eyes"></i>',                            
-                            ['class' => 'btn btn-xs btn-danger',
+                        return Html::button( '<i class="glyphicon glyphicon-ok-circle"></i>',                            
+                            ['class' => 'btn btn-xs btn-primary',
                                 'onclick' => 'js:asignarServicioDivision("'.Url::to(['establecimiento/asignar-servicio-division', 'division' => $model->id, 'servicio' => $modelServicio->id]) .'");']
                             );
                         },
                 'quitar' => function ($url, $model) use ($modelServicio, $divisionesConServicio){
                     if(array_key_exists($model->id, $divisionesConServicio))        
-                        return Html::button( '<i class="glyphicon glyphicon-trash"></i>',                            
+                        return Html::button( '<i class="glyphicon glyphicon-remove-circle"></i>',                            
                             ['class' => 'btn btn-xs btn-danger',
                                 'onclick' => 'js:quitarServicioDivision("'.Url::to(['establecimiento/quitar-servicio-division', 'division' => $model->id, 'servicio' => $modelServicio->id]) .'");']
                             );

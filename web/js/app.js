@@ -1,3 +1,17 @@
+$(document).ready(function(){
+    $(".form-prev-submit").on("beforeValidate",function(e){
+        $(".btn-envio").attr("disabled","disabled");
+        $(".btn-envio").html("<i class=\'fa fa-spinner fa-spin\'></i> Procesando...");        
+    });
+    
+    $(".form-prev-submit").on("afterValidate",function(e, messages){
+        if ( $(".form-prev-submit").find(".has-error").length > 0){
+            $(".btn-envio").removeAttr("disabled");
+            $(".btn-envio").html("<i class=\'fa fa-save\'></i> Guardar...");
+        }
+    });
+});   
+
 function downListado(xhref){    
     $("body").loading({message: 'ESPERE... procesando'});
     $.ajax({

@@ -13,7 +13,8 @@ use yii\helpers\Url;
 <div class="box box-colegio">    
     <div class="box-body">
         
-        <?php if($buscador) echo $this->render('_search', ['model' => $searchModel, 'filtro_estados'=>$filtro_estados]); ?>
+        <?php if($buscador) echo $this->render('_search', ['model' => $searchModel, 'filtro_estados'=>$filtro_estados, 'filtro_establecimiento'=>$filtro_establecimiento,
+            'filtro_divisiones'=>$filtro_divisiones]); ?>
         
         <?= Html::button('<i class="fa fa-file-excel-o"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
                         'onclick'=>'js:{downListado("'.Url::to(['servicio-alumno/exportar-excel']) .'");}']) ?>
@@ -26,11 +27,13 @@ use yii\helpers\Url;
                         'id'=>'pjax-serviciosalumnos',
                         'enablePushState' => false,
                         'timeout'=>false,
+                        'clientOptions' => ['method' => 'GET']
                         ]
                 ); ?>    
                 <?= GridView::widget([
                         'id'=>'reporte-servicios-alumno',
-                        'dataProvider' => $dataProvider,        
+                        'dataProvider' => $dataProvider,    
+                    'filterModel'=>$searchModel,
                         'columns' => [
                             [
                                 'label' => 'Alumno',

@@ -49,8 +49,8 @@ EstablecimientoAssets::register($this);
                                 'headerOptions' => ['width' => '80'],
                                 'template'=>'{update} {delete}',
                                 'visibleButtons' => [                                   
-                                   // 'update' => Yii::$app->user->can('gestionarDivisionEscolar'),
-                                   // 'delete' =>Yii::$app->user->can('gestionarDivisionEscolar'),
+                                    'update' => Yii::$app->user->can('gestionarDivisionEscolar'),
+                                    'delete' =>Yii::$app->user->can('gestionarDivisionEscolar'),
                                 ],
                                 'buttons' => 
                                    [
@@ -75,7 +75,7 @@ EstablecimientoAssets::register($this);
 
                                     ],
                                                     
-                                    //'visible'=>Yii::$app->user->can('gestionarDivisionEscolar'),
+                                    'visible'=>Yii::$app->user->can('gestionarDivisionEscolar'),
                             ],
                         ],
                     ]); ?>

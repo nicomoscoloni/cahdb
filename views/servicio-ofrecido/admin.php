@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\ServicioOfrecidoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -10,6 +11,7 @@ use yii\widgets\Pjax;
 $this->title = 'Servicio Ofrecidos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div id="tipo-documento-index" class="box box-colegio">
     <div class="box-header with-border">
         <i class="fa fa-cogs"></i> <h3 class="box-title"> Administración Servicios </h3> 

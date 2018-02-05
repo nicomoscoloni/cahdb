@@ -19,14 +19,14 @@ $('#btn-devenarServicio').click(function () {
                 $.pjax.reload({container: '#pjax-serviciosalumnos', timeout: false});
                 new PNotify({
                     title: 'Correcto',
-                    text: 'Se Devengoel Servicio Correctamente',
+                    text: response.resultado,
                     icon: 'glyphicon glyphicon-envelope',
                     type: 'success'
                 });
             } else {
                 new PNotify({
                     title: 'Error',
-                    text: 'Se Devengoel Servicio Correctamente',
+                    text: response.resultado,
                     icon: 'glyphicon glyphicon-envelope',
                     type: 'warning'
                 });
@@ -34,7 +34,13 @@ $('#btn-devenarServicio').click(function () {
             }
         },
         error: function () {
-            console.log('internal server error');
+            new PNotify({
+                    title: 'Error',
+                    text: response.resultado,
+                    icon: 'glyphicon glyphicon-envelope',
+                    type: 'warning'
+                });
+            console.log('internal server error');            
         }
     });
 
@@ -72,14 +78,14 @@ $('#btn-eliminardevengamiento').click(function () {
                             $.pjax.reload({container: '#pjax-serviciosalumnos', timeout: false});
                             new PNotify({
                                 title: 'Correcto',
-                                text: 'Se Devengoel Servicio Correctamente',
+                                text: response.resultado,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'success'
                             });
                         } else {
                             new PNotify({
                                 title: 'Error',
-                                text: 'Se Devengoel Servicio Correctamente',
+                                text: response.resultado,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'warning'
                             });
@@ -88,6 +94,12 @@ $('#btn-eliminardevengamiento').click(function () {
                     },
                     error: function () {
                         console.log('internal server error');
+                        new PNotify({
+                                title: 'Error',
+                                text: response.resultado,
+                                icon: 'glyphicon glyphicon-envelope',
+                                type: 'warning'
+                            });
                     }
                 });
             }

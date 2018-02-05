@@ -22,19 +22,31 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">        
         <p>
-            <?= Html::a('<i class="fa fa-pencil"></i>   Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('<i class="fa fa-trash-o"></i>   Eliminar', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
-                'data' => [
-                    'confirm' => 'Está seguro que desea eliminar el Establecimiento?',
-                    'method' => 'post',
-                ],
-            ]) ?>
+            <?php
+            if(Yii::$app->user->can('gestionarDivisionEscolar')){
+                echo Html::a('<i class="fa fa-pencil"></i>   Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+                echo Html::a('<i class="fa fa-trash-o"></i>   Eliminar', ['delete', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => 'Está seguro que desea eliminar el Establecimiento?',
+                            'method' => 'post',
+                        ],
+                    ]); 
+                    } ?>
             
-            <?= Html::button('<i class="fa fa-pencil"></i>   DivisionesEscolares', ['id' => $model->id, 'class' => 'btn btn-primary',
+            <?php
+            if(Yii::$app->user->can('gestionarDivisionEscolar'))
+                echo Html::button('<i class="fa fa-pencil"></i>   Divisiones', ['id' => $model->id, 'class' => 'btn btn-primary',
                    'onclick'=>'js:establecimiento.misDivisionesEscolares("'.Url::to(['establecimiento/mis-divisiones-escolares','establecimiento'=>$model->id]) .'");']) ?>
+            <?php
             
-            <?= Html::button('<i class="fa fa-pencil"></i>   SERVICIOS', ['id' => $model->id, 'class' => 'btn btn-primary',
+                echo Html::button('<i class="fa fa-pencil"></i>   Alumnos', ['id' => $model->id, 'class' => 'btn btn-primary',
+                   'onclick'=>'js:establecimiento.misAlumnos("'.Url::to(['establecimiento/mis-alumnos','establecimiento'=>$model->id]) .'");']) ?>
+            
+                   
+            <?php
+            if(Yii::$app->user->can('perServiciosEstablecimientos'))
+                echo Html::button('<i class="fa fa-pencil"></i>   Servicios', ['id' => $model->id, 'class' => 'btn btn-primary',
                    'onclick'=>'js:establecimiento.misServicios("'.Url::to(['establecimiento/mis-servicios-ofrecidos','establecimiento'=>$model->id]) .'");']) ?>
         </p>
         <div class="row"> <!-- row dettales delconvenio -->
@@ -56,12 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div> <!-- fin row dettales del establecimiento -->
         
-        <div id="datosEst">
-            asd
+        <div id="dataestablecimiento">
         </div>
-        
-        <br />        
-        
         
     </div>
 </div>

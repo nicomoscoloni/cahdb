@@ -70,7 +70,7 @@ class ServicioOfrecido extends BaseServicioOfrecido
     }
 
     public function getDetalleServicio(){
-        return $this->idTiposervicio->descripcion . " - " . $this->nombre;
+        return $this->tiposervicio->descripcion . " - " . $this->nombre;
     }    
     
     /**

@@ -5,8 +5,6 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
 
-use app\assets\CRUDAjaxAsset;
-CRUDAjaxAsset::register($this);
 
 ?>
 <br />
@@ -40,7 +38,7 @@ CRUDAjaxAsset::register($this);
                             'attribute'=>'id_servicio',
                             'filter'=> dmstr\helpers\Html::activeDropDownList($searchModelSerEst, 'id_servicio', \app\models\ServicioEstablecimiento::getServiciosxEstablecimiento($modelEstablecimiento->id), ['prompt'=>'','class'=>'form-control']),                  
                             'value' => function($model) {
-                                return $model->miServicio->detalleServicio  ;
+                                return $model->servicio->detalleServicio  ;
                             },
                         ],
                         [
@@ -50,21 +48,7 @@ CRUDAjaxAsset::register($this);
                             'value' => function($model) {
                                 return $model->miDivisionescolar->nombre;
                             },
-                        ],                             
-                        ['class' => 'yii\grid\ActionColumn',
-                           'template'=>'{delete}',
-                           'buttons' => 
-                           [
-                            'delete' => function ($url, $model) {                                
-                                           return Html::a( '<i class="glyphicon glyphicon-remove"></i>',
-                                                                   ['establecimiento/eliminar-servicio', 'id'=>$model['id']],
-                                                                   ['class'=>'btn btn-xs btn-danger deleteAjax',
-                                                                    'onclick'=>'js:{deleteAjax("'.Url::to(['establecimiento/eliminar-servicio', 'id'=>$model['id']]) .'","#pjax-servicios"); return false;}']
-                                                           );
-                                   },                
-
-                           ]   
-                        ],
+                        ]
                     ],
                 ]); ?>
                 <?php Pjax::end(); ?>    

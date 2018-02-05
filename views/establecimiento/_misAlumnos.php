@@ -5,8 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
 
-use app\assets\CRUDAjaxAsset;
-CRUDAjaxAsset::register($this);
+
 ?>
 <br />
 <div class="row">
@@ -73,9 +72,9 @@ CRUDAjaxAsset::register($this);
                             [
                                 'label' => 'División',
                                 'attribute' => 'id_divisionescolar',
-                                'filter' => dmstr\helpers\Html::activeDropDownList($searchModelAlumnos, 'id_divisionescolar', \app\models\DivisionEscolar::getDivisionesEstablecimiento($establecimiento), ['prompt' => '', 'class' => 'form-control']),
+                                'filter' => dmstr\helpers\Html::activeDropDownList($searchModelAlumnos, 'id_divisionescolar', \app\models\DivisionEscolar::getDivisionesEstablecimiento($modelEstablecimiento->id), ['prompt' => '', 'class' => 'form-control']),
                                 'value' => function($model) {
-                                    return $model->idDivisionescolar->nombre;
+                                    return $model->divisionescolar->nombre;
                             },
                             ],
                             ['class' => 'yii\grid\ActionColumn',

@@ -30,10 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?> 
         <?php
-        echo Html::button('<span class="glyphicon glyphicon-piggy-bank"> </span> Devengar Servicios', ['value'=> yii\helpers\Url::to(['devengar-servicio', 'id' => $model->id]), 
-                             'class'=>'btn btn-success', 'id'=>'btn-devenarServicio']); echo " ";
-        echo Html::button('<span class="glyphicon glyphicon-remove-circle"> </span> Quitar Devengamiento', ['value'=> yii\helpers\Url::to(['eliminar-devengamiento', 'id' => $model->id]), 
-                             'class'=>'btn btn-success', 'id'=>'btn-eliminardevengamiento']);
+        if(Yii::$app->user->can('devengarServicioOfrecido')){
+            echo Html::button('<span class="glyphicon glyphicon-piggy-bank"> </span> Devengar Servicios', ['value'=> yii\helpers\Url::to(['devengar-servicio', 'id' => $model->id]), 
+                                 'class'=>'btn btn-success', 'id'=>'btn-devenarServicio']); 
+            echo " ";
+            echo Html::button('<span class="glyphicon glyphicon-remove-circle"> </span> Quitar Devengamiento', ['value'=> yii\helpers\Url::to(['eliminar-devengamiento', 'id' => $model->id]), 
+                                 'class'=>'btn btn-success', 'id'=>'btn-eliminardevengamiento']);
+        }
                              
         ?>
 
@@ -47,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </td>
                         <td width="60%">
                             <h3 class="text-light-blue bold"> <?php echo $model->nombre."  ".$model->descripcion; ?> </h3>                            
-                            <span class="text-light-blue bold">  Categorian Servicio: </span> <?php echo $model->idTiposervicio->descripcion; ?> <br /> 
+                            <span class="text-light-blue bold">  Categoria Servicio: </span> <?php echo $model->tiposervicio->descripcion; ?> <br /> 
                             <span class="text-light-blue bold">  Importes:  </span> <?php echo $model->importe . "  -  (H.Profesores: ".$model->importe_hijoprofesor.")";?> <br />
                             <span class="text-light-blue bold">  Periodo: </span> <?php echo $model->detallePeriodo; ?> <br />
                             <span class="text-light-blue bold">  Vencimiento Pago: </span> <?php echo Yii::$app->formatter->asDate($model->fecha_vencimiento); ?> <br />
@@ -64,5 +67,5 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 <?php 
-$this->registerJsFile('@web/js/devengamiento-servicio-ofrecido.js', ['depends'=>[app\assets\AppAsset::className()]]);
+    $this->registerJsFile('@web/js/devengamiento-servicio-ofrecido.js', ['depends'=>[app\assets\AppAsset::className()]]);
 ?>

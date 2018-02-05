@@ -32,12 +32,12 @@ class ServicioOfrecidoController extends Controller
                     [      
                         'actions' => ['admin','delete','view','alta','update'],
                         'allow' => true,
-                        //'roles' => ['abmlServicioOfrecido'],
+                        'roles' => ['abmlServicioOfrecido'],
                     ],
                     [     
                         'actions' => ['devengar-servicio','eliminar-devengamiento'],
                         'allow' => true,       
-                        //'roles' => ['devengarServicioOfrecido'],
+                        'roles' => ['devengarServicioOfrecido'],
                     ],
                 ],
             ],  
@@ -64,7 +64,7 @@ class ServicioOfrecidoController extends Controller
             Yii::error('Administración Servicios Ofrecidos '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
         }   
-        return $this->render('index', [
+        return $this->render('admin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -104,7 +104,7 @@ class ServicioOfrecidoController extends Controller
 
             $searchModelSerAlumnos = new \app\models\search\ServicioAlumnoSearch();
             $searchModelSerAlumnos->id_servicio = $id;
-            $dataProviderSerAlumnos = $searchModelSerAlumnos->search(Yii::$app->request->post());
+            $dataProviderSerAlumnos = $searchModelSerAlumnos->search(Yii::$app->request->get());
         }catch (\Exception $e) {
             Yii::error('View Servicios Ofrecidos '.$e);              
             Yii::$app->session->setFlash('error',Yii::$app->params['operacionFallida']);
@@ -160,7 +160,7 @@ class ServicioOfrecidoController extends Controller
             
             //sino se encuentra devengado procedemos a la actualizacion            
             if ($model->load(Yii::$app->request->post())) {
-                $servicioDevengado = \app\models\ServicioAlumno::find()->joinWith(['idServicio se'])->where('se.id='.$id)->all();
+                $servicioDevengado = \app\models\ServicioAlumno::find()->joinWith(['servicio so'])->where('so.id='.$id)->all();
                 
                 if (($model->importe!=$montoviejo || $model->importe_hijoprofesor!=$montoviejohijo) && (count($servicioDevengado)>0))                
                     Yii::$app->session->setFlash('error','No se puede modificar el valor a un Servicio que ya a sido devengado.');
@@ -232,7 +232,7 @@ class ServicioOfrecidoController extends Controller
                         INNER JOIN servicio_ofrecido AS so  ON (so.id = se.id_servicio)      
                         LEFT JOIN servicio_alumno AS sa ON (sa.id_servicio = so.id and sa.id_alumno = a.id)";
             
-            $where = 'WHERE sa.id is null';
+                $where = 'WHERE sa.id is null';
             if($id !== null){
                 $where.=" and (so.devengamiento_automatico = '1')  and so.id=".$id;    
             }/*else{
@@ -248,10 +248,10 @@ class ServicioOfrecidoController extends Controller
                 // chequeamos si ya se devengo la matricula                   
                 $modelServicio = new \app\models\ServicioAlumno();
                 $modelServicio->id_alumno = $servicio['idalumno'];
-                $modelServicio->id_servicio = $servicio['idservicioofrecido'];
+                $modelServicio->id_servicio = $id;// $servicio['idservicioofrecido'];
                 $modelServicio->estado = 'A';
 
-                if( $servicio['idalumno']=='0')
+                if( $servicio['hijo_profesor']=='0')
                     $modelServicio->importe_servicio = $servicio['montoservicio'];
                 else
                     $modelServicio->importe_servicio = $servicio['montoservicio_hijoprofesor'];
@@ -270,12 +270,10 @@ class ServicioOfrecidoController extends Controller
                         $bonificacion = \app\models\CategoriaBonificacion::findOne($descuento->id_bonificacion); 
                         $modelDescuentoServicio->id_servicioalumno = $modelServicio->id;
                         $total_descuentos += $bonificacion->valor;
-
                         $valid = $valid && $modelDescuentoServicio->save();
                     }
                     $modelServicio->importe_descuento = ( $modelServicio->importe_servicio * $total_descuentos) / 100;
                     $valid = $valid && $modelServicio->save();
-
                 }  
             }            
 
@@ -287,8 +285,7 @@ class ServicioOfrecidoController extends Controller
                 $transaction->rollback();
                 Yii::$app->response->format = 'json';
                 return ['error' => '1', 'resultado' => 'FRACASO'];
-            }
-                
+            }                
         }
         catch(Exception $e)
         {
@@ -306,7 +303,7 @@ class ServicioOfrecidoController extends Controller
             $estado = 'A';
             $command_servicios = Yii::$app->db->createCommand("
              DELETE  FROM servicio_alumno   
-                    WHERE estado='A'  and id_servicio=$id");
+                    WHERE estado='A'  and id_servicio= $id");
             
             $command_bonificaciones = Yii::$app->db->createCommand("
                 DELETE FROM bonificacion_servicio_alumno

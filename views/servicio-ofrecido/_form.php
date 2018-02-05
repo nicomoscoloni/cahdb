@@ -5,8 +5,6 @@ use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
 
-
-
 /* @var $this yii\web\View */
 /* @var $model app\models\ServicioOfrecido */
 /* @var $form yii\widgets\ActiveForm */
@@ -14,6 +12,10 @@ use kartik\widgets\DatePicker;
 <div class="servicio-ofrecido-form">
     <?php $form = ActiveForm::begin([
         'id'=>'form-servicioofrecido',
+        'options' => [
+                'class' => 'form-prev-submit'
+             ]
+        
         
     ]); ?>
    
@@ -94,7 +96,7 @@ use kartik\widgets\DatePicker;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton("<i class='fa fa-save'></i> GUARDAR", ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary','id'=>'btn-envio']) ?>
+        <?= Html::submitButton("<i class='fa fa-save'></i> GUARDAR", ['class' => $model->isNewRecord ? 'btn btn-success btn-envio' : 'btn btn-primary btn-envio','id'=>'btn-envio']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -105,20 +107,3 @@ use kartik\widgets\DatePicker;
     margin-bottom: 6px;
 }
 </style>
-<?php
-$this->registerJs('
-$(document).ready(function(){
-    $("#form-servicios").on("beforeValidate",function(e){
-        $("#btn-envio").attr("disabled","disabled");
-        $("#btn-envio").html("<i class=\'fa fa-spinner fa-spin\'></i> Procesando...");        
-    });
-    
-    $("#form-servicios").on("afterValidate",function(e, messages){
-        if ( $("#form-servicios").find(".has-error").length > 0){
-            $("#btn-envio").removeAttr("disabled");
-            $("#btn-envio").html("<i class=\'fa fa-save\'></i> Guardar...");
-        }
-    });
-});         
-', \yii\web\View::POS_READY,'js-preventsubmit');
-?>
