@@ -44,6 +44,7 @@ class Alumno extends BaseAlumno
              [
                 'id_divisionescolar' => 'Division Escolar',
                 'xfecha_ingreso' => 'Fec. Ingreso',
+                 'nro_legajo' => 'Legajo',
              ]
         );
     }

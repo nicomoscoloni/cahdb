@@ -23,11 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <div class="pull-right"> 
             <?php
-            if(!Yii::$app->user->can('exportarAlumnos')){?>
-            <p> 
-                <?= Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
-                        'onclick'=>'js:{downListado("'.Url::to(['alumno/exportar-excel']) .'");}']) ?>
-            </p>
+            if(Yii::$app->user->can('exportarAlumnos')){?>
+                <p> 
+                    <?= Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
+                            'onclick'=>'js:{downListado("'.Url::to(['alumno/exportar-excel']) .'");}']) ?>
+                </p>
             <?php } ?>
         </div>
         <div class="row">   
@@ -88,26 +88,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ['prompt'=>'','class'=>'form-control'
                                 ]),
                         'value' => function($model) {
-                            return $model->idDivisionescolar->idEstablecimiento->nombre;
+                            return $model->divisionescolar->establecimiento->nombre;
                         },
                     ],              
                     [
-                        'label' => 'DivEscolar',
+                        'label' => 'Division',
                         'attribute'=>'id_divisionescolar',    
                         'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'id_divisionescolar', \app\models\DivisionEscolar::getDivisionesEscolares(),['prompt'=>'','class'=>'form-control']),
                         'value' => function($model) {
-                            return $model->idDivisionescolar->nombre;
+                            return $model->divisionescolar->nombre;
                         },
                     ],
                     [
-                        'label' => 'Hijo-Profe',
+                        'label' => 'H.P',
                         'attribute'=>'hijo_profesor',    
                         'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'hijo_profesor', ['0'=>'NO','1'=>'SI'],['prompt'=>'','class'=>'form-control']),
                         'value' => function($model) {
                             if($model->hijo_profesor=='0')
-                                return "NO";
+                                return "No";
                             else
-                                return "SI";
+                                return "Si";
                         },
                     ],
                     ['class' => 'yii\grid\ActionColumn',
@@ -143,6 +143,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'yii\grid\ActionColumn',
                         'headerOptions' => ['width' => '50'],
                         'template'=>'{update} {view}',
+                        'visibleButtons' => [                                   
+                                    'update' => Yii::$app->user->can('cargarAlumno'),
+                                    'view' =>Yii::$app->user->can('visualizarAlumno'),
+                                ],
                         'buttons' => 
                         [
                         'update' => function ($url, $model) {                                
@@ -151,7 +155,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                ['class'=>'']
                                                        );
                                }, 
-                        ]      
+                        ],
+                                        'visible'=>Yii::$app->user->can('cargarAlumno')||Yii::$app->user->can('visualizarAlumno'),
                     ],
                                                 
                     ],
@@ -163,5 +168,5 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <style type="text/css">
-.alumnoinactivo{background-color: #F0D595 !important;}
+    .alumnoinactivo{background-color: #F0D595 !important;}
 </style>

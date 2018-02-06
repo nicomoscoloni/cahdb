@@ -50,7 +50,7 @@ class AlumnoSearch extends Alumno
         $query = Alumno::find();
         $query->alias("a");
        
-        $query->joinWith(['miPersona p','miGrupofamiliar f','miDivisionescolar d']);
+        $query->joinWith(['persona p','grupofamiliar f','divisionescolar d']);
 
         // add conditions that should always apply here
 
@@ -88,8 +88,7 @@ class AlumnoSearch extends Alumno
             ]);
         }
 
-        $query->andFilterWhere(['like', 'nro_legajo', $this->nro_legajo]);
-        
+        $query->andFilterWhere(['like', 'nro_legajo', $this->nro_legajo]);        
         $query->andFilterWhere(['like', 'f.apellidos', $this->familia]);        
         $query->andFilterWhere(['like', 'p.apellido', $persona->apellido]);
         $query->andFilterWhere(['like', 'p.nombre', $persona->nombre]);        
@@ -113,7 +112,8 @@ class AlumnoSearch extends Alumno
             'desc' => ['f.apellidos' => SORT_DESC],
         ];
         
-        $session->set('padronalumnos', $dataProviderSession->getModels());
+        
+        $session->set('padronalumnos', $query->createCommand()->getRawSql());
         
         return $dataProvider;
         

@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div id="alumno-view" class="box box-solid box-colegio">
     <div class="box-header with-border">
-        <i class="fa fa-user-plus"></i> <h3 class="box-title"> Detalle Alumno </h3> 
+        <i class="fa fa-user-plus"></i> <h3 class="box-title"> Información Alumno </h3> 
     </div>
     <div class="box-body">
         
@@ -42,29 +42,33 @@ $this->params['breadcrumbs'][] = $this->title;
                             <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/family.png"; ?>" alt="familia" />  
                         </td>
                         <td width="60%">
-                            <h3 class="text-light-blue bold">    Nro Legajo: <?php echo $model->nro_legajo . "  ". $model->hijo_profesor; ?> </h3>
-                            <span class="text-light-blue bold">  Apellido / Nombre: </span> <?php echo $model->miPersona->apellido ."; ".$model->miPersona->nombre; ?> <br />
-                            <span class="text-light-blue bold">  Documento: </span> <?php echo $model->miPersona->nro_documento; ?> <br />
-                            <span class="text-light-blue bold">  Establecimiento / División: </span> <?php echo $model->idDivisionescolar->miEstablecimiento->nombre . "  - " . $model->idDivisionescolar->nombre; ?> <br />
-                            <span class="text-light-blue bold">  ACTIVO/A: </span> <?php echo $model->soyActivo; ?> <br />
-                            <span class="text-light-blue bold">  FAMILIA / FOLIO: </span> <?php echo Html::a("<i class='glyphicon glyphicon-eye-open'></i> ". $model->miGrupofamiliar->apellidos . " / " . $model->miGrupofamiliar->folio, ['grupo-familiar/view', 'id' => $model->id_grupofamiliar], ['class' => 'btn btn-info']); ?> <br />
+                            <h3 class="text-light-blue bold">    Legajo: <?php echo $model->nro_legajo . "  ". $model->hijo_profesor; ?> </h3>
+                            <span class="text-light-blue bold">  Apellido / Nombre: </span> <?php echo $model->persona->apellido ."; ".$model->persona->nombre; ?> <br />
+                            <span class="text-light-blue bold">  Documento: </span> <?php echo $model->persona->nro_documento; ?> <br />
+                            <span class="text-light-blue bold">  Establecimiento / División: </span> <?php echo $model->divisionescolar->establecimiento->nombre . "  - " . $model->divisionescolar->nombre; ?> <br />
+                            <span class="text-light-blue bold">  Activo: </span> <?php echo $model->soyActivo; ?> <br />
+                            <span class="text-light-blue bold">  Familia / Folio: </span> <?php echo Html::a("<i class='glyphicon glyphicon-eye-open'></i> ". $model->grupofamiliar->apellidos . " / " . $model->grupofamiliar->folio, ['grupo-familiar/view', 'id' => $model->id_grupofamiliar], ['class' => 'btn btn-info']); ?> <br />
                            
                             <br />
-                             <?= Html::a('<i class="fa fa-pencil"></i>', ['empadronamiento', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('<i class="fa fa-trash-o"></i>', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
-                'data' => [
-                    'confirm' => 'Está seguro que desea eliminar al Alumno?',
-                    'method' => 'post',
-                ],
-            ]) ?>
-            <?php
-            //if(Yii::$app->user->can('gestionarBonificacionAlumno')){
-                echo Html::button('<i class="fa fa-share-square-o"></i>',
-                        ['value'=> Url::to(['alumno/asignar-bonificacion', 'alumno' => $model->id]), 
-                            'class' => 'btn btn-warning','id'=>'btn-asignar-bonificacion']);    
-            //}
-            ?>
+                            <?php
+                            if(Yii::$app->user->can('cargarAlumno'))
+                                echo Html::a('<i class="fa fa-pencil"></i>', ['empadronamiento', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
+                            <?php 
+                            if(Yii::$app->user->can('eliminarAlumno'))
+                                echo Html::a('<i class="fa fa-trash-o"></i>', ['delete', 'id' => $model->id], [
+                                    'class' => 'btn btn-danger',
+                                    'data' => [
+                                        'confirm' => 'Está seguro que desea eliminar al Alumno?',
+                                        'method' => 'post',
+                                    ],
+                                ]); ?>
+                            <?php
+                            if(Yii::$app->user->can('gestionarBonificacionAlumno')){
+                                echo Html::button('<i class="fa fa-share-square-o"></i>',
+                                        ['value'=> Url::to(['alumno/asignar-bonificacion', 'alumno' => $model->id]), 
+                                            'class' => 'btn btn-warning','id'=>'btn-asignar-bonificacion']);    
+                            }
+                            ?>
                         </td>
                     </tr>
                 
@@ -86,13 +90,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 [
                                     'label' => 'Bonificacion',
                                     'value' => function($model) {
-                                        return $model->idBonificacion->descripcion;
+                                        return $model->bonificacion->descripcion;
                                     },
                                 ],
                                 [
                                     'label' => 'Valor',                                   
                                     'value' => function($model) {
-                                        return $model->idBonificacion->valor;
+                                        return $model->bonificacion->valor;
                                     },
                                 ],                            
                                 [

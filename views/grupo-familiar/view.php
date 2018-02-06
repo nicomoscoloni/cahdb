@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="box box-solid box-colegio" id="grupo-familiar-index">
     <div class="box-header with-border">
-        <i class="fa fa-users"></i> <h3 class="box-title"> FAMILIA Nº <?= $model->id;?> </h3>       
+        <i class="fa fa-users"></i> <h3 class="box-title"> FAMILIA Nº <?= $model->apellidos;?> </h3>       
     </div>
     
     <div class="box-body">

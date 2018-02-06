@@ -68,6 +68,11 @@ class GrupoFamiliar extends BaseGrupoFamiliar
     
     }*/
     
+    public function getAlumnosActivos()
+    {
+        return $this->hasMany(\app\models\Alumno::className(), ['id_grupofamiliar' => 'id']);
+    }
+    
     /************************************************************************/
     /************************************************************************/    
     public function rulesControlTipoPago($attribute, $params) {        
@@ -91,7 +96,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
     public function getMiResponsableCabecera(){
         if(!empty($this->id)){
             $query = Responsable::find();
-            $query->joinWith(['idPersona p']);
+            $query->joinWith(['persona p']);
         
             $query->andFilterWhere([            
                 'id_grupofamiliar' => $this->id,            
@@ -103,7 +108,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
             $responsable = $query->one();
             
             if($responsable !== null)
-                return $responsable->idPersona->apellido . " " . $responsable->idPersona->nombre;
+                return $responsable->persona->apellido . " " . $responsable->persona->nombre;
                
             else
                 return "";
@@ -133,11 +138,11 @@ class GrupoFamiliar extends BaseGrupoFamiliar
         
     }*/
     
-    
+    /*
     public function getCantidadHijos(){
         return count(Alumno::find()->where('activo=1 and id_grupofamiliar='.$this->id)->all());
-    }
-
+    }*/
+/*
     public function getDatosMisHijos(){
         $detalle='';
         $misHijos = $this->alumnosActivos;
@@ -166,5 +171,5 @@ class GrupoFamiliar extends BaseGrupoFamiliar
                 
         }
         return $detalle;
-    }
+    }*/
 }

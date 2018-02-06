@@ -50,7 +50,7 @@ use yii\grid\GridView;
                          ];
                     }
                 ],
-                'idTipodocumento.siglas',
+                'tipodocumento.siglas',
                 'nro_documento',                
                 'apellido',
                 'nombre',

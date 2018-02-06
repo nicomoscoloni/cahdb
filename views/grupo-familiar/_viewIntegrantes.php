@@ -38,13 +38,19 @@ GrupoFamiliarAsset::register($this);
                 if(count($alumnos)>0){
                 ?>
                 <ul class="todo-list todo-list-alumnos">                    
-                    <?php foreach($alumnos as $alumno){                
-                            echo "<li>". Html::a('<i class="fa fa-eye"></i> '. $alumno->miPersona->apellido ."; ".$alumno->miPersona->nombre, ['alumno/view', 'id' => $alumno->id], []);
-                            echo '
-                                <div class="tools tools-alumnos">'.
-                                        Html::a('<i class="fa fa-edit"></i>', ['alumno/empadronamiento', 'id' => $alumno->id], []).
-                                    '
-                                </div>';
+                    <?php foreach($alumnos as $alumno){
+                            if(Yii::$app->user->can('visualizarAlumno'))
+                                echo "<li>". Html::a('<i class="fa fa-eye"></i> '. $alumno->miPersona->apellido ."; ".$alumno->miPersona->nombre, ['alumno/view', 'id' => $alumno->id], []);
+                            else
+                                    echo "<li>". $alumno->miPersona->apellido ."; ".$alumno->miPersona->nombre;
+                            
+                            if(Yii::$app->user->can('cargarAlumno')){
+                                echo '
+                                    <div class="tools tools-alumnos">'.
+                                            Html::a('<i class="fa fa-edit"></i>', ['alumno/empadronamiento', 'id' => $alumno->id], []).
+                                        '
+                                    </div>';
+                            }
                             echo "</li>";
                         }
                     }?>
@@ -61,12 +67,12 @@ GrupoFamiliarAsset::register($this);
                 <i class="fa fa-users"></i> 
                     <h3 class="box-title"> Responsbales</h3> 
                     <?php
-            //if(Yii::$app->user->can('abmlResponsables')){
-            echo 
-                Html::button('<i class="fa fa-share-square-o"></i> Asignar Responsable', 
+            if(Yii::$app->user->can('gestionarResponsable')){
+                echo 
+                    Html::button('<i class="fa fa-share-square-o"></i> Asignar Responsable', 
                         ['value' => Url::to(['grupo-familiar/asignar-responsable', 'familia' => $familia]), 
                          'class' => 'btn btn-success btn-xs', 'id' => 'btn-asignar-responsable']);
-            // } ?>
+            } ?>
                </div>
             <div class="box-body">
                 <?php
@@ -80,14 +86,16 @@ GrupoFamiliarAsset::register($this);
                     foreach($responsables as $responsable){                
                         echo "<li>". $responsable->tipoResponsable->nombre . " ". $responsable->miPersona->apellido .
                                 "; ".$responsable->miPersona->nombre;
-                        echo "<div class='tools tools-responsables'>";
-                        echo    Html::a('<i class="fa fa-edit"></i>', 'javascript:void(0)' ,[
+                        if(Yii::$app->user->can('gestionarResponsable')){
+                            echo "<div class='tools tools-responsables'>";
+                            echo    Html::a('<i class="fa fa-edit"></i>', 'javascript:void(0)' ,[
                                     'class' => '',
                                     'onclick' => 'js:actualizarResponsable("' . Url::to(['grupo-familiar/actualizar-responsable', 'id' => $responsable->id]) . '");']);
-                        echo    Html::a('<i class="fa fa-trash-o"></i>', 'javascript:void(0)',[
+                            echo    Html::a('<i class="fa fa-trash-o"></i>', 'javascript:void(0)',[
                                     'class' => '',
                                     'onclick' => 'js:quitarResponsable("' . Url::to(['grupo-familiar/quitar-responsable', 'id' => $responsable->id]) . '");']);   
-                        echo "</div></li>";
+                            echo "</div></li>";
+                        }
                     }
                     echo "</ul>";
                 }

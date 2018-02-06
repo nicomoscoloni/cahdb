@@ -43,14 +43,14 @@ class EstablecimientoController extends Controller
                         'roles' => ['perServiciosEstablecimientos'],
                     ],
                     [     
-                        'actions' => ['cargar-division','actualizar-division','eliminar-division','mis-divisiones-escolares','drop-mis-divisionesescolares'],
+                        'actions' => ['cargar-division','actualizar-division','eliminar-division','drop-mis-divisionesescolares'],
                         'allow' => true,
                         'roles' => ['gestionarDivisionEscolar'],
                     ],
                     [     
-                        'actions' => ['mis-divisionesescolares'],
+                        'actions' => ['drop-mis-divisionesescolares'],
                         'allow' => true,
-                        'roles' => ['filtrarDivisionesxEstablecimiento'],
+                        //'roles' => ['filtrarDivisionesxEstablecimiento'],
                     ],                    
                 ],
             ],  
@@ -207,25 +207,30 @@ class EstablecimientoController extends Controller
     /************************************************************************/
     /**************************** DIVISIONES ESCOLARES **********************/
     public function actionDropMisDivisionesescolares($idEst){
-        
-        $countDivisiones = DivisionEscolar::find()
-                ->where(['id_establecimiento' => $idEst])
-                ->count();
- 
-        $divisiones = DivisionEscolar::find()
-                ->where(['id_establecimiento' => $idEst])
-                ->orderBy('id')
-                ->all();   
-        
-        if($countDivisiones>0){
-            echo "<option value=''>Select.</option>";
-            foreach($divisiones as $one){
-                echo "<option value='".$one->id."'>".$one->nombre."</option>";
+        try{
+            $countDivisiones = DivisionEscolar::find()
+                    ->where(['id_establecimiento' => $idEst])
+                    ->count();
+
+            $divisiones = DivisionEscolar::find()
+                    ->where(['id_establecimiento' => $idEst])
+                    ->orderBy('id')
+                    ->all();   
+
+            if($countDivisiones>0){
+                echo "<option value=''>Select.</option>";
+                foreach($divisiones as $one){
+                    echo "<option value='".$one->id."'>".$one->nombre."</option>";
+                }
             }
-        }
-        else{
+            else{
+                echo "<option value=''></option>";
+            }    
+        }catch(\Exception $e){
+            Yii::error('Establecimiento - Cargar Division '.$e);
             echo "<option value=''></option>";
-        } 
+        }
+         
     }
     
     /************************************************************************/

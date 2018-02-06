@@ -26,10 +26,15 @@ class BuscarFamiliaAction extends Action
 {
     public function run()
     {       
-        $searchModel = new GrupoFamiliarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-        
-        return $this->controller->renderAjax('@app/actions/clean/views/clean', ['contenido'=> BuscadorFamilia::widget(['searchModel'=>$searchModel, 'dataProvider'=>$dataProvider])]);
+        try{
+            $searchModel = new GrupoFamiliarSearch();
+            $dataProvider = $searchModel->searchBuscador(Yii::$app->request->getQueryParams());        
+            return $this->controller->renderAjax('@app/actions/clean/views/clean', ['contenido'=> BuscadorFamilia::widget(['searchModel'=>$searchModel, 'dataProvider'=>$dataProvider])]);
+        }catch (\Exception $e) { 
+            Yii::error('BuscadorFamili run  '.$e);
+            Yii::$app->session->setFlash('error', Yii::$app->params['operacionFallida']);
+            throw new \yii\web\HttpException(500,'No se puden mostrar las familias.');                        
+        }
     }    
     
 }

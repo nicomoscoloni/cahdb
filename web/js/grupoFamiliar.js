@@ -110,7 +110,7 @@ function actualizarResponsable(xhref){
 
 function quitarResponsable(xhref){       
     bootbox.confirm({
-        message: "Está seguro que deséea realizar la eliminación?",
+        message: "Está seguro que deséa realizar la eliminación?",
         buttons: {
             confirm: {
                 label: '<i class="glyphicon glyphicon-ok"></i> Si',
@@ -129,6 +129,7 @@ function quitarResponsable(xhref){
                      type   : "get",            
                      dataType: "json",
                      success: function (response){
+                         $("body").loading('stop');
                          if(response.error==0){                             
                             new PNotify({
                                 title: 'Correcto',
@@ -140,7 +141,7 @@ function quitarResponsable(xhref){
                          }
                      },
                      error  : function (error) { 
-                           
+                            $("body").loading('stop');
                             $.pjax.reload({container:"#pjax-responsables",timeout:false}); 
                             new PNotify({
                                 title: 'Error',
@@ -149,15 +150,10 @@ function quitarResponsable(xhref){
                                 type: 'error'
                             });      
                      }
-                }).done(function(o) {
-                    $("body").loading('stop');       
-                }).fail(function(jqXHR, textStatus, errorThrown){
-                    alert("ddd");
                 });
             }else{
                 $("body").loading('stop');    
-            }
-            
+            }            
         }
     });
     
@@ -180,8 +176,9 @@ $("body").on("beforeSubmit", "form.form-carga-responsable", function () {
         success: function (response) {
             if(response.error == 0){                                   
                 if(response.carga == 1){  
+                    $("body").loading('stop');
                     $("#modalAsignacionResponsable").modal("toggle"); 
-                    grillaajax = '#pjax-responsable';
+                    grillaajax = '#pjax-responsables';
                     $.pjax.reload({container:grillaajax, timeout:false});                    
                 }
                 else
@@ -199,11 +196,12 @@ $("body").on("beforeSubmit", "form.form-carga-responsable", function () {
                             type: 'error'
                         });
                 $("#modalAsignacionResponsable").modal("toggle");
-                grillaajax = '#pjax-responsable';                                     
+                grillaajax = '#pjax-responsables';                                     
                 $.pjax.reload({container:grillaajax,timeout:false});                            
             }
         },
-        error  : function () {
+        error  : function (xhr) {
+            console.log(xhr);
             console.log("internal server error");
         }
     });

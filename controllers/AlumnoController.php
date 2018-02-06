@@ -29,29 +29,44 @@ class AlumnoController extends Controller
                 'class' => \yii\filters\AccessControl::className(),
                 'rules' => [
                     [     
-                        'actions' => ['listado','delete','empadronamiento','view','buscarFamilia'],
+                        'actions' => ['listado','mis-divisionesescolares'],
                         'allow' => true,
-                        //'roles' => ['abmlAlumnos'],
+                        'roles' => ['listarAlumnos'],
+                    ],
+                    [     
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['eliminarAlumno'],
+                    ],
+                    [     
+                        'actions' => ['empadronamiento','buscarFamilia','mis-divisionesescolares'],
+                        'allow' => true,
+                        'roles' => ['cargarAlumno'],
+                    ],
+                    [     
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['visualizarAlumno'],
                     ],
                     [     
                         'actions' => ['activar'],
                         'allow' => true,
-                        //'roles' => ['activarAlumno'],
+                        'roles' => ['activarAlumno'],
                     ],
                     [     
                         'actions' => ['inactivar'],
                         'allow' => true,
-                        //'roles' => ['inactivarAlumno'],
+                        'roles' => ['inactivarAlumno'],
                     ],                    
                     [     
                         'actions' => ['down-padron','exportar-excel'],
                         'allow' => true,
-                        //'roles' => ['exportarAlumnos'],
+                        'roles' => ['exportarAlumnos'],
                     ],
                     [     
                         'actions' => ['asignar-bonificacion','quitar-bonificacion','eliminar-bonificacion'],
                         'allow' => true,
-                        //'roles' => ['gestionarBonificacionAlumno'],
+                        'roles' => ['gestionarBonificacionAlumno'],
                     ],
                     
                 ],
@@ -108,20 +123,18 @@ class AlumnoController extends Controller
         try{
             $modelPersona =  new Persona();
             $modelPersona->load(Yii::$app->request->queryParams);
-
+            
             $searchModel = new AlumnoSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $modelPersona);        
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'modelPersona'=> $modelPersona,
-            ]);
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $modelPersona); 
         }catch (\Exception $e) {
             Yii::error('Administración Alumnos '.$e);
-            Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
-            return $this->redirect(['site/index']);            
+            Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);                      
         }
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'modelPersona'=> $modelPersona,
+        ]);
     }
 
     /*******************************************************************/
@@ -171,7 +184,7 @@ class AlumnoController extends Controller
             Yii::error('Activar Alumnos '.$e);
             $transaction->rollBack();            
             Yii::$app->response->format = 'json';
-            return ['error' => '1', 'mensaje' =>  Yii::$app->params['errorExcepcion']];            
+            return ['error' => '1', 'mensaje' =>  'Error al activar al Alumno!!!'];            
         }
     }
     
@@ -195,7 +208,7 @@ class AlumnoController extends Controller
             Yii::error('Inactivar Alumnos '.$e);
             $transaction->rollBack();            
             Yii::$app->response->format = 'json';
-            return ['error' => '1', 'mensaje' =>  Yii::$app->params['errorExcepcion']];            
+            return ['error' => '1', 'mensaje' => 'Error al inactivar al Alumno!!!'];            
         }
     }   
     
@@ -247,23 +260,22 @@ class AlumnoController extends Controller
                     }
                 }
             } 
-            
-            return $this->render('create', [
-                'modelAlumno' => $modelAlumno,
-                'modelPersona' => $modelPersona,
-                'modelGrupoFamiliar' =>  $modelGrupoFamiliar,
-            ]);
-            
         }
         catch (\Exception $e){
             Yii::error('Empadronamiento Alumnos '.$e);
             Yii::$app->session->setFlash('error',Yii::$app->params['operacionFallida']);
-            $transaction->rollBack();            
-            return $this->redirect(['listado']);
-        }     
+            $transaction->rollBack();  
+        }    
+        return $this->render('create', [
+            'modelAlumno' => $modelAlumno,
+            'modelPersona' => $modelPersona,
+            'modelGrupoFamiliar' =>  $modelGrupoFamiliar,
+        ]);
     }
+
     
-    
+    /***************************************************************/
+    /**************************************************************/
     /**
      * Displays a single Alumno model.
      * @param integer $id
@@ -280,17 +292,18 @@ class AlumnoController extends Controller
             $searchMisServicios->id_alumno = $id;        
             $misServicios = $searchMisServicios->search(Yii::$app->request->queryParams);        
 
-            return $this->render('view', [
-                'model' => $this->findModel($id),
-                'misBonificaciones' => $misBonificaciones,
-                'misServicios' => $misServicios,
-                'searchMisServicios'=>$searchMisServicios
-            ]);
+            
         }catch (\Exception $e) {
             Yii::error('View Alumnos '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
             return $this->redirect(['site/index']);            
-        }          
+        }  
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+            'misBonificaciones' => $misBonificaciones,
+            'misServicios' => $misServicios,
+            'searchMisServicios'=>$searchMisServicios
+        ]);        
         
     }
     
@@ -324,11 +337,11 @@ class AlumnoController extends Controller
             Yii::$app->response->format = 'json';
             return ['error' => '1', 'mensaje' => Yii::$app->params['errorExcepcion']];
         } 
-        Yii::$app->response->format = 'json';
-                    return ['error' => '0',
-                        'vista' => $this->renderAjax('_formAsignacionBonificacion', [
-                                        'model' => $model,
-                                     ])];
+            Yii::$app->response->format = 'json';
+            return ['error' => '0',
+                'vista' => $this->renderAjax('_formAsignacionBonificacion', [
+                                'model' => $model,
+                             ])];
         
     }
     
@@ -363,11 +376,17 @@ class AlumnoController extends Controller
     }  
     
     public function actionExportarExcel() {       
+        try{
+            
         
         if(Yii::$app->session->has('padronalumnos')){
-            
-            $data = Yii::$app->session->get('padronalumnos');   
-            
+             
+            $data = Yii::$app->session->get('padronalumnos');
+            $dataProvider = new \yii\data\SqlDataProvider([           
+                'sql' => $data,  
+                'pagination' =>false
+            ]);
+            $data = $dataProvider->getModels();
             ini_set('memory_limit', -1);
             set_time_limit(0);
             
@@ -438,14 +457,14 @@ class AlumnoController extends Controller
                     $columnaL = 'L' . $letrafilainicio1;
                     $columnaM = 'M' . $letrafilainicio1;
 
-                    $objPHPExcel->getActiveSheet()->setCellValue($columnaA, $data[$i]["miPersona"]["nro_documento"]);
-                    $objPHPExcel->getActiveSheet()->setCellValue($columnaB, $data[$i]["miPersona"]["apellido"]);
-                    $objPHPExcel->getActiveSheet()->setCellValue($columnaC, $data[$i]["miPersona"]["nombre"]);
-                    $fecha_nacimiento = \app\models\Fecha::convertirFecha($data[$i]["miPersona"]["fecha_nacimiento"], 'Y-m-d','d-m-Y');
+                    $objPHPExcel->getActiveSheet()->setCellValue($columnaA, $data[$i]["persona"]["nro_documento"]);
+                    $objPHPExcel->getActiveSheet()->setCellValue($columnaB, $data[$i]["persona"]["apellido"]);
+                    $objPHPExcel->getActiveSheet()->setCellValue($columnaC, $data[$i]["persona"]["nombre"]);
+                    $fecha_nacimiento = \app\models\Fecha::convertirFecha($data[$i]["persona"]["fecha_nacimiento"], 'Y-m-d','d-m-Y');
                     $objPHPExcel->getActiveSheet()->setCellValue($columnaD, $fecha_nacimiento );
                     
-                    $objPHPExcel->getActiveSheet()->setCellValue($columnaE, $data[$i]["miPersona"]["miDomicilio"]);
-                    $objPHPExcel->getActiveSheet()->setCellValue($columnaF, $data[$i]["miPersona"]["miTelContacto"]);
+                    $objPHPExcel->getActiveSheet()->setCellValue($columnaE, $data[$i]["persona"]["miDomicilio"]);
+                    $objPHPExcel->getActiveSheet()->setCellValue($columnaF, $data[$i]["persona"]["miTelContacto"]);
                     $objPHPExcel->getActiveSheet()->setCellValue($columnaG, $data[$i]["nro_legajo"]);
                 
                     if ($data[$i]["activo"] == '1') {
@@ -500,6 +519,11 @@ class AlumnoController extends Controller
                 return ['result_error' => '1', 'message' => 'LISTADO VACIO'];
             }
         }
+        }catch (\Exception $e) {
+            Yii::error('exportar Alumnos '.$e);
+            Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
+            return $this->redirect(['site/index']);            
+        }  
     }
 
     public function actionDownPadron() {

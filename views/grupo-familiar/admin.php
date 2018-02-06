@@ -20,9 +20,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
        
         <div class="pull-right">
-            <p> <?= Html::a('<i class="fa fa-plus-square"></i>', ['alta'], ['class' => 'btn btn-primary']) ?> 
-          <?= Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
-                        'onclick'=>'js:{downListado("'.Url::to(['grupo-familiar/exportar-excel']) .'");}']) ?>
+            <p> 
+
+            <?php
+                if (Yii::$app->user->can('cargarFamilia'))
+                    echo Html::a('<i class="fa fa-plus-square"></i>', ['alta'], ['class' => 'btn btn-primary']);
+                
+                if (Yii::$app->user->can('exportarFamilias'))
+                    echo Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
+                        'onclick'=>'js:{downListado("'.Url::to(['grupo-familiar/exportar-excel']) .'");}']);
+            ?>
             </p>
         </div>
         
@@ -45,16 +52,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         'folio',
                         'detalleNombreMisHijos',
                         [
-                            'label' => 'PAGO ADERIDO',
+                            'label' => 'Pago Aderido',
                             'attribute'=>'id_pago_asociado',    
                             'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'id_pago_asociado', app\models\FormaPago::getFormasPago(),['prompt'=>'','class'=>'form-control']),
                             'value' => function($model) {
-                                return $model->idPagoAsociado->nombre;
+                                return $model->pagoAsociado->nombre;
                             },
                         ],
                         ['class' => 'yii\grid\ActionColumn',
                         'visibleButtons' => [                                   
-                                'update' => Yii::$app->user->can('gestionarGruposFamiliares'),                                
+                                'update' => Yii::$app->user->can('cargarFamilia'),
+                            'view' => Yii::$app->user->can('visualizarFamilia'),
                             ],
                         'template' => '{view}{update}',
                             'buttons' => [

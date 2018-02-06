@@ -33,24 +33,34 @@ class GrupoFamiliarController extends Controller
                 
                 'rules' => [
                     [     
-                        'actions' => ['admin','view'],
+                        'actions' => ['listado'],
                         'allow' => true,
-                        //'roles' => ['visualizarFamilias'],
+                        'roles' => ['listarFamilias'],
                     ],
                     [     
-                        'actions' => ['admin','alta','actualizar','view','delete','servicios-familia'],
+                        'actions' => ['view'],
                         'allow' => true,
-                        //'roles' => ['abmlFamilias','gestionarGrupoFamiliar'],
+                        'roles' => ['visualizarFamilia'],
+                    ],
+                    [     
+                        'actions' => ['alta','actualizar'],
+                        'allow' => true,
+                        'roles' => ['cargarFamilia'],
+                    ],
+                    [     
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['eliminarFamilia'],
                     ],
                     [     
                         'actions' => ['exportar-excel','down-padron'],
                         'allow' => true,
-                        //'roles' => ['exportarFamilias','gestionarGrupoFamiliar'],
+                        'roles' => ['exportarFamilias'],
                     ],
                     [     
-                        'actions' => ['carga-responsable','actualizar-responsable','quitar-responsable'],
+                        'actions' => ['asignar-responsable','carga-responsable','actualizar-responsable','quitar-responsable'],
                         'allow' => true,
-                        //'roles' => ['abmlResponsables'],
+                        'roles' => ['gestionarResponsable'],
                     ],
                     
                 ],
@@ -70,7 +80,7 @@ class GrupoFamiliarController extends Controller
      * Lists all GrupoFamiliar models.
      * @return mixed
      */
-    public function actionAdmin()
+    public function actionListado()
     {
         try{
             $searchModel = new GrupoFamiliarSearch();
@@ -79,7 +89,7 @@ class GrupoFamiliarController extends Controller
             Yii::error('Administración Familias '.$e);
             Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
         }   
-        return $this->render('index', [
+        return $this->render('admin', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -258,22 +268,23 @@ class GrupoFamiliarController extends Controller
                     return ['error' => '1','carga' => '0','mensaje'=>'no se pudo realiza la asignacion del responsable']; 
                 }
             }
-        }catch(\Exception $e){
-            Yii::error('Asignar Responsbale - GrupoFamiliar '.$e);
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            Yii::$app->response->statusCode=404;
-           return ['message'=>'Error al asignar el responsbale'];
-        }
             Yii::$app->response->format = 'json';
             return ['error' => '0',
                 'vista' => $this->renderAjax('_asignarResponsable', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
                 'familia' => $familia
-            ])];  
+            ])];
+        }catch(\Exception $e){
+            Yii::error('Asignar Responsbale - GrupoFamiliar '.$e);
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            Yii::$app->response->statusCode=404;
+           return ['message'=>'Error al asignar el responsbale'];
+        }
+              
     }
     
-    
+    /**********************************************************************/
     public function actionCargaResponsable() {
         try {
             $transaction = Yii::$app->db->beginTransaction();
@@ -324,6 +335,7 @@ class GrupoFamiliarController extends Controller
         }
     }
 
+    /**********************************************************************/
     public function  actionActualizarResponsable()
     {               
         try{
@@ -378,7 +390,7 @@ class GrupoFamiliarController extends Controller
     {
         try{
             $transaction = Yii::$app->db->beginTransaction();
-            $id=98798798;//Yii::$app->request->get('id');
+            $id=Yii::$app->request->get('id');
             $modelResponsable = Responsable::findOne($id);        
             if(!$modelResponsable)        
                 throw  new \Exception('Responsable del Grupo Familiar inexistente.'); 
@@ -392,17 +404,7 @@ class GrupoFamiliarController extends Controller
         }catch(\Exception $e){
             Yii::error('Quitar Responsbale - GrupoFamiliar '.$e);
             $transaction->rollBack();
-            Yii::$app->response->format = 'json';
-            Yii::$app->response->statusCode = 500;
-            Yii::$app->response->statusText = "500sssss";
-            exit;
-              
-            $response = [
-                'code'=>400,
-                'message'=>'asdsd'
-            ];
-            return $response;
-                
+            throw new NotFoundHttpException('El Responsbale que intenta actualizar los datos no existe.');
         }        
     } //fin QuitarResponsable
    

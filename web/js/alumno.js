@@ -30,9 +30,11 @@ function inactivarAlumno(xhref){
                                     icon: 'glyphicon glyphicon-envelope',
                                     type: 'success'
                                 });   
+                                $("body").loading('stop');
                                 $(document).off('pjax:complete',grillaajax);
                             });                              
-                         }else{                            
+                         }else{    
+                            $("body").loading('stop');
                             new PNotify({
                                 title: 'Error',
                                 text: response.mensaje,
@@ -41,7 +43,8 @@ function inactivarAlumno(xhref){
                             });
                          }
                     },
-                    error  : function (error) {                        
+                    error  : function (error) {    
+                        $("body").loading('stop');
                         if(error.status == 403 && error.statusText=='Forbidden') {                            
                             new PNotify({
                                 title: 'Error',
@@ -52,7 +55,7 @@ function inactivarAlumno(xhref){
                         }
                      }
                      
-                 }).done($("body").loading('stop'));
+                 });
             }
         }
     });
@@ -91,6 +94,7 @@ function activarAlumno(xhref){
                                     icon: 'glyphicon glyphicon-envelope',
                                     type: 'success'
                                 });   
+                                $("body").loading('stop');
                                 $(document).off('pjax:complete',grillaajax);
                             });                              
                          }else{                            
@@ -103,6 +107,7 @@ function activarAlumno(xhref){
                          }
                     },
                     error  : function (error) {
+                        $("body").loading('stop');
                         if(error.status == 403 && error.statusText=='Forbidden') {                            
                             new PNotify({
                                 title: 'Error',
@@ -112,74 +117,12 @@ function activarAlumno(xhref){
                             });
                         }       
                     }
-                 }).done($("body").loading('stop'));
+                 });
             }
         }
     });
     return false;       
 } 
-
-function quitarBonificacion(xhref){
-   
-    $('#grilla-ajax').val('#pjax-bonificaciones');
-    grillaajax = $('#grilla-ajax').val();
-    
-    bootbox.confirm({
-        message: "Esta seguro que desea realizar la eliminación?",
-        buttons: {
-            confirm: {
-                label: 'Si',
-                className: 'btn-success'
-            },
-            cancel: {
-                label: 'No',
-                className: 'btn-danger'
-            }
-        },
-        callback: function (result) {            
-            if(result===true){
-                $("body").loading({message: 'AGUARDE... procesando.'});
-                $.ajax({
-                     url    : xhref,
-                     type   : "post",            
-                     dataType: "json",
-                     success: function (response){                         
-                         if(response.error==0){   
-                            $.pjax.reload({container:grillaajax,timeout:false}); 
-                            $(document).on('pjax:complete',grillaajax, function() {
-                                new PNotify({
-                                    title: 'Correcto',
-                                    text: response.mensaje,
-                                    icon: 'glyphicon glyphicon-envelope',
-                                    type: 'success'
-                                });
-                                 $(document).off('pjax:complete',grillaajax);
-                            });     
-                         }else{                            
-                            new PNotify({
-                                title: 'Error',
-                                text: response.mensaje,
-                                icon: 'glyphicon glyphicon-envelope',
-                                type: 'error'
-                            });
-                         }
-                     },
-                    error  : function (error) {
-                        if(error.status == 403 && error.statusText=='Forbidden') {                            
-                            new PNotify({
-                                title: 'Error',
-                                text: 'Usted no dispone de los permisos suficientes para realizar esta tarea',
-                                icon: 'glyphicon glyphicon-envelope',
-                                type: 'error'
-                            });
-                        }       
-                    }
-                 }).done($("body").loading('stop'));
-            }
-        }
-    });
-    return false;  
-}
 
 /****************************************************************************/
 /****************************************************************************/
@@ -190,10 +133,10 @@ $(document).ready(function () {
     });          
     //al finalizar lallamada ajax del render de pjax del grid de alumnos
     //actulizamos el combio de divisiones segun el establecimiento
-    $(document).on('pjax:complete', function() {      
+    $(document).on('pjax:complete', '#pjax-alumnos', function() {      
         establecimiento = $('#alumnosearch-establecimiento').val();        
         $.ajax({
-            url    : 'index.php?r=establecimiento/mis-divisionesescolares',
+            url    : 'index.php?r=establecimiento/drop-mis-divisionesescolares',
             type   : 'GET',  
             data: { 'idEst': establecimiento},
             success: function (data){ 
@@ -205,11 +148,30 @@ $(document).ready(function () {
 });
 
 /****************************************************************************/
-/****************************************************************************/
+/******************************* CARGA **************************************/
 $(document).ready(function () {
     
     $("#buscarFamiliaBtn").click(function(){                
-        $("#modalfamilia").modal("show").find("#modalContent").load(jQuery(this).attr("value"));
+        var  url = jQuery(this).attr("value"); 
+        
+        $.ajax({
+            url    : url,
+            success: function (response){
+                $("#modalfamilia").modal("show").find("#modalContent").html(response);    
+            },
+            error  : function (error) {
+                alert("EROR");
+                if(error.status == 403 && error.statusText=='Forbidden') {                            
+                    new PNotify({
+                        title: 'Error',
+                        text: 'Usted no dispone de los permisos suficientes para realizar esta tarea',
+                        icon: 'glyphicon glyphicon-envelope',
+                        type: 'error'
+                    });
+                }
+             }
+
+        });
     });   
     
     /*
@@ -243,7 +205,6 @@ $(document).ready(function () {
  * Funciones para la asignacion y quitas de bonificaciones alumno
  */
 $(document).ready(function () {
-
     $("#btn-asignar-bonificacion").click(function(){     
         xhref = $(this).attr("value")
         $.ajax({
@@ -330,3 +291,65 @@ $(document).ready(function () {
     });
 
  });
+ 
+ function quitarBonificacion(xhref){
+   
+    $('#grilla-ajax').val('#pjax-bonificaciones');
+    grillaajax = $('#grilla-ajax').val();
+    
+    bootbox.confirm({
+        message: "Esta seguro que desea realizar la eliminación?",
+        buttons: {
+            confirm: {
+                label: 'Si',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {            
+            if(result===true){
+                $("body").loading({message: 'AGUARDE... procesando.'});
+                $.ajax({
+                     url    : xhref,
+                     type   : "post",            
+                     dataType: "json",
+                     success: function (response){                         
+                         if(response.error==0){   
+                            $.pjax.reload({container:grillaajax,timeout:false}); 
+                            $(document).on('pjax:complete',grillaajax, function() {
+                                new PNotify({
+                                    title: 'Correcto',
+                                    text: response.mensaje,
+                                    icon: 'glyphicon glyphicon-envelope',
+                                    type: 'success'
+                                });
+                                 $(document).off('pjax:complete',grillaajax);
+                            });     
+                         }else{                            
+                            new PNotify({
+                                title: 'Error',
+                                text: response.mensaje,
+                                icon: 'glyphicon glyphicon-envelope',
+                                type: 'error'
+                            });
+                         }
+                     },
+                    error  : function (error) {
+                        if(error.status == 403 && error.statusText=='Forbidden') {                            
+                            new PNotify({
+                                title: 'Error',
+                                text: 'Usted no dispone de los permisos suficientes para realizar esta tarea',
+                                icon: 'glyphicon glyphicon-envelope',
+                                type: 'error'
+                            });
+                        }       
+                    }
+                 }).done($("body").loading('stop'));
+            }
+        }
+    });
+    return false;  
+}

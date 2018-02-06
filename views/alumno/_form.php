@@ -99,7 +99,7 @@ yii\bootstrap\Modal::end();
     <div class="row">
         <?php
         if(!empty($model->id_divisionescolar)){
-            $divisiones = \app\models\DivisionEscolar::find()->joinWith('miEstablecimiento e')->where(['=', 'e.id', $model->idDivisionescolar->id_establecimiento])->asArray()->all();
+            $divisiones = \app\models\DivisionEscolar::find()->joinWith('establecimiento e')->where(['=', 'e.id', $model->divisionescolar->id_establecimiento])->asArray()->all();
             $divisiones = yii\helpers\ArrayHelper::map($divisiones, 'id', 'nombre');
            
         }else
@@ -111,7 +111,7 @@ yii\bootstrap\Modal::end();
                     ['class' => '',
                     'prompt'=>'Seleccione',
                     'onchange'=>'
-                        $.get( "'.Url::toRoute('establecimiento/mis-divisionesescolares').'", { idEst: $(this).val() } )
+                        $.get( "'.Url::toRoute('establecimiento/drop-mis-divisionesescolares').'", { idEst: $(this).val() } )
                                     .done(function( data )
                                     {                                        
                                         $("#alumno-id_divisionescolar").html(data);
@@ -128,7 +128,7 @@ yii\bootstrap\Modal::end();
     <div class="row">
         <?php
         if(!empty($model->id_divisionescolar)){
-            $divisiones = \app\models\DivisionEscolar::find()->joinWith('miEstablecimiento e')->where(['=', 'e.id', $model->idDivisionescolar->id_establecimiento])->asArray()->all();
+            $divisiones = \app\models\DivisionEscolar::find()->joinWith('establecimiento e')->where(['=', 'e.id', $model->divisionescolar->id_establecimiento])->asArray()->all();
             $divisiones = yii\helpers\ArrayHelper::map($divisiones, 'id', 'nombre');
            
         }else
