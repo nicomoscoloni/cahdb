@@ -93,6 +93,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
     
     /************************************************************************/
     /************************************************************************/
+    /*
     public function getMiResponsableCabecera(){
         if(!empty($this->id)){
             $query = Responsable::find();
@@ -114,7 +115,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
                 return "";
         }else
             return "";        
-    }
+    }*/
     
     /*
     public function getResponsableD(){
@@ -138,11 +139,11 @@ class GrupoFamiliar extends BaseGrupoFamiliar
         
     }*/
     
-    /*
+    
     public function getCantidadHijos(){
         return count(Alumno::find()->where('activo=1 and id_grupofamiliar='.$this->id)->all());
-    }*/
-/*
+    }
+
     public function getDatosMisHijos(){
         $detalle='';
         $misHijos = $this->alumnosActivos;
@@ -157,7 +158,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
         }
         return $detalle;
     }
-    
+    /*
     public function getDetalleNombreMisHijos(){
         $detalle='';
         $misHijos = $this->alumnosActivos;

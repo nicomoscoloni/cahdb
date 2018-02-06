@@ -26,7 +26,7 @@ GrupoFamiliarAsset::register($this);
     <?php
         echo Html::a('<i class="fa fa-users"></i> Integrantes', ['view', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
     
-    
+    <?= Html::a('<i class="fa fa-pencil"></i> Servicios', ['servicios-familia', 'familia' => $model->id], ['class' => 'btn btn-primary']); ?>
 </p>
         
 <div class="row"> <!-- row dettales delconvenio -->

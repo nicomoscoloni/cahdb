@@ -25,7 +25,7 @@ class TipoSexoController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        //'roles' => ['gestorTipoSexos'],
+                        'roles' => ['gestionarSexos'],
                     ],
                 ],
             ], 
@@ -54,7 +54,7 @@ class TipoSexoController extends Controller
                     $transaction->commit();
                     if (Yii::$app->request->isAjax){                    
                         Yii::$app->response->format = 'json';
-                        return ['error' => '0', 'message' => Yii::$app->params['eliminacionCorrecta']];
+                        return ['error' => '0', 'mensaje' => Yii::$app->params['eliminacionCorrecta']];
                     }else{
                         Yii::$app->session->setFlash('ok',Yii::$app->params['eliminacionCorrecta']);
                         return $this->redirect(['index']);
@@ -62,7 +62,7 @@ class TipoSexoController extends Controller
                 }
             }else{
                 Yii::$app->response->format = 'json';
-                return ['error' => '1', 'message' => 'No se puede realizar la eliminación. El registro se encuentra bloqueado'];    
+                return ['error' => '1', 'mensaje' => 'No se puede realizar la eliminación. El registro se encuentra bloqueado'];    
             }
         }
         catch (\Exception $e){
@@ -70,7 +70,7 @@ class TipoSexoController extends Controller
             $transaction->rollBack();
             if (Yii::$app->request->isAjax){
                 Yii::$app->response->format = 'json';
-                return ['error' => '1', 'message' =>  Yii::$app->params['errorExcepcion']];
+                return ['error' => '1', 'mensaje' =>  Yii::$app->params['errorExcepcion']];
             }else{
                 Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
                 return $this->redirect(['index']);

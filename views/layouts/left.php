@@ -6,7 +6,7 @@
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
-                    [
+                   /* [
                         'label' => 'Alumnos',
                         'icon' => 'users',
                         'url' => '#',
@@ -28,27 +28,26 @@
                       //  'visible' => Yii::$app->user->can('gestionarEstablecimientos')
                     ],
                     ['label' => 'Debito Automatico', 'icon' => 'briefcase', 'url' => ['debito-automatico/admin']],
-                    
-                    [
+                    */
+                    /*[
                         'label' => 'Servicios', 
                         'icon' => 'briefcase', 
                         'url' => ['servicio-ofrecido/admin'],
                         'visible'=>Yii::$app->user->can('abmlServicioOfrecido'),  
-                    ],
+                    ],*/
                     [
                         'label' => 'Configuraciones',
                         'icon' => 'cogs',
                         'url' => '',
                         'items' => [
-                            ['label' => 'Tipo Documentos', 'icon' => 'arrow-right', 'url' => ['tipo-documento/index']],
-                            ['label' => 'Tipo Sexos', 'icon' => 'arrow-right', 'url' => ['tipo-sexo/index']],
-                            ['label' => 'Forma Pago', 'icon' => 'arrow-right', 'url' => ['forma-pago/index']],
-                            ['label' => 'Tipo Responsables', 'icon' => 'arrow-right', 'url' => ['tipo-responsable/index']],
-                            ['label' => 'T.Servicios Pago', 'icon' => 'arrow-right', 'url' => ['categoria-pago-servicio/index'],],
-                            ['label' => 'T.Servicios Cobro', 'icon' => 'arrow-right', 'url' => ['categoria-servicio-ofrecido/index'],],
+                            ['label' => 'Tipo Documentos', 'icon' => 'arrow-right', 'url' => ['/tipo-documento/index'],'visible'=>(Yii::$app->user->can('gestionarDocumentos'))],
+                            ['label' => 'Tipo Sexos', 'icon' => 'arrow-right', 'url' => ['/tipo-sexo/index'],'visible'=>(Yii::$app->user->can('gestionarSexos'))],
+                            ['label' => 'Forma Pago', 'icon' => 'arrow-right', 'url' => ['/forma-pago/index'],'visible'=>(Yii::$app->user->can('gestionarFormaPago'))],
+                            ['label' => 'Tipo Responsables', 'icon' => 'arrow-right', 'url' => ['/tipo-responsable/index'],'visible'=>(Yii::$app->user->can('gestionarTipoResponsable'))],
+                            ['label' => 'T.Servicios Cobro', 'icon' => 'arrow-right', 'url' => ['/categoria-servicio-ofrecido/index'],'visible'=>(Yii::$app->user->can('gestionarCategoriaServicios'))],
                            
                         ],
-                       // 'visible'=>(Yii::$app->user->can('director') || Yii::$app->user->can('administrador') || Yii::$app->user->can('secretario')),                         
+                        'visible'=>(Yii::$app->user->can('gestionarDocumentos') || Yii::$app->user->can('gestionarSexos') || Yii::$app->user->can('gestionarFormaPago') || Yii::$app->user->can('gestionarTipoResponsable') || Yii::$app->user->can('gestionarCategoriaServicios')),                         
                         
                     ],
                     [

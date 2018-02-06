@@ -21,8 +21,8 @@ CRUDAjaxAsset::register($this);
             <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Responsbales </h3>
         </div>
         <div class="box-body">
-            <p>
-                <?=  Html::a('<i class="glyphicon glyphicon-plus"></i> ALTA NUEVA', ['create'], ['class' => 'btn btn-success btn-alta',
+            <p class="pull-right">
+                <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-success btn-alta btn-xs',
                     'onclick'=>'js:{cargaAjax("'.Url::to(['tipo-responsable/create']) .'"); return false;}']) ?>
             </p>
             <?php Pjax::begin(['id'=>'pjax-grid','enablePushState' => false,]); ?>    

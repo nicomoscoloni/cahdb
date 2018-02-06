@@ -19,8 +19,8 @@ CRUDAjaxAsset::register($this);
             <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Categoria Servicios Ofrecidos </h3> 
         </div>
         <div class="box-body">
-            <p>
-            <?=  Html::a('<i class="glyphicon glyphicon-plus"></i> ALTA NUEVA', ['create'], ['class' => 'btn btn-success btn-alta', 'data-title'=>'Alta',
+            <p class="pull-right">
+            <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-success btn-alta btn-xs', 'data-title'=>'Alta',
                 'onclick'=>'js:{cargaAjax("'.Url::to(['categoria-servicio-ofrecido/create']) .'"); return false;}']); ?>
             </p>
             <?php Pjax::begin(['id'=>'pjax-grid',

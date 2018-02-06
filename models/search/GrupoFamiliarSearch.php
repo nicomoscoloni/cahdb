@@ -42,22 +42,25 @@ class GrupoFamiliarSearch extends GrupoFamiliar
      * @return ActiveDataProvider
      */
     public function search($params)
-    {
-           
+    {           
+        $session = Yii::$app->session;
+        $session->remove('padronfamilias');   
         
-        $query = GrupoFamiliar::find();
+        $query = GrupoFamiliar::find()->distinct();
         $query->joinWith(['responsables r','responsables.persona p']);
 
+        $dataProviderSession = new ActiveDataProvider([
+            'query' => $query,           
+            'pagination' => false
+        ]);
+        
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
         
-        $dataProviderSession = new ActiveDataProvider([
-            'query' => $query,           
-            'pagination' => false
-        ]);
+        
 
         $this->load($params);
 
@@ -80,16 +83,14 @@ class GrupoFamiliarSearch extends GrupoFamiliar
             ->andFilterWhere(['like', 'nro_tarjetacredito', $this->nro_tarjetacredito])
             ->andFilterWhere(['like', 'tarjeta_banco', $this->tarjeta_banco]);
         
-        $query->andFilterWhere(['like', 'p.apellido', $this->responsable]);
-
+        
+        $session->set('padronfamilias', $query->createCommand()->getRawSql());
         
         return $dataProvider;
     }
     
     public function searchBuscador($params)
-    {
-           
-        
+    {   
         $query = GrupoFamiliar::find();
         $query->joinWith(['responsables r','responsables.persona p']);
 

@@ -94,7 +94,7 @@ function deleteAjax(xhref){
                          if(response.error==0){                             
                             new PNotify({
                                 title: 'Correcto',
-                                text: response.message,
+                                text: response.mensaje,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'success'
                             });
@@ -102,7 +102,7 @@ function deleteAjax(xhref){
                         }else{                             
                             new PNotify({
                                 title: 'Error',
-                                text: response.message,
+                                text: response.mensaje,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'error'
                             });

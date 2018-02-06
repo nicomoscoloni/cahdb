@@ -24,10 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php
                 if (Yii::$app->user->can('cargarFamilia'))
-                    echo Html::a('<i class="fa fa-plus-square"></i>', ['alta'], ['class' => 'btn btn-primary']);
-                
+                    echo Html::a('<i class="fa fa-plus-square"></i>', ['alta'], ['class' => 'btn btn-primary btn-xs']);
+                echo " ";
                 if (Yii::$app->user->can('exportarFamilias'))
-                    echo Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
+                    echo Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success btn-xs', 'id'=>'btn-excel',
                         'onclick'=>'js:{downListado("'.Url::to(['grupo-familiar/exportar-excel']) .'");}']);
             ?>
             </p>
@@ -45,12 +45,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                    'columns' => [                        
                         'apellidos',
                         'descripcion',
-                        'folio',
-                        'detalleNombreMisHijos',
+                        'folio',                       
+                        [
+                            'label' => 'Hijos',                            
+                            'value' => function($model) {
+                                $detalleHijos='';
+                                $i=0;
+                                if(!empty($model->alumnosActivos))
+                                    foreach($model->alumnosActivos as $hijo){
+                                        $i+=1;
+                                        $detalleHijos.= " - $i: ".$hijo->miPersona->apellido .";".$hijo->miPersona->nombre;
+                                    }
+                                return $detalleHijos;
+                            },
+                        ],
                         [
                             'label' => 'Pago Aderido',
                             'attribute'=>'id_pago_asociado',    
@@ -61,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         ['class' => 'yii\grid\ActionColumn',
                         'visibleButtons' => [                                   
-                                'update' => Yii::$app->user->can('cargarFamilia'),
+                            'update' => Yii::$app->user->can('cargarFamilia'),
                             'view' => Yii::$app->user->can('visualizarFamilia'),
                             ],
                         'template' => '{view}{update}',

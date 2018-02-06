@@ -64,6 +64,9 @@ class GrupoFamiliarController extends Controller
                     ],
                     
                 ],
+                'denyCallback' => function($rule, $action){                    
+                    return $this->redirect(['site/index']);         
+                } 
             ],  
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -164,7 +167,7 @@ class GrupoFamiliarController extends Controller
         try{
             $this->findModel($id)->delete();
             Yii::$app->session->setFlash('success', Yii::$app->params['eliminacionCorrecta']);
-            return $this->redirect(['admin']);    
+            return $this->redirect(['listado']);    
         }catch (\Exception $e) {    
             Yii::error('Delete Familias '.$e);
             Yii::$app->session->setFlash('error', 'No se pudo eliminar el Grupo Familiar.');
@@ -184,13 +187,13 @@ class GrupoFamiliarController extends Controller
         try{
             $model = $this->findModel($id);
 
-            $queryResponsable = Responsable::find()->joinWith(['miPersona p']);
+            $queryResponsable = Responsable::find()->joinWith(['persona p']);
             $queryResponsable->andFilterWhere(['id_grupofamiliar' => $model->id,]);              
             $dataProviderResponsables = new ActiveDataProvider([
                 'query' => $queryResponsable,
             ]);        
 
-            $queryAlumnos = Alumno::find()->joinWith(['miPersona p']);
+            $queryAlumnos = Alumno::find()->joinWith(['persona p']);
             $queryAlumnos->andFilterWhere(['id_grupofamiliar' => $model->id,]); 
             $dataProviderAlumnos = new ActiveDataProvider([
                 'query' => $queryAlumnos,
@@ -228,7 +231,7 @@ class GrupoFamiliarController extends Controller
     /************************ Responsables ********************************/
     public function actionAsignarResponsable(){
         try{
-            $familia = Yii::$app->request->get('familia');
+            $familia =  Yii::$app->request->get('familia');
             $idresponsable = Yii::$app->request->get('idresponsable');
             $tiporesponsable = Yii::$app->request->get('tipores');
             
@@ -279,12 +282,12 @@ class GrupoFamiliarController extends Controller
             Yii::error('Asignar Responsbale - GrupoFamiliar '.$e);
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             Yii::$app->response->statusCode=404;
-           return ['message'=>'Error al asignar el responsbale'];
+            return ['message'=>'Error al asignar el responsbale'];
         }
               
     }
     
-    /**********************************************************************/
+    
     public function actionCargaResponsable() {
         try {
             $transaction = Yii::$app->db->beginTransaction();
@@ -437,12 +440,25 @@ class GrupoFamiliarController extends Controller
         $objPHPExcel->getActiveSheet()->getStyle($cells)->getFill()->applyFromArray(array('type' => \PHPExcel_Style_Fill::FILL_SOLID,'startcolor' => array('rgb' => $color) ));
     }  
     
-    public function actionExportarExcel() {       
+    public function actionExportarExcel() {
+        try{
         
         if(Yii::$app->session->has('padronfamilias')){
             
             $data = Yii::$app->session->get('padronfamilias');   
             
+            $model = GrupoFamiliar::findBySql($data);
+            
+            $dataProviderSession = new ActiveDataProvider([
+                'query' => $model,           
+                'pagination' => false
+            ]);
+            
+            $data = $dataProviderSession->getModels();
+            
+           
+                    
+                    
             ini_set('memory_limit', -1);
             set_time_limit(0);
             
@@ -495,7 +511,7 @@ class GrupoFamiliarController extends Controller
                     $objPHPExcel->getActiveSheet()->setCellValue($columnaD, $data[$i]["cantidadHijos"] );
                     
                     $objPHPExcel->getActiveSheet()->setCellValue($columnaE, $data[$i]["datosMisHijos"]);
-                    $objPHPExcel->getActiveSheet()->setCellValue($columnaF, $data[$i]["idPagoAsociado"]["nombre"]);
+                    $objPHPExcel->getActiveSheet()->setCellValue($columnaF, $data[$i]["pagoAsociado"]["nombre"]);
                     
                     if($data[$i]["id_pago_asociado"]=='4')
                         $objPHPExcel->getActiveSheet()->setCellValue($columnaG, $data[$i]["cbu_cuenta"]);
@@ -523,6 +539,11 @@ class GrupoFamiliarController extends Controller
                 return ['result_error' => '1', 'message' => 'LISTADO VACIO'];
             }
         }
+        }catch (\Exception $e) {
+            Yii::error('exportar Alumnos '.$e);
+            Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
+            return $this->redirect(['site/index']);            
+        }  
     }
 
     public function actionDownPadron() {        
