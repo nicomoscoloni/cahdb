@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute'=>'id_tiposervicio',
                             'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'id_tiposervicio', app\models\CategoriaServicioOfrecido::getTipoServicios(), ['prompt'=>'TODOS', 'class'=>'form-control']),
                             'value' => function($model, $key, $index, $column) {
-                                    return $model->miTiposervicio->descripcion;
+                                    return $model->tiposervicio->descripcion;
                             },
                         ],
                         'nombre',                    
@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 },
                         ],
                         [
-                            'label' => 'Importe H.Profesor',
+                            'label' => 'Importe H.P',
                             'value' => function($model, $key, $index, $column) {
                                     return "$ " . $model->importe_hijoprofesor;
                                 },
@@ -71,9 +71,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'devengamiento_automatico',['0'=>'NO','1'=>'SI'] ,['prompt'=>'TODOS','class'=>'form-control']),
                             'value' => function($model, $key, $index, $column) {
                                 if($model->devengamiento_automatico=='0')
-                                    return "NO";
+                                    return "No";
                                 else
-                                    return "SI";                            
+                                    return "Si";                            
                             },
                         ],
 

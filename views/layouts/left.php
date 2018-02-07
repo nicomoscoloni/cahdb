@@ -29,12 +29,12 @@
                     ],
                     ['label' => 'Debito Automatico', 'icon' => 'briefcase', 'url' => ['debito-automatico/admin']],
                     */
-                    /*[
+                    [
                         'label' => 'Servicios', 
                         'icon' => 'briefcase', 
-                        'url' => ['servicio-ofrecido/admin'],
-                        'visible'=>Yii::$app->user->can('abmlServicioOfrecido'),  
-                    ],*/
+                        'url' => ['/servicio-ofrecido/admin'],
+                        'visible'=>Yii::$app->user->can('gestorServicios'),  
+                    ],
                     [
                         'label' => 'Configuraciones',
                         'icon' => 'cogs',
@@ -58,7 +58,7 @@
                             ['label' => 'Nuevo Usuario', 'icon' => 'arrow-right', 'url' => ['user/registration/register'],],
                             ['label' => 'Index', 'icon' => 'arrow-right', 'url' => ['/user/admin/index'],],
                         ],
-                        //'visible' => Yii::$app->user->can('adminSistema')
+                        'visible' => Yii::$app->user->can('adminSistema')
                     ],       
                     
                 ],

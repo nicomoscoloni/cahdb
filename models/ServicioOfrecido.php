@@ -45,7 +45,8 @@ class ServicioOfrecido extends BaseServicioOfrecido
                 'xfecha_inicio' => 'Inicio Servicio',
                 'xfecha_fin' => 'Fin Servicio',
                 'xfecha_vencimiento' => 'Fec. Vencimiento',
-                'id_tiposervicio' => 'Categoria Servicio',                
+                'id_tiposervicio' => 'Categoria',  
+                
             ]
         );
     }

@@ -11,46 +11,30 @@ use kartik\widgets\DatePicker;
 ?>
 <div class="servicio-ofrecido-form">
     <?php $form = ActiveForm::begin([
-        'id'=>'form-servicioofrecido',
-        'options' => [
-                'class' => 'form-prev-submit'
-             ]
-        
-        
-    ]); ?>
+                'id'=>'form-servicioofrecido',
+                'type' => ActiveForm::TYPE_HORIZONTAL,
+                'formConfig' => ['deviceSize' => ActiveForm::SIZE_SMALL],
+                'options' => [
+                        'class' => 'form-prev-submit'
+                    ]
+            ]); ?>
    
-    <div class="row">
-        <div class="col-sm-6">
+    
             <?= $form->field($model, 'id_tiposervicio')->dropDownList(app\models\CategoriaServicioOfrecido::getTipoServicios() ,['prompt'=>'Seleccione..']) ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-6">
+    
             <?= $form->field($model, 'nombre') ?>
-        </div>
-    </div>
     
-    <div class="row">
-        <div class="col-sm-6">
             <?= $form->field($model, 'descripcion') ?>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-6">
+       
             <?= $form->field($model, 'importe',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
-        </div>
-    </div>
+       
+    
+ 
+            <?= $form->field($model, 'importe_hijoprofesor',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]])->label('Imp. HP') ?>
+       
     
     <div class="row">
-        <div class="col-sm-6">
-            <?= $form->field($model, 'importe_hijoprofesor',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-3">
+       
             <?= $form->field($model, 'xfecha_inicio')->widget(
                     DatePicker::className(),([
                                         'language'=>'es',
@@ -61,8 +45,7 @@ use kartik\widgets\DatePicker;
                                         ]
                                     ])
                     );?>
-        </div>
-        <div class="col-sm-3">
+    
             <?= $form->field($model, 'xfecha_fin')->widget(
                     DatePicker::className(),([
                                         'language'=>'es',
@@ -72,7 +55,7 @@ use kartik\widgets\DatePicker;
                                             'format' => 'dd-mm-yyyy'
                                         ]
                                     ])
-                    );?>
+                    )->label('a');?>
         </div>
     </div>
     
