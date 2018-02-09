@@ -8,7 +8,7 @@ use dmstr\widgets\Alert;
     yii\bootstrap\Modal::begin([        
         'id'=>'ModalCrudAjax',
         'class' =>'modal-scrollbar',
-        'size' => 'modal-lg',
+        'clientOptions'=> ['keyboard'=>false,'backdrop'=>'static'],
         'footer' => '<button type="submit" class="btn btn-default btn-submit-form">ACEPTAR</button>',
     ]);
         echo "<div id='modalContent'></div>";
@@ -23,8 +23,6 @@ use dmstr\widgets\Alert;
 
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-        <b>asdsad</b> 2.0
-    </div>
+     </div>
     <strong> Asociación Exalumnos Don Bosco.</strong>
-    
-</footer>
+ </footer>

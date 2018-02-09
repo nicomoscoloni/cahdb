@@ -34,23 +34,9 @@ EstablecimientoAssets::register($this);
                             'nombre',     
                             ['class' => 'yii\grid\ActionColumn',
                                 'headerOptions' => ['width' => '30'],
-                                'template'=>'{view}',                                
-                                'buttons' => 
-                                   [
-                                   'view'  => function ($url, $model) {                                
-                                                    return Html::a( '<i class="glyphicon glyphicon-eye-open"></i>',
-                                                                           ['division-escolar/view', 'id'=>$model['id']],
-                                                                           ['class'=>'']
-                                                                   );
-                                           },  
-                                   ]   
-                            ],
-                            ['class' => 'yii\grid\ActionColumn',
-                                'headerOptions' => ['width' => '80'],
-                                'template'=>'{update} {delete}',
+                                'template'=>'{view}',    
                                 'visibleButtons' => [                                   
-                                    'update' => Yii::$app->user->can('gestionarDivisionEscolar'),
-                                    'delete' =>Yii::$app->user->can('gestionarDivisionEscolar'),
+                                    'view' => Yii::$app->user->can('visualizarDivisionEscolar'),
                                 ],
                                 'buttons' => 
                                    [
@@ -60,22 +46,40 @@ EstablecimientoAssets::register($this);
                                                                            ['class'=>'']
                                                                    );
                                            },  
+                                   ],
+                                                   //'visible'=>Yii::$app->user->can('visualizarDivisionEscolar'),
+                            ],
+                            ['class' => 'yii\grid\ActionColumn',
+                                'headerOptions' => ['width' => '80'],
+                                'template'=>'{update} {delete}',
+                                'visibleButtons' => [                                   
+                                    'update' => Yii::$app->user->can('gestionarDivisionesEscolares'),
+                                    'delete' =>Yii::$app->user->can('gestionarDivisionesEscolares'),
+                                ],
+                                'buttons' => 
+                                   [
+                                   'view'  => function ($url, $model) {                                
+                                                    return Html::a( '<i class="glyphicon glyphicon-eye-open text-red"></i>',
+                                                                           ['division-escolar/view', 'id'=>$model['id']],
+                                                                           ['class'=>'btn btn-xs btn-primary']
+                                                                   );
+                                           },  
                                    'update' => function ($url, $model) {                                
                                                     return Html::button( '<i class="glyphicon glyphicon-pencil"></i>',                                                                           
-                                                                           ['class'=>'btn btn-link-app',
+                                                                           ['class'=>'btn btn-xs btn-primary',
                                                                             'onclick'=>'js:divisionescolar.cargarDivision("'.Url::to(['establecimiento/actualizar-division', 'id'=>$model['id']]) .'");']
                                                                    );
                                            },
                                     'delete' => function ($url, $model) {                                
                                                    return Html::button( '<i class="glyphicon glyphicon-remove"></i>',
-                                                                           ['class'=>'btn btn-link-app',
+                                                                           ['class'=>'btn btn-xs btn-danger',
                                                                             'onclick'=>'js:divisionescolar.eliminarDivision("'.Url::to(['establecimiento/eliminar-division', 'id'=>$model['id']]) .'");']
                                                                    );
                                             },                
 
                                     ],
                                                     
-                                    'visible'=>Yii::$app->user->can('gestionarDivisionEscolar'),
+                                    'visible'=>Yii::$app->user->can('gestionarDivisionesEscolares'),
                             ],
                         ],
                     ]); ?>

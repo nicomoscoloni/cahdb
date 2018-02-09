@@ -21,18 +21,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <i class="fa fa-users"></i> <h3 class="box-title"> Administración de Alumnos </h3>    
     </div>
     <div class="box-body">
-        <div class="pull-right"> 
+      
             <?php
             if(Yii::$app->user->can('exportarAlumnos')){?>
-                <p> 
-                    <?= Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
+                <p class="pull-right"> 
+                    <?= Html::button('<i class="glyphicon glyphicon-download"> </i> Excel', ['class' => 'btn btn-success btn-xs', 'id'=>'btn-excel',
                             'onclick'=>'js:{downListado("'.Url::to(['alumno/exportar-excel']) .'");}']) ?>
                 </p>
             <?php } ?>
-        </div>
-        <div class="row">   
-    
-          <div class="col-sm-12">  
+        
+       
             <?php Pjax::begin([
                 'id'=>'pjax-alumnos',
                 'enablePushState' => false,
@@ -162,8 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]); ?>
             <?php Pjax::end(); ?>
-          </div>
-        </div>
+         
     </div>
 </div>
 

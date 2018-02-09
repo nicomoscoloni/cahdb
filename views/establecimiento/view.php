@@ -21,35 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
            <i class="fa fa-university"></i> <h3 class="box-title"> Establecimiento:  <?= $model-> nombre; ?></h3> 
     </div>
     <div class="box-body">        
-        <p>
-            <?php
-            if(Yii::$app->user->can('gestionarDivisionEscolar')){
-                echo Html::a('<i class="fa fa-pencil"></i>   Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
-                echo Html::a('<i class="fa fa-trash-o"></i>   Eliminar', ['delete', 'id' => $model->id], [
-                        'class' => 'btn btn-danger',
-                        'data' => [
-                            'confirm' => 'Está seguro que desea eliminar el Establecimiento?',
-                            'method' => 'post',
-                        ],
-                    ]); 
-                    } ?>
+
+           
             
-            <?php
-            if(Yii::$app->user->can('gestionarDivisionEscolar'))
-                echo Html::button('<i class="fa fa-pencil"></i>   Divisiones', ['id' => $model->id, 'class' => 'btn btn-primary',
-                   'onclick'=>'js:establecimiento.misDivisionesEscolares("'.Url::to(['establecimiento/mis-divisiones-escolares','establecimiento'=>$model->id]) .'");']) ?>
-            <?php
-            
-                echo Html::button('<i class="fa fa-pencil"></i>   Alumnos', ['id' => $model->id, 'class' => 'btn btn-primary',
-                   'onclick'=>'js:establecimiento.misAlumnos("'.Url::to(['establecimiento/mis-alumnos','establecimiento'=>$model->id]) .'");']) ?>
-            
-                   
-            <?php
-            if(Yii::$app->user->can('perServiciosEstablecimientos'))
-                echo Html::button('<i class="fa fa-pencil"></i>   Servicios', ['id' => $model->id, 'class' => 'btn btn-primary',
-                   'onclick'=>'js:establecimiento.misServicios("'.Url::to(['establecimiento/mis-servicios-ofrecidos','establecimiento'=>$model->id]) .'");']) ?>
-        </p>
-        <div class="row"> <!-- row dettales delconvenio -->
+            <div class="row"> <!-- row dettales delconvenio -->
             <div class="col-sm-8 col-sm-offset-2 col-xs-12">
                 <table>
                     <tr>
@@ -67,6 +42,53 @@ $this->params['breadcrumbs'][] = $this->title;
                 </table>          
             </div>
         </div> <!-- fin row dettales del establecimiento -->
+        
+        <div class="dropup" id="drop-menu-establecimientos">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Opciones
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <li>
+                <?php 
+                    if(Yii::$app->user->can('cargarEstablecimiento'))
+                        echo Html::a('<i class="fa fa-pencil"></i>   Actualizar', ['update', 'id' => $model->id], ['class' => '']);
+                ?> 
+                </li>
+                <li>
+                <?php 
+                    if(Yii::$app->user->can('eliminarEstablecimiento'))    
+                        echo Html::a('<i class="fa fa-trash-o"></i>   Eliminar', ['delete', 'id' => $model->id], [
+                                'class' => '',
+                                'data' => [
+                                    'confirm' => 'Está seguro que desea eliminar el Establecimiento?',
+                                    'method' => 'post',
+                                ],
+                            ]);    
+                ?>
+                </li>              
+                <li role="separator" class="divider"></li>
+                <li>
+                <?php
+                    if(Yii::$app->user->can('gestionarDivisionesEscolares'))
+                        echo Html::a('<i class="fa fa-pencil"></i>   Divisiones', 'javascript::void(0)', ['id' => $model->id, 'class' => '',
+                           'onclick'=>'js:establecimiento.misDivisionesEscolares("'.Url::to(['establecimiento/mis-divisiones-escolares','establecimiento'=>$model->id]) .'");']) ?>
+                </li>
+                <li>
+                <?php            
+                    echo Html::a('<i class="fa fa-users"></i>   Alumnos', 'javascript::void(0)', ['id' => $model->id, 'class' => '',
+                       'onclick'=>'js:establecimiento.misAlumnos("'.Url::to(['establecimiento/mis-alumnos','establecimiento'=>$model->id]) .'");']) ?>
+                </li>
+                <li>
+                <?php
+                if(Yii::$app->user->can('gestionarServiciosEstablecimiento'))
+                    echo Html::a('<i class="fa fa-pencil"></i>   Servicios', 'javascript::void(0)',['id' => $model->id, 'class' => '',
+                       'onclick'=>'js:establecimiento.misServicios("'.Url::to(['establecimiento/mis-servicios-ofrecidos','establecimiento'=>$model->id]) .'");']);
+                ?>
+                </li>
+        
+            </ul>
+        </div>
         
         <div id="dataestablecimiento">
         </div>

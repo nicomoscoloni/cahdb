@@ -26,7 +26,7 @@ $this->title = 'Alta Convenio Pago';
                                 <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/family.png"; ?>" alt="familia" />  
                             </td>
                             <td width="60%">
-                                <h3 class="text-light-blue bold">    Nro Familia / Folio: <?php echo $modelFamilia->folio; ?> </h3>
+                                <h3 class="text-light-blue bold">    Familia / Folio: <?php echo $modelFamilia->folio; ?> </h3>
                                 <span class="text-light-blue bold">  Apellido/s: </span> <?php echo $modelFamilia->apellidos; ?> <br />
                                 <span class="text-light-blue bold">  Descripción: </span> <?php echo $modelFamilia->descripcion; ?> <br />
                              </td>

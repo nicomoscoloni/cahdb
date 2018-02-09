@@ -16,9 +16,13 @@ use yii\helpers\Url;
             <div class="box-body">
                 <div class="pull-right">
                     <p>                   
-                        <?= Html::a('<i class="fa fa-plus-square"></i> Cargar', ['alumno/empadronamiento'], ['class' => 'btn btn-primary']);
+                        <?php
+                        if(Yii::$app->user->can('cargarAlumno'))
+                            echo Html::a('<i class="fa fa-plus-square"></i> Cargar', ['alumno/empadronamiento'], ['class' => 'btn btn-primary']);
                         ?>
-                        <?= Html::button('<i class="glyphicon glyphicon-download"> </i> Listado', ['class' => 'btn btn-success', 'id' => 'btn-excel',
+                        <?php
+                        if(Yii::$app->user->can('exportarAlumno'))
+                            echo Html::button('<i class="glyphicon glyphicon-download"> </i> Listado', ['class' => 'btn btn-success', 'id' => 'btn-excel',
                             'onclick' => 'js:{downListado("' . Url::to(['alumno/exportar-excel']) . '");}'])
                         ?>
 
@@ -81,11 +85,14 @@ use yii\helpers\Url;
                                 'header' => 'Actions',
                                 'headerOptions' => ['style' => 'color:#337ab7'],
                                 'template' => '{view}',
+                                'visibleButtons' => [                                   
+                                    'view' =>Yii::$app->user->can('visualizarAlumno'),
+                                ],
                                 'buttons' => [
                                     'view' => function ($url, $model) {
                                         return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', Url::to(['alumno/view','id'=>$model->id]), ['title' => Yii::t('app', 'DETALLES ALUMNO')]);
                                     },
-                                ],
+                                ],'visible'=>Yii::$app->user->can('visualizarAlumno'),
                             ],
                             ],
                                     ]);

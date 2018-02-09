@@ -32,7 +32,7 @@ function asignarResponsable(btn){
     $.ajax({
         url    : xhref,
         type   : "get",
-        data   : {"tipores": $('#tipores').val(), "familia": $('#familia').val(), "idresponsable": responsbale},
+        data   : {"tipores": $('#tipores').val(), "familia": $('#familia').val()},
         success: function (response) {
                 $("#modalAsignacionResponsable").modal("toggle");                 
                 $.pjax.reload({container:'#pjax-responsables', timeout:false}); 

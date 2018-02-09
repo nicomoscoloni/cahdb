@@ -375,20 +375,27 @@ class AlumnoController extends Controller
         $objPHPExcel->getActiveSheet()->getStyle($cells)->getFill()->applyFromArray(array('type' => \PHPExcel_Style_Fill::FILL_SOLID,'startcolor' => array('rgb' => $color) ));
     }  
     
-    public function actionExportarExcel() {       
+    public function actionExportarExcel() {  
+        ini_set('memory_limit', -1);
+        set_time_limit(0);
         try{
             
         
         if(Yii::$app->session->has('padronalumnos')){
              
             $data = Yii::$app->session->get('padronalumnos');
-            $dataProvider = new \yii\data\SqlDataProvider([           
-                'sql' => $data,  
-                'pagination' =>false
+            
+            
+            $model = Alumno::findBySql($data);
+            
+            $dataProviderSession = new \yii\data\ActiveDataProvider([
+                'query' => $model,           
+                'pagination' => false
             ]);
-            $data = $dataProvider->getModels();
-            ini_set('memory_limit', -1);
-            set_time_limit(0);
+            
+            $data = $dataProviderSession->getModels();
+            
+            
             
             $i = 0;                        
             $contador = count($data);
@@ -486,7 +493,7 @@ class AlumnoController extends Controller
                     $lfcr = chr(10) . chr(13);
                     if(count($bonificaciones)>0){
                         foreach($bonificaciones as $one)
-                            $textoBonificaciones.="\n" . $one->idBonificacion->descripcion;
+                            $textoBonificaciones.="\n" . $one->bonificacion->descripcion;
                     }
                     
                     $objPHPExcel->getActiveSheet()->setCellValue($columnaK, $textoBonificaciones);

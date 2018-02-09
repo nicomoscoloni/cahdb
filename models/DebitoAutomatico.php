@@ -116,26 +116,26 @@ class DebitoAutomatico extends BaseDebitoAutomatico
             $this->fin_periodo = $value;
         }
     }
-    
+    /*
     public function getSaldoEntrante(){
         return "MODIFICAR";
-    }
-    
+    }*/
+    /*
     public function getSaldoEnviado(){
         return ServicioDebitoAutomatico::find()->joinWith('idServicio s')
                 ->where('id_debitoautomatico='.$this->id)->sum('(s.importe_servicio - s.importe_descuento - s.importe_abonado)');
-    }
+    }*/
     
     public function getProcesado(){
         if($this->procesado=='0')
-            return "<span class='label bg-red'> NO </span>";
+            return "<span class='label bg-red'> No </span>";
         else
-           return "<span class='bg bg-blue'> SI </span>"; 
+           return "<span class='bg bg-blue'> Si </span>"; 
     }
     
     public function getPeriodoBarrido(){
         
-            return "<span class='label bg-red'>". $this->inicio_periodo ." ". $this->fin_periodo."</span>";
+            return "<span class='label bg-red'>". $this->xinicio_periodo ." al ". $this->xfin_periodo."</span>";
         
            
     }

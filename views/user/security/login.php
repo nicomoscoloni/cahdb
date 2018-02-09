@@ -1,9 +1,6 @@
 <?php
 
-/*
- *  This file is part of the CAYP project.
- * @author Sebastian Hernandorena
- */
+
 
 /* @var $this \yii\web\View */
 
@@ -20,7 +17,7 @@ use yii\widgets\ActiveForm;
 AppAsset::register($this);
 ?>
 <?php $this->beginPage();
-      $this->title = 'Colegio de Abogados de Viedma';?>
+      $this->title = 'Asosiación Hermanos de Don Bosco';?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
@@ -40,7 +37,7 @@ AppAsset::register($this);
                 <div class="box box-login">
                    
                     <div class="panel-body">
-                        <p class="text-center"> <img src="<?php echo Yii::getAlias('@web') . "/images/logo.jpg"; ?>" alt="logo-abogados" title="Colegio Abogados Viedma" /></p>
+                        <p class="text-center"> <img src="<?php echo Yii::getAlias('@web') . "/images/logo.jpg"; ?>" alt="" title="" /></p>
                         <?php $form = ActiveForm::begin([
                             'id'                     => 'login-form',
                             'enableAjaxValidation'   => true,

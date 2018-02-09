@@ -249,7 +249,7 @@ class ServicioOfrecidoController extends Controller
                 $modelServicio = new \app\models\ServicioAlumno();
                 $modelServicio->id_alumno = $servicio['idalumno'];
                 $modelServicio->id_servicio = $id;// $servicio['idservicioofrecido'];
-                $modelServicio->estado = 'A';
+                $modelServicio->estado = ConfController::estadoSA_ABIERTA;
 
                 if( $servicio['hijo_profesor']=='0')
                     $modelServicio->importe_servicio = $servicio['montoservicio'];
@@ -302,8 +302,8 @@ class ServicioOfrecidoController extends Controller
 
             $estado = 'A';
             $command_servicios = Yii::$app->db->createCommand("
-             DELETE  FROM servicio_alumno   
-                    WHERE estado='A'  and id_servicio= $id");
+                DELETE  FROM servicio_alumno   
+                    WHERE importe_abonado=0 and estado='".ConfController::estadoSA_ABIERTA."'  and id_servicio= $id");
             
             $command_bonificaciones = Yii::$app->db->createCommand("
                 DELETE FROM bonificacion_servicio_alumno

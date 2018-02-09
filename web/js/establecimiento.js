@@ -39,8 +39,6 @@ var establecimiento = {
         return false;    
     },
     misAlumnos: function(xhref){     
-        alert("asd");
-        alert(xhref);
         $.ajax({
             url    : xhref,  
             success: function (response){              

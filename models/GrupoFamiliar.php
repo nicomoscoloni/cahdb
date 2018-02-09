@@ -93,7 +93,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
     
     /************************************************************************/
     /************************************************************************/
-    /*
+    
     public function getMiResponsableCabecera(){
         if(!empty($this->id)){
             $query = Responsable::find();
@@ -115,7 +115,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
                 return "";
         }else
             return "";        
-    }*/
+    }
     
     /*
     public function getResponsableD(){

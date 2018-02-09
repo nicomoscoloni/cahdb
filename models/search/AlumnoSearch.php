@@ -58,11 +58,7 @@ class AlumnoSearch extends Alumno
             'query' => $query,            
         ]);
         
-        $dataProviderSession = new ActiveDataProvider([
-            'query' => $query,           
-            'pagination' => false
-        ]);
-
+        
         $this->load($params);
 
         if (!$this->validate()) {

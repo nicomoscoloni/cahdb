@@ -2,6 +2,10 @@
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
 use kartik\date\DatePicker;
+
+use app\assets\ConvenioPagoAssets;
+ConvenioPagoAssets::register($this);
+
 /* @var $this yii\web\View */
 /* @var $model app\models\ConvenioPago */
 /* @var $form yii\widgets\ActiveForm */
@@ -118,54 +122,10 @@ $this->title = 'Alta Convenio Pago';
 </div>
 
 
-<script type="text/javascript">
-function addCuota(url){     
-    var ordn = parseInt($('#ordn').val()) + 1;    
-   
-    $.ajax({
-        'url': url,
-        'dataType': 'json',
-        'type': 'POST',
-        'data': 'nro='+ordn,
-        'beforeSend': function(xhr){
-
-        },
-        'success':function(data){            
-            dataCuota = data.vista;
-            $('#misCuotas').prepend(dataCuota);
-            $('#ordn').val(ordn);       
-        },
-    });   
-}
-
-function eliminarcuota(nrocuota){
-    if($('.groupcuota').length>1){
-        $('#divcuota-'+nrocuota).remove();    
-    }else{
-                            new PNotify({
-                                title: 'Error',
-                                text: 'No se puede eliminar la cuota, al menos debe existir una de ellas',
-                                icon: 'glyphicon glyphicon-envelope',
-                                type: 'error'
-                            });
-    }
-    
-}
-
-</script>
 <?php
 $this->registerJs("
 $(document).ready(function(){
-    $('#form-convenio').on('beforeValidate',function(e){
-        $('#btn-envio').attr('disabled','disabled');
-        $('#btn-envio').html('<i class=\'fa fa-spinner fa-spin\'></i> Procesando...');        
-    });
-    $('#form-convenio').on('afterValidate',function(e, messages){
-        if ($('#form-convenio').find('.has-error').length > 0){
-            $('#btn-envio').removeAttr('disabled');
-            $('#btn-envio').html('<i class=\'fa fa-save\'></i> Guardar...');
-        }
-    });    
+    
 });         
 ", \yii\web\View::POS_READY,'preventSubmitForm');
 ?>

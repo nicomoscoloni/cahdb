@@ -24,8 +24,6 @@ CRUDAjaxAsset::register($this);
                     <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-xs btn-success',
                         'onclick'=>'js:{cargaAjax("'.Url::to(['forma-pago/create']) .'"); return false;}']) ?>
                 </p>
-            <div class="row">
-                <div class="col-sm-12">
                     <?php Pjax::begin(['id'=>'pjax-grid','enablePushState' => false]); ?>    
                     <?=   GridView::widget([
                         'dataProvider' => $dataProvider,
@@ -58,8 +56,6 @@ CRUDAjaxAsset::register($this);
                         ],
                     ]); ?>
                     <?php Pjax::end(); ?>    
-                </div>
-            </div>
             
         </div>
     </div>

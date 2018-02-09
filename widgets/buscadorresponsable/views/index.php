@@ -40,7 +40,7 @@ use yii\grid\GridView;
                             'template' => '{select}',
                             'buttons' => [                                    
                                     'select' => function ($url, $model, $key) {                                            
-                                            return Html::a('Selec', '#', ['class' => 'btn btn-xs btn-primary','id'=>'asign']);
+                                            return Html::a('Selec', '#', ['class' => 'iradio_flat-green btn btn-xs btn-primary','id'=>'asign']);
                                     }
                             ],                            
                     ],                                                    

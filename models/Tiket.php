@@ -11,7 +11,11 @@ use yii\helpers\ArrayHelper;
  */
 class Tiket extends BaseTiket
 {
- 
+    const  SERVICIO_MATRICULA = 1;
+    const  SERVICIO_CUOTA = 3;
+    const  SERVICIO_CONVENIO = 5;
+    
+
     public $cuentapagadora;
     public $montoabonado;
     public $pagototal;

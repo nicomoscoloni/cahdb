@@ -29,8 +29,7 @@ class GrupoFamiliarController extends Controller
     {
         return [
             'access' => [
-                'class' => \yii\filters\AccessControl::className(),
-                
+                'class' => \yii\filters\AccessControl::className(),                
                 'rules' => [
                     [     
                         'actions' => ['listado'],
@@ -61,6 +60,10 @@ class GrupoFamiliarController extends Controller
                         'actions' => ['asignar-responsable','carga-responsable','actualizar-responsable','quitar-responsable'],
                         'allow' => true,
                         'roles' => ['gestionarResponsable'],
+                    ],
+                    [     
+                        'actions' => ['servicios-familia'],
+                        'allow' => true,
                     ],
                     
                 ],

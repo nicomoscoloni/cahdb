@@ -18,12 +18,8 @@ use yii\grid\GridView;
         
 <div class="row">
     <div class="col-xs-12">
-        <?php   echo \dmstr\helpers\Html::dropDownList('tipores','',app\models\TipoResponsable::getTipoResponsables(),['class'=>'','id'=>'tipores']); 
-                echo Html::button(' <i class="fa fa-plus-square"></i> ASIGNAR', 
-                    ['value'=> Url::to(['grupo-familiar/asignar-responsable']),
-                     'class' => 'btn btn-warningbtn-xs',
-                     'onclick'=>'js:{asignarResponsable(this);}'    
-                    ]); 
+        <?php   
+               
                 echo Html::button(' <i class="fa fa-plus-square"></i> ALTA', 
                         ['value'=> Url::to(['grupo-familiar/carga-responsable', 'idFamilia'=>$familia]),
                          'class' => 'btn btn-primary',
@@ -42,15 +38,23 @@ use yii\grid\GridView;
         'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
         'headerRowOptions' => ['class'=>'x'],
         'columns' => [                
+                
                 [
-                    'class' => 'yii\grid\RadioButtonColumn',                    
-                    'radioOptions' => function ($model) {
-                         return [
-                             'value' => $model['id']                             
-                         ];
-                    }
-                ],
-                'tipodocumento.siglas',
+                    'class' => 'yii\grid\ActionColumn',
+                    'template' => '{select}',
+                    'header'=>\dmstr\helpers\Html::dropDownList('tipores','',app\models\TipoResponsable::getTipoResponsables(),['class'=>'','id'=>'tipores']) ,
+                    'buttons' => [                                    
+                        'select' => function ($url, $model, $key) { 
+                            return Html::button('Asignar', 
+                                ['value'=> Url::to(['grupo-familiar/asignar-responsable','idresponsable'=>$model['id']]),
+                                 'class' => 'btn btn-primary btn-xs',
+                                 'onclick'=>'js:{asignarResponsable(this);}'    
+                                ]);
+
+                        }
+                    ],                            
+                ],    
+                
                 'nro_documento',                
                 'apellido',
                 'nombre',

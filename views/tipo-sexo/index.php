@@ -17,7 +17,6 @@ CRUDAjaxAsset::register($this);
 
     <div class="box  box-colegio">
         <div class="box-header with-border">
-            
             <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Sexos/Genero </h3>
         </div>
         <div class="box-body">

@@ -59,7 +59,7 @@ $this->title = 'Convenios Pagos';
                             'format'=>'raw',
                             'contentOptions'=>['class'=>'columncenter'],
                             'value' => function($model) {
-                                return $model->CantCuotas;                
+                                return $model->cantCuotas;                
                             },
                         ],    
                         [

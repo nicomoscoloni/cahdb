@@ -31,31 +31,23 @@ use kartik\widgets\DatePicker;
                                         ]
                                     ])
                     );?>
-        
-
-   
+    
             <?= $form->field($model, 'calle') ?>
-       
-
     
             <?= $form->field($model, 'telefono',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
-        
     
-   
             <?= $form->field($model, 'celular',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-phone"></i>']]]) ?>
-        
     
-    
-            <?= $form->field($model, 'mail',['addon' => ['prepend' => ['content'=>'@']]])->input('email') ?>
-        
-
+            <?= $form->field($model, 'mail',['addon' => ['prepend' => ['content'=>'@']]])->input('email') ?>    
     
             <?= $form->field($model, 'nivel_educativo'); ?>
         
 
-    <div class="form-group">
-        <?= Html::submitButton("<i class='fa fa-save'></i> ".' GUARDAR', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary','id'=>'btn-envio']) ?>
-    </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <?= Html::submitButton("<i class='fa fa-save'></i> " . ' GUARDAR', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'btn-envio']) ?>
+            </div>
+        </div>
 
     <?php ActiveForm::end(); ?>
 

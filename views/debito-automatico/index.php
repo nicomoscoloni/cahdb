@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\DebitoAutomaticoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -27,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                                 'id'=>'pjax-debitosautomaticos',                       
                                 'enablePushState' => false,
+                                'timeout'=>false,
                                ]
                         ); ?>    
                 <?= GridView::widget([
@@ -39,18 +41,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         'inicio_periodo:date',
                         'fin_periodo:date',                
                         'registros_enviados',
-                        'registros_correctos',
-                        
+                        'registros_correctos',                        
                         [
                             'label' => 'Procesado',
                             'value' => function($model) {
-                                return Yii::$app->formatter->asCurrency($model->saldo_enviado);
+                                return $model->saldo_enviado;
                                 
                             }
                         ],
-                        //Yii::$app->formatter->asCurrency
-                        
-                        
                         'saldo_entrante',
                         [
                             'label' => 'Procesado',

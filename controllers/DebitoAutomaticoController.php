@@ -26,17 +26,17 @@ class DebitoAutomaticoController extends Controller
                     [     
                         'actions' => ['administrar','view','generar'],
                         'allow' => true,
-                        //'roles' => ['gestionDebitosAutomaticos'],
+                        'roles' => ['gestionarDebitoAutomatico'],
                     ], 
                     [     
                         'actions' => ['procesar'],
                         'allow' => true,
-                        //'roles' => ['gestionDebitosAutomaticos'],
+                        'roles' => ['gestionarDebitoAutomatico'],
                     ],
                     [     
                         'actions' => ['descargar-archivo-envio','descarga-txt','descarga-excel','convertir-a-excel'],
                         'allow' => true,
-                        //'roles' => ['gestionDebitosAutomaticos'],
+                        'roles' => ['gestionarDebitoAutomatico'],
                     ],  
                 ],
             ],  
@@ -392,6 +392,8 @@ class DebitoAutomaticoController extends Controller
         $periodoIni = $modelArchivo->inicio_periodo;
         $periodoFin = $modelArchivo->fin_periodo;
         $fechaVencimiento = $modelArchivo->fecha_debito;
+        
+        $fechaVencimientoLinea = \app\models\Fecha::convertirFecha($modelArchivo->fecha_debito,"Y-m-d","d-m-Y");
                 
         try{
             $sql = "
@@ -411,23 +413,23 @@ class DebitoAutomaticoController extends Controller
                          INNER JOIN grupo_familiar f ON (f.id = a.id_grupofamiliar) 
                           WHERE (f.id_pago_asociado = 4) 
                      ) a ON (a.nrofamilia = cp.id_familia)
-                     WHERE (ccp.pagada='0') and (ccp.fecha_establecida>='". $periodoIni ."' and ccp.fecha_establecida<='". $periodoFin ."' )
+                     WHERE (ccp.estado='A') and (ccp.fecha_establecida>='". $periodoIni ."' and ccp.fecha_establecida<='". $periodoFin ."' )
                 ) 
                 UNION
                 (
-                     SELECT a.nrofamilia as nrofamilia, a.cbu, sa.id as idservicio, 
+                    SELECT a.nrofamilia as nrofamilia, a.cbu, sa.id as idservicio, 
                             (sa.importe_servicio - sa.importe_descuento - sa.importe_abonado) as monto, 
                             'SERVICIOS' as tiposervicio
                         FROM servicio_alumno sa 
                         INNER JOIN ( 
                             SELECT a.id as idalumno, f.id as nrofamilia, f.cbu_cuenta as cbu 
                              FROM alumno a INNER JOIN grupo_familiar f ON (f.id = a.id_grupofamiliar) 
-                              WHERE (f.id_pago_asociado = 4) 
+                              WHERE (f.id_pago_asociado = 4)
                         ) a ON (a.idalumno = sa.id_alumno) 
-                        INNER JOIN servicio_establecimiento se ON (se.id = sa.id_servicio)
-                        INNER JOIN servicio_ofrecido so ON (so.id = se.id_servicio)
-                     WHERE (sa.estado = 'A') and (sa.liquidado = '0') 
-                     and ((so.fecha_vencimiento >= '".$periodoIni."') and (so.fecha_vencimiento <= '".$periodoFin."'))
+                       
+                        INNER JOIN servicio_ofrecido so ON (so.id = sa.id_servicio)
+                    WHERE (sa.estado = 'A')  
+                       and ((so.fecha_vencimiento >= '".$periodoIni."') and (so.fecha_vencimiento <= '".$periodoFin."'))
                 ) 
             ) as D
             ORDER BY D.nrofamilia";
@@ -480,7 +482,7 @@ class DebitoAutomaticoController extends Controller
                            $nroServicioFamilia+=1;                            
                         }
                         
-                        $contenido.= $this->devolverLinea_PATAGONIA_CBU($nrofamilia, $cbu, $cantidad, $monto, $fechaVencimiento, $nroServicioFamilia); 
+                        $contenido.= $this->devolverLinea_PATAGONIA_CBU($nrofamilia, $cbu, $cantidad, $monto, $fechaVencimientoLinea, $nroServicioFamilia); 
 
                         $servicio_da = new \app\models\ServicioDebitoAutomatico();
                         $servicio_da->id_debitoautomatico = $modelArchivo->id;
@@ -552,7 +554,7 @@ class DebitoAutomaticoController extends Controller
         $contenido='';
         $contenido.="D";
         $contenido.='00000000000';
-        $contenido.=$cbu;
+        $contenido.=str_pad($cbu,22," ",STR_PAD_RIGHT);
         
         $identificadorFamilia   = "FG1".str_pad($nrofamilia,5,"0",STR_PAD_LEFT);        
         $contenido.= str_pad($identificadorFamilia,22," ",STR_PAD_RIGHT);
@@ -566,7 +568,7 @@ class DebitoAutomaticoController extends Controller
         
         $servicio='MATRICULA'.$nroServicioFamilia;
         
-        $contenido.=str_pad($servicio,15," ",STR_PAD_RIGHT);
+        $contenido.=str_pad($servicio,15,"M",STR_PAD_LEFT);
         
         $montoCuota = number_format($monto, 2);
         $montoCuota = str_replace(",","",str_replace(".","",$montoCuota));            
@@ -765,8 +767,8 @@ class DebitoAutomaticoController extends Controller
             Yii::$app->response->format = 'json';
             return ['result_error' => '0', 'result_texto' => $url_pdf];
         }
-    }    
-        
+    } 
+    
     public function actionDescargaTxt($id) { 
         $modelDebito = $this->findModel($id);
         

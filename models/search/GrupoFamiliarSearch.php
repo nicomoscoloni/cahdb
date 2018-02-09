@@ -49,10 +49,7 @@ class GrupoFamiliarSearch extends GrupoFamiliar
         $query = GrupoFamiliar::find()->distinct();
         $query->joinWith(['responsables r','responsables.persona p']);
 
-        $dataProviderSession = new ActiveDataProvider([
-            'query' => $query,           
-            'pagination' => false
-        ]);
+        
         
         // add conditions that should always apply here
 

@@ -35,7 +35,7 @@ class ConvenioPagoController extends Controller
                 'rules' => [
                     [                        
                         'allow' => true,
-                        //'roles' => ['gestionarConveniosPagos'],
+                        'roles' => ['gestionarConvenioPago'],
                     ],
                 ],
             ],
@@ -184,7 +184,7 @@ class ConvenioPagoController extends Controller
             $modelGrupoFamiliar = new \app\models\GrupoFamiliar(); 
              
             $query = \app\models\GrupoFamiliar::find(); 
-            $query->joinWith(['responsables r','responsables.idPersona p']);                    
+            $query->joinWith(['responsables r','responsables.persona p']);                    
             $dataProvider = new ActiveDataProvider([
                 'query' => $query,
             ]);
@@ -298,7 +298,7 @@ class ConvenioPagoController extends Controller
                 $modelConvenionPago->con_servicios='1';
                 $query = \app\models\search\ServicioAlumnoSearch::find();
                 $query->alias('t');
-                $query->joinWith(['idServicio se','idServicio.idServicio so']);
+                $query->joinWith(['servicio so']);
                 $query->where(['IN', 't.id', $servicios]);
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,
@@ -322,7 +322,6 @@ class ConvenioPagoController extends Controller
                     foreach($modelCuotasConvenioPago as $key => $cuota){
                         $cuota->id_conveniopago = $modelConvenionPago->id;
                         $cuota->nro_cuota = $nrocuota;
-                        $cuota->pagada='0';
                         $cuota->importe_abonado='0';
                         $cuota->estado='A';
                         $nrocuota+=1;
@@ -474,7 +473,7 @@ class ConvenioPagoController extends Controller
                             <tr class="odd">
                               <td class="odd" style="text-align:center;  font-size: 10px;"  width="9%">&nbsp;' . $misCuotas[$i]['nro_cuota'] . '</td>
                               <td class="odd" style="text-align:center;    font-size: 10px;"  width="16%">&nbsp;' . \Yii::$app->formatter->asDate($misCuotas[$i]['fecha_establecida']) . '</td>';
-                if ($misCuotas[$i]['pagada'] == '1')
+                if ($misCuotas[$i]['estado'] == 'A')
                     $html .= '<td class="odd" style="text-align:center;    font-size: 10px;"  width="16%">ABONADA</td>';
                 else
                     $html .= '<td class="odd" style="text-align:center;    font-size: 10px;"  width="16%">PENDIENTE</td>';

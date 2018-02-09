@@ -5,6 +5,9 @@ use yii\widgets\DetailView;
 use yii\widgets\Pjax;
 use yii\grid\GridView;
 
+use app\assets\ConvenioPagoAssets;
+ConvenioPagoAssets::register($this);
+
 /* @var $this yii\web\View */
 /* @var $model app\models\ConvenioPago */
 
@@ -23,10 +26,10 @@ $this->title = "Convenio Pago: " . $model->id;
                         <td width="25%"> 
                             <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/convenio.png"; ?>" alt="cp_dollar" />  </td>
                         <td width="60%">
-                            <h3 class="text-light-blue bold">    Nro Convenio: <?php echo $model->id; ?> </h3>
+                            <h3 class="text-light-blue bold">    Convenio Nº: <?php echo $model->id; ?> </h3>
                             <span class="text-light-blue bold">  Fecha Alta: </span> <?php echo \Yii::$app->formatter->asDate($model->fecha_alta); ?><br /> 
-                            <span class="text-light-blue bold">  Grupo Familiar: </span> <?php echo $model->miFamilia->apellidos ." Folio: ".$model->miFamilia->folio; ?> <br />
-                            <h3 class="text-light-blue bold">  Importe Convenio Pago:  $<?php echo $model->saldo_pagar; ?> </h3><br />
+                            <span class="text-light-blue bold">  Familia: </span> <?php echo $model->miFamilia->apellidos ." Folio: ".$model->miFamilia->folio; ?> <br />
+                            <h3 class="text-light-blue bold">  Importe:  $<?php echo $model->saldo_pagar; ?> </h3><br />
                             <br />
                             <div class="">
                             <?php
@@ -69,20 +72,7 @@ $this->title = "Convenio Pago: " . $model->id;
                                     'value' => function($model) {                                        
                                             return $model->fecha_establecida;                                        
                                     },
-                                ],  
-                                [
-                                    'label' => 'Liquidada',
-                                    'attribute'=>'pagada',
-                                    'format' =>'raw',
-                                    'contentOptions'=>['class'=>'columncenter'],
-                                    'value' => function($model) {
-                                        if ($model->pagada=='0'){
-                                            return "<span class='label label-warning'>NO</span>";
-                                        }else{
-                                            return"<span class='label label-success'>SI</span>";
-                                        }
-                                    },
-                                ],  
+                                ],
                                 [
                                     'label' => 'Estado',
                                     'contentOptions'=>['class'=>'columncenter'],
@@ -159,13 +149,13 @@ $this->title = "Convenio Pago: " . $model->id;
                                         'label' => 'Detalle',
                                         'attribute'=>'id_servicio',
                                         'value' => function($model) {
-                                            return $model->idServicio->datosMiServicio;
+                                            return $model->servicio->datosMiServicio;
                                         },
                                     ],  
                                 [
                                         'label' => 'Alumno',                                       
                                         'value' => function($model) {
-                                            return $model->idServicio->datosMiAlumno;
+                                            return $model->servicio->datosMiAlumno;
                                         },
                                     ],                  
 
@@ -181,55 +171,3 @@ $this->title = "Convenio Pago: " . $model->id;
         </div>
     </div>
 </div>
-<script type="text/javascript">  
-function downPdfConvenio(xhref){
-    
-    $("body").loading({message: 'ESPERE... procesando'});
-    $.ajax({
-         url    : xhref,
-         type   : "post",            
-         dataType: "json",
-         success: function (response){             
-             $("body").loading('stop');  
-             if(response.result_error==='0'){
-                window.location.href = response.result_texto; 
-             }else{
-                new PNotify({
-                    title: 'Error',
-                    text: response.message,
-                    icon: 'glyphicon glyphicon-envelope',
-                    type: 'error'
-                });
-             }
-        },         
-    }); 
-}   
-
-function enviarPdfConvenio(xhref){
-    
-    $("body").loading({message: 'ESPERE... procesando'});
-    $.ajax({
-         url    : xhref,
-         type   : "post",            
-         dataType: "json",
-         success: function (response){             
-             $("body").loading('stop');  
-             if(response.result_error==='0'){
-                new PNotify({
-                    title: 'Correcto',
-                    text: 'Se envio de forma correcta en correo.',
-                    icon: 'glyphicon glyphicon-envelope',
-                    type: 'success'
-                }); 
-             }else{
-                new PNotify({
-                    title: 'Error',
-                    text: response.message,
-                    icon: 'glyphicon glyphicon-envelope',
-                    type: 'error'
-                });
-             }
-        },         
-    }); 
-}   
-</script>

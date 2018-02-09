@@ -85,7 +85,7 @@ class ServicioAlumno extends BaseServicioAlumno
     
     public static function getDetalleDatos($idServicio){
         $servicio = self::findOne($idServicio);
-        return "(". $servicio->idServicio->idServicio->idTiposervicio->descripcion. ") ". $servicio->idServicio->idServicio->nombre;    
+        return "(". $servicio->servicio->tiposervicio->descripcion. ") ". $servicio->servicio->nombre;    
         
     }
     

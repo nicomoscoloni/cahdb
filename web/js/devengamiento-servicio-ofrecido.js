@@ -13,27 +13,28 @@ $('#btn-devenarServicio').click(function () {
         url: href,
         type: 'GET',
         dataType: 'json',
-        success: function (response) {
-            $('body').loading('stop');
+        success: function (response) {            
             if (response.error == 0) {
                 $.pjax.reload({container: '#pjax-serviciosalumnos', timeout: false});
+                $('body').loading('stop');
                 new PNotify({
                     title: 'Correcto',
                     text: response.resultado,
                     icon: 'glyphicon glyphicon-envelope',
                     type: 'success'
-                });
+                });                
             } else {
+                $('body').loading('stop');
                 new PNotify({
                     title: 'Error',
                     text: response.resultado,
                     icon: 'glyphicon glyphicon-envelope',
                     type: 'warning'
                 });
-
             }
         },
         error: function () {
+            $('body').loading('stop');
             new PNotify({
                     title: 'Error',
                     text: response.resultado,
@@ -73,9 +74,10 @@ $('#btn-eliminardevengamiento').click(function () {
                     type: 'GET',
                     dataType: 'json',
                     success: function (response) {
-                        $('body').loading('stop');
+                        
                         if (response.error == '0') {
                             $.pjax.reload({container: '#pjax-serviciosalumnos', timeout: false});
+                            $('body').loading('stop');
                             new PNotify({
                                 title: 'Correcto',
                                 text: response.resultado,
@@ -83,6 +85,7 @@ $('#btn-eliminardevengamiento').click(function () {
                                 type: 'success'
                             });
                         } else {
+                            $('body').loading('stop');
                             new PNotify({
                                 title: 'Error',
                                 text: response.resultado,
@@ -93,6 +96,7 @@ $('#btn-eliminardevengamiento').click(function () {
                         }
                     },
                     error: function () {
+                        $('body').loading('stop');
                         console.log('internal server error');
                         new PNotify({
                                 title: 'Error',

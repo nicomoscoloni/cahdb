@@ -91,27 +91,11 @@ class ConvenioPago extends BaseConvenioPago
             return "";            
     }
     
-    /*
-    public function getCuotasMorosas(){
-        if(!empty($this->id)){
-            $convenio = $this->id;          
-            $hoy = date('Y-m-d');
-
-            $cuotasVencidas = CuotaConvenioPago::find()->where("pagada='0' and (fecha_establecida < '" . $hoy . "') and id_conveniopago = ".$convenio)->all();
-            if(empty($cuotasVencidas)){
-                 return "<span class='label label-warning'>0</span>";
-            }else{
-                return "<span class='label label-warning'>". count($cuotasVencidas)." MOROSAS </span>"; 
-            }          
-        }else
-            return "";            
-    }*/
-
     public function getCuotasPendientes(){
         if(!empty($this->id)){
             $convenio = $this->id;     
 
-            $cuotasVencidas = CuotaConvenioPago::find()->where("pagada='0' and id_conveniopago = ".$convenio)->all();
+            $cuotasVencidas = CuotaConvenioPago::find()->where("estado='A' and id_conveniopago = ".$convenio)->all();
             if(empty($cuotasVencidas)){
                  return "<span class='label label-warning'>AL DIA</span>";
             }else{

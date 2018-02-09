@@ -33,19 +33,34 @@ class EstablecimientoController extends Controller
                 'class' => \yii\filters\AccessControl::className(),
                 'rules' => [
                     [     
-                        'actions' => ['admin','delete','alta','view','update','view','mis-alumnos'],
+                        'actions' => ['admin',],
                         'allow' => true,
-                        'roles' => ['abmlEstablecimientos'],
+                        'roles' => ['listarEstablecimientos'],
+                    ],
+                    [     
+                        'actions' => ['alta','update'],
+                        'allow' => true,
+                        'roles' => ['cargarEstablecimiento'],
+                    ],
+                    [     
+                        'actions' => ['delete',],
+                        'allow' => true,
+                        'roles' => ['eliminarEstablecimiento'],
+                    ],
+                    [     
+                        'actions' => ['view','mis-alumnos'],
+                        'allow' => true,
+                        'roles' => ['visualizarEstablecimiento'],
                     ],
                     [     
                         'actions' => ['nuevo-servicio','servicios-division','quitar-servicio-division','get-servicios','asignar-servicio-division','mis-servicios-ofrecidos'],
                         'allow' => true,
-                        'roles' => ['perServiciosEstablecimientos'],
+                        'roles' => ['gestionarServiciosEstablecimiento'],
                     ],
                     [     
-                        'actions' => ['cargar-division','actualizar-division','eliminar-division','drop-mis-divisionesescolares'],
+                        'actions' => ['cargar-division','actualizar-division','eliminar-division','mis-divisiones-escolares'],
                         'allow' => true,
-                        'roles' => ['gestionarDivisionEscolar'],
+                        'roles' => ['gestionarDivisionesEscolares'],
                     ],
                     [     
                         'actions' => ['drop-mis-divisionesescolares'],
@@ -53,6 +68,9 @@ class EstablecimientoController extends Controller
                         //'roles' => ['filtrarDivisionesxEstablecimiento'],
                     ],                    
                 ],
+                'denyCallback' => function($rule, $action){                    
+                    return $this->redirect(['site/index']);         
+                } 
             ],  
             'verbs' => [
                 'class' => VerbFilter::className(),

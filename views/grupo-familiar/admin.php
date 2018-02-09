@@ -19,9 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">
        
-        <div class="pull-right">
-            <p> 
-
+        <p class="pull-right">
             <?php
                 if (Yii::$app->user->can('cargarFamilia'))
                     echo Html::a('<i class="fa fa-plus-square"></i>', ['alta'], ['class' => 'btn btn-primary btn-xs']);
@@ -30,11 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     echo Html::button('<i class="glyphicon glyphicon-download"> </i> EXCEL', ['class' => 'btn btn-success btn-xs', 'id'=>'btn-excel',
                         'onclick'=>'js:{downListado("'.Url::to(['grupo-familiar/exportar-excel']) .'");}']);
             ?>
-            </p>
-        </div>
+            
         
-        <div class="row">
-            <div class="col-sm-12">
                 <?php Pjax::begin([
                     'id'=>'pjax-familias',
                     'enablePushState' => false,  
@@ -87,8 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]);
                 ?>   
                 <?php Pjax::end(); ?>
-            </div>
-        </div>
-        
+            
+        </p>
        </div>
 </div>

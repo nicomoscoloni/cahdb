@@ -17,13 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <i class="fa fa-university"></i> <h3 class="box-title"> Establecimientos </h3>       
     </div>
     <div class="box-body">         
-        <div class="pull-right">
-          <p>
-            <?= Html::a('<i class="glyphicon glyphicon-plus"></i>', ['alta'], ['class' => 'btn btn-xs btn-success']) ?>
+        
+          <p class="pull-right">
+            <?php
+            if(Yii::$app->user->can('cargarEstablecimiento'))
+                echo Html::a('<i class="glyphicon glyphicon-plus"></i>', ['alta'], ['class' => 'btn btn-xs btn-success']) ?>
           </p>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
+        
                 <?php Pjax::begin([
                     'id'=>'pjax-establecimientos',
                     'class'=>'pjax-loading',
@@ -40,13 +40,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'mail',
                         'nivel_educativo',
                         ['class' => 'yii\grid\ActionColumn', 
-                         'template'=>'{view} {update}',   
+                         'template'=>'{view} {update}',
+                          'visibleButtons' => [                                   
+                                    'view' => Yii::$app->user->can('visualizarEstablecimiento'),
+                                    'update' =>Yii::$app->user->can('cargarEstablecimiento'),
+                                ],  
                          'headerOptions' => ['width' => '50'],   
                         ],
                     ],
                 ]); ?>
                 <?php Pjax::end(); ?>   
-            </div>
-        </div> 
+            
     </div>    
 </div>
