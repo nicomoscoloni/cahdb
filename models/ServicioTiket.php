@@ -33,12 +33,15 @@ public function behaviors()
     }
     
     public function getMiDetalle(){
-        if($this->id_tiposervicio == self::SERVICIO_CUOTA){
+        if($this->tipo_servicio == \app\controllers\ConfController::SERVICIO_SERVICIOS){
             $modelServicioAlumno = ServicioAlumno::findOne($this->id_servicio);
-            return $modelServicioAlumno->idServicio->idServicio->nombre . "  -  " . $modelServicioAlumno->idServicio->idServicio->idTiposervicio->descripcion . "     $" .$modelServicioAlumno->importe_servicio;
+            return $modelServicioAlumno->servicio->nombre . "  -  " . $modelServicioAlumno->servicio->tiposervicio->descripcion . "     $" .$modelServicioAlumno->importe_servicio;
         }else
-        if($this->id_tiposervicio == self::SERVICIO_CONVENIO){
-            return "CUOTA";
+        if($this->tipo_servicio == \app\controllers\ConfController::SERVICIO_CONVENIO_PAGO){
+            $modelCuotaCP = CuotaConvenioPago::findOne($this->id_servicio);
+            $modelConvenio = ConvenioPago::findOne($modelCuotaCP->id_conveniopago);
+            
+            return "Convenio Nº: ". $modelConvenio->id . " Cuota: Nº: ".$modelCuotaCP->nro_cuota . " ". $modelCuotaCP->importe_abonado;
         }
     }    
 }

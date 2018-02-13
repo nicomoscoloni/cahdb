@@ -4,12 +4,12 @@ use dmstr\helpers\Html;
 <div class="row form-group groupcuota" id="divcuota-<?= $ordn; ?>">
     <div class="col-sm-5">        
         <div class="input-group">
-            <span class="input-group-addon"> Fecha Pago </span>
+            <span class="input-group-addon"> Fecha </span>
                 <?php
                     echo \kartik\date\DatePicker::widget([
                         'model' => $model,
-                        'attribute' => "[$ordn]xfecha_establecida",
-                      
+                        'type' => \kartik\widgets\DatePicker::TYPE_COMPONENT_APPEND,
+                        'attribute' => "[$ordn]xfecha_establecida",                      
                         'pluginOptions' => [
                             'autoclose'=>true,
                             'format' => 'dd-mm-yyyy'

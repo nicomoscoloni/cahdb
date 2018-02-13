@@ -34,7 +34,7 @@ class ServicioAlumnoController extends Controller
     public function actionReporte()
     {
         $searchModel = new ServicioAlumnoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->get());
+        $dataProvider = $searchModel->search(Yii::$app->request->post());
 
         return $this->render('reporte', [
             'searchModel' => $searchModel,

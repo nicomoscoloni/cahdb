@@ -90,7 +90,7 @@ $this->title = "Convenio Pago: " . $model->id;
                                     },
                                 ],     
                                 [
-                                    'label' => 'Monto',
+                                    'label' => 'Importe',
                                     'contentOptions'=>['class'=>'columncenter'],
                                     'attribute'=>'monto',
                                     'value' => function($model) {
@@ -98,7 +98,7 @@ $this->title = "Convenio Pago: " . $model->id;
                                     },
                                 ],
                                 [
-                                    'label' => 'Monto Abonado',
+                                    'label' => 'Importe Abonado',
                                     'contentOptions'=>['class'=>'columncenter'],
                                     'attribute'=>'monto',
                                     'value' => function($model) {

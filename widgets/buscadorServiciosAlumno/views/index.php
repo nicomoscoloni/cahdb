@@ -16,24 +16,22 @@ use yii\helpers\Url;
         <?php if($buscador) echo $this->render('_search', ['model' => $searchModel, 'filtro_estados'=>$filtro_estados, 'filtro_establecimiento'=>$filtro_establecimiento,
             'filtro_divisiones'=>$filtro_divisiones]); ?>
         
-        <?= Html::button('<i class="fa fa-file-excel-o"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
-                        'onclick'=>'js:{downListado("'.Url::to(['servicio-alumno/exportar-excel']) .'");}']) ?>
+        
                         
         <div class="row table-responsive">
             <div class="col-sm-12">
             <?php   
-                Pjax::begin(
-                        [
-                        'id'=>'pjax-serviciosalumnos',
-                        'enablePushState' => false,
-                        'timeout'=>false,
-                        'clientOptions' => ['method' => 'GET']
-                        ]
-                ); ?>    
-                <?= GridView::widget([
+                    Pjax::begin(
+                            [
+                            'id'=>'pjax-serviciosalumnos',
+                            'enablePushState' => false,
+                            'timeout'=>false,
+                            'clientOptions' => ['method' => 'POST']
+                            ]
+                    ); ?>    
+                    <?= GridView::widget([
                         'id'=>'reporte-servicios-alumno',
-                        'dataProvider' => $dataProvider,    
-                    'filterModel'=>$searchModel,
+                        'dataProvider' => $dataProvider,                        
                         'columns' => [
                             [
                                 'label' => 'Alumno',

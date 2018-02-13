@@ -12,11 +12,12 @@
                     <td width="25%"> <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/cajaFacturas.png"; ?>" alt="cp_dollar" />  </td>
                     <td style="padding-left: 20px;">
                         <span class="text-light-blue bold" style="font-size: 22px; color: #a00519 !important; font-weight: bold;"> Tiket Nro:  <?php echo $tiket->id; ?> </span><br />
-                        <span class="text-black bold"  style="font-size: 18px; font-weight: bold;">    Fecha Tiket/Pago:  </span><?php echo \Yii::$app->formatter->asDate($tiket->fecha_tiket); ?> <br />
-                        <span class="text-black bold"  style="font-size: 18px; font-weight: bold;">    Monto:  $ </span> <?php echo $tiket->importe; ?> <br />                
+                        <span class="text-black bold"  style="font-size: 18px; font-weight: bold;">    Fecha Tiket:  </span><?php echo \Yii::$app->formatter->asDate($tiket->fecha_tiket); ?> <br />
+                        <span class="text-black bold"  style="font-size: 18px; font-weight: bold;">    Monto: </span> <?php echo "$ ".$tiket->importe; ?> <br />                
                         <br/>
                         <span class="text-black bold"  style="font-size: 18px; font-weight: bold;"> Familia: </span> <?php echo $familia->apellidos ."  FOLIO: ". $familia->folio; ?> </span>                        
-                        <?php
+                        <br />
+                            <?php
                             echo dmstr\helpers\Html::button('<i class="glyphicon glyphicon-print"> </i> Tiket', ['class' => 'btn btn-warning', 'id'=>'btn-pdf-tiket',
                                 'onclick'=>'js:{downFactura("'. yii\helpers\Url::to(['caja/pdf-tiket','nroTiket'=>$tiket->id]) .'");}']);
                         ?>     

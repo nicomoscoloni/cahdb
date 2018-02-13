@@ -58,7 +58,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
         
     }
     
-    /*
+    
     static public function getDatosUnaFamilia($idFamilia){
         $familia = GrupoFamiliar::findOne($idFamilia);
         if(!empty($familia)){
@@ -66,7 +66,7 @@ class GrupoFamiliar extends BaseGrupoFamiliar
         }else
             return "";
     
-    }*/
+    }
     
     public function getAlumnosActivos()
     {

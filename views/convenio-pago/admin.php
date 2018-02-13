@@ -15,13 +15,11 @@ $this->title = 'Convenios Pagos';
         <i class="fa fa-handshake-o fa-2"></i> <h3 class="box-title"> CONVENIOS PAGO </h3> 
     </div>    
     <div class="box-body">
-        <div class="pull-right">
-            <p>
+        
+            <p class="pull-right">
                 <?= Html::a('<i class=\'fa fa-plus-square\'></i> Nuevo', ['alta'], ['class' => 'btn btn-success']) ?>
             </p>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
+      
                 <?php Pjax::begin([
                         'id'=>'pjax-convenios',                       
                         'enablePushState' => false,
@@ -78,8 +76,7 @@ $this->title = 'Convenios Pagos';
                 ]); ?>
                 <?php Pjax::end(); ?>
                 
-            </div>
-        </div>
+          
         
     
     </div>

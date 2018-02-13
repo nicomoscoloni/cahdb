@@ -55,27 +55,24 @@ class CajaController extends Controller {
     
     
     public function actionCobrar($oper = null) {
+        if ($oper == null || $oper >2) 
+            throw new \yii\web\HttpException(404,'no se selecciono una operacion de cobro apropiada.');        
         try {
-            if ($oper == null) {
-                Yii::$app->session->setFlash('error', 'ATENCION!!! <br /> Se Produjo un error severo');
-                $this->redirect(['site/index']);
-            } else {
                 Yii::$app->session->remove('srvpagar');
                 Yii::$app->session->set('srvpagar',array());
                 
                 $searchGrupoFamiliar = new GrupoFamiliarSearch();
                 $dataFamilias = $searchGrupoFamiliar->search(Yii::$app->request->post());
-            
-                return $this->render('cobrar', [
-                            'dataFamilias' => $dataFamilias,
-                            'searchGrupoFamiliar' => $searchGrupoFamiliar,                            
-                            'oper' => (int) $oper
-                ]);
             }
-        } catch (Exception $e) {
-            Yii::$app->session->setFlash('error', 'ATENCION!!! <br /> Se Produjo un error severo');
-            $this->redirect(['site/index']);
-        }
+            catch (Exception $e) {
+                Yii::$app->session->setFlash('error', 'ATENCION!!! <br /> Se Produjo un error severo');
+                $this->redirect(['site/index']);
+            }
+            return $this->render('cobrar', [
+                'dataFamilias' => $dataFamilias,
+                'searchGrupoFamiliar' => $searchGrupoFamiliar,                            
+                'oper' => (int) $oper
+            ]);
     }
     
     
@@ -143,7 +140,7 @@ class CajaController extends Controller {
                         'modelFamilia' => $modelFamilia,
                         'modelTiket' => $modelTiket
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Yii::$app->session->setFlash('error', 'ERROR!!!');
             $this->redirect(['site/index']);
         }
@@ -151,136 +148,138 @@ class CajaController extends Controller {
 
     
     /*******************************************************************/
-    /*******************************************************************/        
-    public function actionCobroServicios($cliente) {
+    /*******************************************************************/
+    private function deudaFamilia($familia){
+        $query = "SELECT sa.id as nroservicio, id_alumno as idalumno, importe_servicio as montoservicio, 
+                                 importe_descuento,importe_abonado, 'SERVICIOS' as tiposervicio 
+                            FROM servicio_alumno sa 
+                             INNER JOIN alumno a ON (a.id = sa.id_alumno)
+                             WHERE sa.estado='A' and  a.id_grupofamiliar=$familia
+                        UNION
+                            SELECT ccp.id as nroservico, id_familia as idalumno, monto as montoservicio, '0' as importe_descuento, ccp.importe_abonado, 'CUOTAS' as tiposervicio
+                            FROM `cuota_convenio_pago` ccp
+                              INNER JOIN convenio_pago cp ON (ccp.id_conveniopago= cp.id)
+                            WHERE ccp.estado='A'  and cp.id_familia=$familia";
+
+        $queryCount = "SELECT COUNT(*) FROM ($query) as total";
+        $queryCount= \Yii::$app->db->createCommand($queryCount)->queryScalar();
+
+        $serviciosImpagos = new \yii\data\SqlDataProvider([
+            'sql' => $query,   
+            'key'=>'nroservicio',
+            'totalCount' => $queryCount,
+            'pagination' => [
+                'pageSize' => 1500,
+            ],
+            'sort' => [
+                'attributes' => ['nroservicio', 'idalumno', 'montoservicio','importe_descuento','importe_abonado','tiposervicio'],
+            ],                    
+        ]);   
         
+        return $serviciosImpagos;
+    }
+    
+    public function actionCobroServicios($cliente){
         $modelFamilia = GrupoFamiliar::findOne($cliente);
         if (empty($modelFamilia))
             throw new CHttpException(404, 'The requested page does not exist.');
 
-            try {    
-                $transaction = Yii::$app->db->beginTransaction();
-                
-                $modelTiket = new Tiket();
-                $modelTiket->importe = 0;
-                $modelTiket->importeservicios = 0;
-                $totalTiket = 0;
+        try {    
+            $transaction = Yii::$app->db->beginTransaction();
+
+            $modelTiket = new Tiket();
+            $modelTiket->importe = 0;
+            $modelTiket->importeservicios = 0;
+            $totalTiket = 0;
+            
+            $seleccion = Yii::$app->session->get('srvpagar');
+            if(($serviciosSeleccionados = Yii::$app->request->post('selection')) !== null){                                
+                foreach ($serviciosSeleccionados as $arow){  
+                    $seleccion[$arow] = $arow;                  
+                }         
+                Yii::$app->session->set('srvpagar',$seleccion);                
+            } 
+            
+            if ($modelTiket->load(Yii::$app->request->post())) {
+                $modelTiket->importe = $modelTiket->montoabonado; 
+                $modelTiket->detalles = 'COBRO SERVICIOS';                
+                $modelTiket->id_cliente = $modelFamilia->id;
+                $modelTiket->cantidadservicios = count($serviciosSeleccionados);
+                            
+                if ($modelTiket->save()) {
+                    $fechaTiket = $modelTiket->fecha_tiket;
+                    $valid = true;
+
+                    foreach ($serviciosSeleccionados as $key => $value) {
+                        $des = explode('-', $value);
+
+                        $modelServicioTiket = new \app\models\ServicioTiket();
+                        $modelServicioTiket->id_tiket = $modelTiket->id;                            
+                        $modelServicioTiket->id_servicio = $des[1];
+                            
+                        if($des[0]=='SER'){
+                            $modelServicioTiket->tipo_servicio = Tiket::SERVICIO_CUOTA;
+                            
+                            $modelServicioAlumno = \app\models\ServicioAlumno::findOne($des[1]);
+                            if($modelTiket->pagototal=='1'){
+                                $importeRestante = $modelServicioAlumno->importeRestante;
+                                $totalTiket += $importeRestante;
+                                $modelServicioAlumno->importe_abonado += $importeRestante;
+                                $modelServicioTiket->importe = $importeRestante;
+                            }else{
+                                $totalTiket += $modelTiket->montoabonado;
+                                $modelServicioAlumno->importe_abonado += $modelTiket->montoabonado;
+                                $modelServicioTiket->importe = $modelTiket->montoabonado;
+                            }
+                                
+                            if($modelServicioAlumno->importe_abonado == $modelServicioAlumno->importe_servicio){                                
+                                $modelServicioAlumno->estado = 'PA';
+                            }
+                                
+                            $modelServicioAlumno->fecha_cancelamiento = $fechaTiket; 
+                            $modelServicioTiket->tipo_servicio=\app\controllers\ConfController::SERVICIO_SERVICIOS;
+                            $valid = $valid &&  $modelServicioAlumno->save();
+                        }else
+                        if($des[0]=='CCP'){
+                            $modelServicioTiket->tipo_servicio = Tiket::SERVICIO_CUOTA;
+                            
+                            $modelCuotaCP = \app\models\CuotaConvenioPago::findOne($des[1]);                                
+                            if($modelTiket->pagototal=='1'){
+                                $importeRestante = $modelCuotaCP->importeRestante;
+                                $totalTiket += $importeRestante;
+                                //$totalTiket += $totalTiket;
+                                $modelCuotaCP->importe_abonado+= $importeRestante;
+                                $modelServicioTiket->importe = $importeRestante;  
+                            }else{
+                                $totalTiket += $modelTiket->montoabonado;
+                                $modelCuotaCP->importe_abonado += $modelTiket->montoabonado;
+                                $modelServicioTiket->importe = $modelTiket->montoabonado;
+                            }
+                            if($modelCuotaCP->importe_abonado == $modelCuotaCP->monto){                                
+                                $modelCuotaCP->estado = 'PA';
+                            }  
+                            $modelServicioTiket->tipo_servicio=\app\controllers\ConfController::SERVICIO_CONVENIO_PAGO;
+                            $valid = $valid &&  $modelCuotaCP->save();
+                        }    
+                            
+
+                        $valid = $valid && $modelServicioTiket->save();
+                    }                     
                         
-                $seleccion = Yii::$app->session->get('srvpagar');            
-                      
-                if(($serviciosSeleccionados = Yii::$app->request->post('selection')) !== null){                                
-                    foreach ($serviciosSeleccionados as $arow){  
-                        $seleccion[$arow] = $arow;                  
-                    }         
-                    Yii::$app->session->set('srvpagar',$seleccion);                
-                } 
-                
-                if ($modelTiket->load(Yii::$app->request->post())) {
-                    $modelTiket->importe = $modelTiket->montoabonado; 
-                    $modelTiket->detalles = 'COBRO SERVICIOS';
-                    //$modelTiket->abonado = '1';
-                    $modelTiket->id_cliente = $modelFamilia->id;
-                    $modelTiket->cantidadservicios = count($serviciosSeleccionados);
-                            
-                    if ($modelTiket->save()) {
-                        $fechaTiket = $modelTiket->fecha_tiket;
-                        $valid = true;
+                    $resultMovimiento = \app\models\Cuentas::AcentarMovimientosCaja($modelTiket->cuentapagadora, 'INGRESO', $modelTiket->importe, $modelTiket->detalles, $fechaTiket, 'Nro Tiket: ' . $modelTiket->id, $modelTiket->id_formapago, $modelTiket->id);
 
-                        foreach ($serviciosSeleccionados as $key => $value) {
-                            $des = explode('-', $value);
-                            
-                            $modelServicioTiket = new \app\models\ServicioTiket();
-                            $modelServicioTiket->id_tiket = $modelTiket->id;                            
-                            $modelServicioTiket->id_servicio = $des[1];
-                            
-                            if($des[0]=='SER'){
-                                $modelServicioTiket->tipo_servicio = Tiket::SERVICIO_CUOTA;
-                            
-                                $modelServicioAlumno = \app\models\ServicioAlumno::findOne($des[1]);
-                                if($modelTiket->pagototal=='1'){
-                                    $importeRestante = $modelServicioAlumno->importeRestante;
-                                    $totalTiket += $importeRestante;
-                                    $modelServicioAlumno->importe_abonado += $importeRestante;
-                                    $modelServicioTiket->importe = $importeRestante;
-                                }else{
-                                    $totalTiket += $modelTiket->montoabonado;
-                                    $modelServicioAlumno->importe_abonado += $modelTiket->montoabonado;
-                                    $modelServicioTiket->importe = $modelTiket->montoabonado;
-                                }
-                                
-                                if($modelServicioAlumno->importe_abonado == $modelServicioAlumno->importe_servicio){
-                                    $modelServicioAlumno->liquidado = '1';
-                                    $modelServicioAlumno->estado = 'PA';
-                                }
-                                
-                                $modelServicioAlumno->fecha_cancelamiento = $fechaTiket;   
-                                $valid = $valid &&  $modelServicioAlumno->save();
-                            }else
-                            if($des[0]=='CCP'){
-                                $modelServicioTiket->id_tiposervicio = Tiket::SERVICIO_CONVENIO;
-                                $modelCuotaCP = \app\models\CuotaConvenioPago::findOne($des[1]);
-                                
-                                if($modelTiket->pagototal=='1'){
-                                    $importeRestante = $modelCuotaCP->importeRestante;
-                                    $totalTiket += $importeRestante;
-                                    $totalTiket += $totalTiket;
-                                    $modelCuotaCP->importe_abonado+= $importeRestante;
-                                    $modelServicioTiket->importe = $importeRestante;  
-                                }else{
-                                    $totalTiket += $modelTiket->montoabonado;
-                                    $modelCuotaCP->importe_abonado += $modelTiket->montoabonado;
-                                    $modelServicioTiket->importe = $modelTiket->montoabonado;
-                                }
-                                if($modelCuotaCP->importe_abonado == $modelCuotaCP->monto){
-                                    $modelCuotaCP->pagada = '1';
-                                    $modelCuotaCP->estado = 'PA';
-                                }                                
-                                $valid = $valid &&  $modelCuotaCP->save();
-                            }    
-                            
-
-                            $valid = $valid && $modelServicioTiket->save();
-                        } 
-
-                        $resultMovimiento = \app\models\Cuentas::AcentarMovimientosCaja($modelTiket->cuentapagadora, 'INGRESO', $modelTiket->importe, $modelTiket->detalles, $fechaTiket, 'Nro Tiket: ' . $modelTiket->id, $modelTiket->id_formapago, $modelTiket->id);
-
-                        if ($valid) {                      
-                            $transaction->commit();                        
-                            Yii::$app->session->setFlash('ok', 'SE COBRO CON EXITO!!!');
-                            return $this->redirect(['detalle-tiket', 'tiket' => $modelTiket->id]);
-                        }
-                    }else{
-                        $ww="adsa";
-                        $ww2="adsa";
+                    if ($valid) {                      
+                        $transaction->commit();                        
+                        Yii::$app->session->setFlash('ok', 'SE COBRO CON EXITO!!!');
+                        return $this->redirect(['detalle-tiket', 'tiket' => $modelTiket->id]);
                     }
+                }
             }
             
-            $query = "SELECT sa.id as nroservicio, id_alumno as idalumno, importe_servicio as montoservicio, 
-                                     importe_descuento,importe_abonado, 'SERVICIOS' as tiposervicio 
-                                FROM servicio_alumno sa 
-                                 INNER JOIN alumno a ON (a.id = sa.id_alumno)
-                                 WHERE sa.estado='A' and  a.id_grupofamiliar=$cliente
-                            UNION
-                                SELECT ccp.id as nroservico, id_familia as idalumno, monto as montoservicio, '0' as importe_descuento, ccp.importe_abonado, 'CUOTAS' as tiposervicio
-                                FROM `cuota_convenio_pago` ccp
-                                  INNER JOIN convenio_pago cp ON (ccp.id_conveniopago= cp.id)
-                                WHERE ccp.estado='A'  and cp.id_familia=$cliente";
             
-            $queryCount = "SELECT COUNT(*) FROM ($query) as total";
-            $queryCount= \Yii::$app->db->createCommand($queryCount)->queryScalar();
-            
-            $serviciosImpagos = new \yii\data\SqlDataProvider([
-                'sql' => $query,   
-                'key'=>'nroservicio',
-                'totalCount' => $queryCount,
-                'pagination' => [
-                    'pageSize' => 2,
-                ],
-                'sort' => [
-                    'attributes' => ['nroservicio', 'idalumno', 'montoservicio','importe_descuento','importe_abonado','tiposervicio'],
-                ],                    
-            ]);
-           
+                
+                
+            $serviciosImpagos = $this->deudaFamilia($modelFamilia->id);
             
             return $this->render('formularioCobroServicio', [   
                     'modelTiket'=>$modelTiket,
@@ -288,7 +287,7 @@ class CajaController extends Controller {
             ]);
             
         } catch (Exception $e) {
-            Yii::app()->user->setFlash('error', 'ERROR!!!');
+            Yii::app()->user->setFlash('error', 'ERROR en la operación!!!');
             $this->redirect(['site/index']);
         }
     }

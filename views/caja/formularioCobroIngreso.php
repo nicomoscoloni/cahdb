@@ -74,27 +74,13 @@ $this->title = 'Caja - Cobro de Ingresos';
         </div><!-- form -->
     </div>
 </div>
-
+<?php 
+    $this->registerJsFile('@web/js/caja-cobroservicio.js', ['depends'=>[app\assets\AppAsset::className()]]);
+?>
 <?php
 $this->registerJs("
 $(document).ready(function(){
-    $('#tiket-id_formapago').on('change',function() {        
-        
-        if ($(this).val() == '1'){           
-            $('#tiket-cuentapagadora').val('1');
-        }else{           
-            $('#tiket-cuentapagadora').prop('selectedIndex','1')
-            $('#tiket-cuentapagadora').val('2');
-        }
-    });
     
-    $('#tiket-cuentapagadora').on('change',function() {
-        $('#divcheque').css('display','none');
-
-        if ( ($(this).val() == '1') || ($(this).val() == '2') ){
-            $('#tiket-tipo_pago').val('1');
-        }
-    });
 
 
     $('#form-ingresos').on('beforeValidate',function(e){
@@ -105,7 +91,7 @@ $(document).ready(function(){
     $('#form-ingresos').on('afterValidate',function(e, messages){
         if ($('#form-ingresos').find('.has-error').length > 0){
             $('#btn-envio').removeAttr('disabled');
-            $('#btn-envio').html('<i class=\'fa fa-save\'></i> Guardar...');
+            $('#btn-envio').html('<i class=\'fa fa-save\'></i> Aceptar Cobro...');
         }
     });
     

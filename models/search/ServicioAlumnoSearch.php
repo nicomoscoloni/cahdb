@@ -107,7 +107,6 @@ class ServicioAlumnoSearch extends ServicioAlumno
         
         
         
-        $session->set('serviciosalumnos', $dataProviderSession->getModels());
         
         return $dataProvider;
     }

@@ -206,7 +206,7 @@ class ConvenioPagoController extends Controller
         ]);
     } //fin actionALTA    
     
-    
+    /***********************************************************/ 
     /*
      * seleccion de servicios a integrar en el convenio de pago
      */
@@ -415,8 +415,8 @@ class ConvenioPagoController extends Controller
                         <th align="center"><img src="./images/logo.jpg" alt"" /></th>
               </tr>
               <tr>
-               <td style="padding:5px;" colspan="2"> GRUPO FAMILIAR: ' . $clienteConvenio->apellidos . ', ' . $clienteConvenio->folio . '<br /><br />
-                 <span class="datAbog"> <b> Responsable:  ' . $clienteConvenio->miResponsableCabecera . '</span><br />
+               <td style="padding:5px;" colspan="2"> <b>GRUPO FAMILIAR: </b>' . $clienteConvenio->apellidos . ', ' . $clienteConvenio->folio . '<br /><br />
+                 <span class="datAbog"> <b> Responsable:  </b>' . $clienteConvenio->miResponsableCabecera . '</span><br />
                </td>
               </tr>
             </thead>';
@@ -429,7 +429,7 @@ class ConvenioPagoController extends Controller
         if ($contador > 0) {
             $i = 0;
             $html .= '<tr><td colspan="2" style="padding-left: 10px;">';
-            $html .= '<b>SERVICIOS INTEGRADOS:<b/><br /><br />';
+            $html .= '<b>SERVICIOS INTEGRADOS:</b> <br /><br />';
             while ($i < $contador) {
                 $r = $misServicios[$i]['id_servicio'];
                 $servicioTomado = \app\models\ServicioAlumno::findOne($misServicios[$i]['id_servicio']);
@@ -439,7 +439,7 @@ class ConvenioPagoController extends Controller
             $html .= '</td></tr>';
         } else {
             $html .= '<tr><td colspan="2" style="padding-left: 15px;">';
-            $html .= '<b>Detalle Pago:<b/><br /><br />';
+            $html .= '<b>Detalle Pago:</b><br /><br />';
             $html .= $convenio->descripcion;
             $html .= '</td></tr>';
         }
@@ -575,12 +575,12 @@ class ConvenioPagoController extends Controller
             $pdf->output($plantilla,$archivo,'F');
             
             $modelFamilia = \app\models\GrupoFamiliar::findOne($model->id_familia);
-            $correoCliente = $modelFamilia->responsableD->miPersona->mail;
+            //$correoCliente = $modelFamilia->responsableD->miPersona->mail;
             $correoCliente = 'arg.gentile@gmail.com';
            
             if(!empty($correoCliente)){
-                $mensaje = "Estimado matriculado en el dia de la fecha dio de Alta el Convenio de Pago Nro: ".$model->id;      
-                $mensaje .= "<br /> Se adjunta el detalle de su liquidez";      
+                $mensaje = "Se adjunta comprobante de Convenio de Pago establecido esntre el establecimiento y usted";      
+                    
                 
                 $name="";
                 $description="";                

@@ -23,16 +23,16 @@ class ConfController extends \yii\web\Controller
     const idCajaBelgrano = 2;
     const idCajaPatagonia = 3;
     
-    const  SERVICIO_MATRICULA = 2;
-    const  SERVICIO_CUOTA = 3;
-    const  SERVICIO_CONVENIO = 5;
+    const  SERVICIO_LIBRES = 'Ingreso Libres';
+    const  SERVICIO_MATRICULA = 'Matricula';
+    const  SERVICIO_SERVICIOS = 'Servicios';
+    const  SERVICIO_CONVENIO_PAGO = 'Cuota Convenio Pago';
     
     const PAGO_EFECTIVO = 1;
     const PAGO_CHEQUE = 6;
     
-    const CUENTA_PATAGONIA = 3;
-    const CUENTA_TRIBUNALES = 1;
-    const CUENTA_BELGRANO = 2;
+    const CUENTA_COLEGIO = 1;
+    const CUENTA_PATAGONIA = 2;
     
     
     

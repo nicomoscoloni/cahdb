@@ -27,7 +27,7 @@ $this->title = 'Cobro de Servicios';
                     
                     <div class="row">        
                         <div class="col-sm-4">
-                            <?= $form->field($modelTiket, 'cuentapagadora',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-briefcase"></i>']]])->dropDownList(\app\models\Cuentas::getDropMisCuentas());
+                            <?= $form->field($modelTiket, 'cuentapagadora',['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-briefcase"></i>']]])->dropDownList(\app\models\Cuentas::getDropMisCuentas(),['readonly'=>'readonly']);
                             ?> 
                         </div>     
                     </div>
@@ -84,7 +84,11 @@ $this->title = 'Cobro de Servicios';
             <div class="row">
                 <div class="col-sm-12">
                     <?php
-                    Pjax::begin();     
+                    Pjax::begin([
+                        'id'=>'pjax-servicio-tiket',
+                        'enablePushState' => false,
+                        'timeout'=>false
+                        ]);     
                     echo GridView::widget([
                         'id'=>'servicios',
                         'dataProvider' => $serviciosImpagos,                
@@ -136,8 +140,7 @@ $this->title = 'Cobro de Servicios';
                                     }
 
                                 },
-                            ],            
-                            
+                            ], 
                             'montoservicio',
                             'importe_descuento',
                             'importe_abonado',
@@ -157,45 +160,6 @@ $this->title = 'Cobro de Servicios';
         </div>
     </div>
 </div>
-
-<?php
-$this->registerJs("
-$(document).ready(function(){    
-    
-    $('.checkservicios').change(function(event){    
-        montoservicio = parseFloat($(this).parent().parent().children().last().text()); 
-        montototal = parseFloat($('#tiket-importeservicios').val());
-
-        if (this.checked){
-            montototal = montototal + montoservicio;
-            $('#tiket-importeservicios').val(montototal);
-        } else {
-            montototal = montototal - montoservicio;
-            $('#tiket-importeservicios').val(montototal);
-        }
-    });
-    
-    $('#form-servicios').on('beforeSubmit',function(e, messages){        
-        $('#btn-envio').attr('disabled','disabled');
-        $('#btn-envio').html('<i class=\'fa fa-spinner fa-spin\'></i> Procesando...');
-
-        var importe_servicios = parseFloat($('#tiket-importeservicios').val());
-        var importe_abonado = parseFloat($('#tiket-montoabonado').val());
-
-        if ( ($('#tiket-pagototal').val()=='0') && (importe_servicios != importe_abonado) && ($('#servicios').yiiGridView('getSelectedRows').length > 1) ){
-            $('#btn-envio').removeAttr('disabled');
-            $('#btn-envio').html('<i class=\'fa fa-save\'></i> Aceptar Cobro');
-            e.preventDefault();
-            new PNotify({
-                                title: 'Error',
-                                text: 'Solo se permite el pago parcial de un unico servicio',
-                                icon: 'glyphicon glyphicon-envelope',
-                                type: 'error'
-                            });
-            return false;      
-        }
-        
-    });    
-});         
-", \yii\web\View::POS_READY,'preventSubmitForm');
+<?php 
+    $this->registerJsFile('@web/js/caja-cobroservicio.js', ['depends'=>[app\assets\AppAsset::className()]]);
 ?>

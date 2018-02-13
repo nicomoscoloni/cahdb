@@ -16,7 +16,7 @@ use yii\helpers\Url;
 
             <?php $form = ActiveForm::begin([
                             'action' => ['reporte'],
-                            'method' => 'POST',
+                            'method' => 'GET',
                         ]); 
             ?>
     
