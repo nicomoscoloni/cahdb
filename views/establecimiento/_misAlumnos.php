@@ -18,11 +18,11 @@ use yii\helpers\Url;
                     <p>                   
                         <?php
                         if(Yii::$app->user->can('cargarAlumno'))
-                            echo Html::a('<i class="fa fa-plus-square"></i> Cargar', ['alumno/empadronamiento'], ['class' => 'btn btn-primary']);
+                            echo Html::a('<i class="fa fa-plus-square"></i> Cargar', ['alumno/empadronamiento'], ['class' => 'btn btn-primary btn-xs']);
                         ?>
                         <?php
-                        if(Yii::$app->user->can('exportarAlumno'))
-                            echo Html::button('<i class="glyphicon glyphicon-download"> </i> Listado', ['class' => 'btn btn-success', 'id' => 'btn-excel',
+                        if(Yii::$app->user->can('exportarAlumnos'))
+                            echo Html::button('<i class="glyphicon glyphicon-download"> </i> Exportar', ['class' => 'btn btn-success btn-xs', 'id' => 'btn-excel',
                             'onclick' => 'js:{downListado("' . Url::to(['alumno/exportar-excel']) . '");}'])
                         ?>
 
@@ -103,3 +103,38 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Detalles Establecimiento.'
+            },  
+            {
+                element: document.querySelector('#informacionestablecimiento'),
+                intro: 'Detalle datos establecimiento.'
+            },
+            {
+                element: document.querySelector('#drop-menu-establecimientos'),
+                intro: 'Operaciones sobre el establecimiento. Seleccione una tarea a llevar a cabo.'
+            },
+            {
+                element: document.querySelector('.alumnos-establecimiento'),
+                intro: 'Listado de alumno pertenecientes al establecimiento.'
+            },
+           
+
+            
+
+        ]
+      });
+      intro.start();
+} 
+", \yii\web\View::POS_END,'ayuda');
+?>

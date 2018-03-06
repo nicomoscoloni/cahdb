@@ -23,11 +23,12 @@ class BuscadorServiciosAlumno extends \yii\bootstrap\Widget
         $searchModel = $this->searchModel;
         
         $filtro_estados=[
+            'PA'=>'Abonada',
             'A'=>'Adeuda',
-            'DA'=>'EN Deb.Aut',
-            'CP'=>'En Conv.Pago',
-            'PA/CP'=>'Abonada Conv.Pago',
-            'PA/DA'=>'Abonada Deb.Aut',            
+            'DA'=>'En Debito Automatico',
+            'CP'=>'En Convenio Pago',
+            'PA/CP'=>'Abonada Convenio Pago',
+            'PA/DA'=>'Abonada Debito Automatico',            
         ];
         $filtro_establecimiento= \app\models\Establecimiento::getEstablecimientos();
         if(!empty($searchModel->establecimiento)){

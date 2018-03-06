@@ -71,13 +71,27 @@ class ServicioAlumno extends BaseServicioAlumno
     
     public function getDetalleEstado(){
         switch ($this->estado){
-            case ConfController::estadoSA_ABIERTA: $estado='<span class="label label-sa-abierto"> ADEUDA</span>'; break;
-            case ConfController::estadoSA_ABONADA: $estado='<span class="label label-sa-abonado"> LIQUIDADO</span>'; break;
-            case ConfController::estadoSA_EN_CONVENIOPAGO: $estado='<span class="label label-sa-enCP">EN CONVENIO PAGO</span>'; break;
+            case ConfController::estadoSA_ABIERTA: $estado='<span class="label label-sa-abierto"> Adeuda</span>'; break;
+            case ConfController::estadoSA_ABONADA: $estado='<span class="label label-sa-abonado"> Abonada</span>'; break;
+            case ConfController::estadoSA_EN_CONVENIOPAGO: $estado='<span class="label label-warning">Convenio Pago</span>'; break;
             
-            case ConfController::estadoSA_EN_DEBITOAUTOMATICO: $estado='<span class="label label-sa-enDA">EN CONVENIO PAGO</span>'; break;
-            case ConfController::estadoSA_ABONADA_EN_DEBITOAUTOMATICO: $estado='<span class="label label-sa-abonado">LIQUIDADO DA</span>'; break;
-            case ConfController::estadoSA_ABONADA_EN_CONVENIOPAGO: $estado='<span class="label label-sa-abonado">LIQUIDADO CP</span>'; break;
+            case ConfController::estadoSA_EN_DEBITOAUTOMATICO: $estado='<span class="label label-danger">Débito Automático</span>'; break;
+            case ConfController::estadoSA_ABONADA_EN_DEBITOAUTOMATICO: $estado='<span class="label label-sa-abonado">Abonada Deb.Automático</span>'; break;
+            case ConfController::estadoSA_ABONADA_EN_CONVENIOPAGO: $estado='<span class="label label-sa-abonado">Abonada Convenio Pago</span>'; break;
+        }
+        return $estado;
+        
+    }
+    
+    public function getDetalleEstadoExcel(){
+        switch ($this->estado){
+            case ConfController::estadoSA_ABIERTA: $estado='Adeuda'; break;
+            case ConfController::estadoSA_ABONADA: $estado='Liquidado'; break;
+            case ConfController::estadoSA_EN_CONVENIOPAGO: $estado='En convenio pago'; break;
+            
+            case ConfController::estadoSA_EN_DEBITOAUTOMATICO: $estado='Enviada Debito Automatico'; break;
+            case ConfController::estadoSA_ABONADA_EN_DEBITOAUTOMATICO: $estado='Abonada por Debito Automatico'; break;
+            case ConfController::estadoSA_ABONADA_EN_CONVENIOPAGO: $estado='Abonada en Convenio de Pago'; break;
         }
         return $estado;
         
@@ -105,7 +119,7 @@ class ServicioAlumno extends BaseServicioAlumno
             'query' => $query,
             'sort' => ['defaultOrder'=>'id desc'],
             'pagination' => [
-                'pageSize' => 2,
+                'pageSize' => 3,
             ],
         ]);
         

@@ -57,12 +57,13 @@ use kartik\widgets\DatePicker;
             </div>
             <?= Html::error($model, 'sexo',['class'=>'text-error text-red']); ?>
         </div>
-        <div class="col-sm-4">        
+        <div class="col-sm-3">        
             <div class="input-group">
-                <span class="input-group-addon"> <?= Html::activeLabel($model, 'nombre', ['class' => 'control-label']) ?> </span>
+                <span class="input-group-addon"> <?= Html::label('Nacimiento', ['class' => 'control-label']); ?> </span>
                 <?php
                     echo DatePicker::widget([
                         'model' => $model,
+                        'type'=> DatePicker::TYPE_INPUT,
                         'attribute' => 'xfecha_nacimiento',
                         'pluginOptions' => [
                             'autoclose'=>true,

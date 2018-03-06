@@ -36,12 +36,15 @@ $this->title = 'Alta Convenio Pago';
             </div>
             
             <?php $form = yii\widgets\ActiveForm::begin(['id'=>'form-servicios']); ?>
-            
+                <input type="hidden" name="noselects" id="noselects" value="" />
+                <input type="hidden" name="selects" id="selects" value="" />
+                
             <?php   \yii\widgets\Pjax::begin([
                                 'id'=>'pjax-servicios-convenio', 
                                 'timeout' => false, 
                                 'enablePushState' => false,
                                 'clientOptions' => ['method' => 'POST']]);?>
+                <input type="hidden" name="cant-serv-selectos" id="cant-serv-selectos" value="<?=count(Yii::$app->session->get('srvpagar')) ?>" />
                 <?= GridView::widget([
                 'id'=>'gridServiviosCP',
                 'dataProvider' => $serviciosImpagos,                
@@ -80,8 +83,6 @@ $this->title = 'Alta Convenio Pago';
                          \yii\widgets\Pjax::end();
                         ?>
             <input type="hidden" name="envios" id="envios" value="0" />
-            <input type="hidden" name="noselects" id="noselects" value="" />
-            <input type="hidden" name="selects" id="selects" value="" />
             
             <div class="form-group">
                 <?= Html::submitButton('<i class=\'fa fa-save\'></i> Generar Convenio', ['class' => 'btn btn-success','id'=>'btn-generar-convenio']) ?>

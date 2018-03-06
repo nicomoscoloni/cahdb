@@ -59,11 +59,6 @@ class ServicioAlumnoSearch extends ServicioAlumno
             'query' => $query,            
         ]);
         
-        $dataProviderSession = new ActiveDataProvider([
-            'query' => $query,           
-            'pagination' => false
-        ]);
-
         $this->load($params);
 
         if (!$this->validate()) {
@@ -105,9 +100,15 @@ class ServicioAlumnoSearch extends ServicioAlumno
             ]);
         }
         
+        if(!empty($this->familia)){
+            $query->andFilterWhere([
+                'a.id_grupofamiliar' => $this->familia,
+            ]);
+        }
         
         
         
+        $session->set('serviciosalumnos', $query->createCommand()->getRawSql());
         return $dataProvider;
     }
     

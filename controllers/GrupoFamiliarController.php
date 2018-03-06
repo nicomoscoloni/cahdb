@@ -422,7 +422,7 @@ class GrupoFamiliarController extends Controller
             
             $searchModel = new ServicioAlumnoSearch();
             $searchModel->familia = $familia;
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $dataProvider = $searchModel->search(Yii::$app->request->post());
 
             return $this->render('serviciosFamiliar', [
                 'searchModel' => $searchModel,

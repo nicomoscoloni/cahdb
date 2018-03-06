@@ -131,3 +131,5 @@ a.desc:after {
 
 .todo-list-alumnos > li .tools-alumnos{display: block !important;}
 .todo-list-responsables > li .tools-responsables{display: block !important;}
+
+.invisible{display: none;}

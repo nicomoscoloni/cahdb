@@ -37,7 +37,7 @@ yii\bootstrap\Modal::end();
                             'enableClientValidation'=>true
                             ]); ?>
     
-    <div class="row form-group">
+    <div class="row form-group datagrupofamiliar">
         <div class="col-sm-2">
             <?php
                 echo Html::button('Buscar Familia', ['value'=> Url::to(['buscarFamilia']), 
@@ -96,7 +96,7 @@ yii\bootstrap\Modal::end();
         </div>
     </div>
     
-    <div class="row">
+    <div class="row"  id="establecimientodivision">
         <?php
         if(!empty($model->id_divisionescolar)){
             $divisiones = \app\models\DivisionEscolar::find()->joinWith('establecimiento e')->where(['=', 'e.id', $model->divisionescolar->id_establecimiento])->asArray()->all();
@@ -126,23 +126,59 @@ yii\bootstrap\Modal::end();
     </div>
     
     <div class="row">
-        <?php
-        if(!empty($model->id_divisionescolar)){
-            $divisiones = \app\models\DivisionEscolar::find()->joinWith('establecimiento e')->where(['=', 'e.id', $model->divisionescolar->id_establecimiento])->asArray()->all();
-            $divisiones = yii\helpers\ArrayHelper::map($divisiones, 'id', 'nombre');
-           
-        }else
-            $divisiones = array();
-        ?>        
-        
         <div class="col-sm-3">
             <?= $form->field($model, 'hijo_profesor')->dropDownList(['0'=>'NO','1'=>'SI'],['prompt'=>'Seleccione Estab']) ?>
         </div>
     </div>
     
     <div class="form-group">
-        <?= Html::submitButton("<i class='fa fa-save'></i> Guardar...", ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary','id'=>'btn-envio']) ?>
+        <?= Html::submitButton("<i class='fa fa-save'></i> Guardar...", ['class' => 'btn btn-primary','id'=>'btn-envio']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 </div>
+
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Formulario Alta / Edición Alumno. <br /> Seleccione el grupo familiar, y complete los campos requeridos. '
+            },  
+            {
+                element: document.querySelector('.datagrupofamiliar'),
+                intro: 'Seleccione grupo familiar.'
+            }, 
+            {
+                element: document.querySelector('#persona-apellido'),
+                intro: 'Complete los datos personales del alumno.'
+            },
+                        
+            
+            {
+                element: document.querySelector('#alumno-nro_legajo'),
+                intro: 'Ingrese el Nro de legajo.'
+            },
+            {
+                element: document.querySelector('#establecimientodivision'),
+                intro: 'Seleccione el establecimiento y la división.'
+            },
+            {
+                element: document.querySelector('#alumno-hijo_profesor'),
+                intro: 'Indique si el mismo es hijo de profesor o no.'
+            },
+            
+            
+        ]
+      });
+      intro.start();
+}
+  
+", \yii\web\View::POS_END,'ayuda');
+?>

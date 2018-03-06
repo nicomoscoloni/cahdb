@@ -84,7 +84,7 @@ use yii\widgets\Pjax;
         </div>
         
         <div class="row form-group required" style="margin-bottom: 7px;">           
-            <div class="col-sm-4">        
+            <div class="col-sm-7">        
                 <div class="input-group">
                     <span class="input-group-addon"> <?= Html::activeLabel($model, 'estado', ['label'=>'Estado','class' => 'control-label']) ?> </span>
                     <?php echo Html::activeDropDownList($model, 'estado', $filtro_estados, 
@@ -94,30 +94,31 @@ use yii\widgets\Pjax;
             </div>
         </div>
         
-        <div class="row">
-            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
+        <div class="row form-group ">
+            <div class="col-sm-12">        
+            
+            <?= Html::button('<i class="fa fa-search"> </i> Buscar', ['class' => 'btn btn-primary','id'=>'btn-buscar-serviciosalumno']) ?>
+            <?= Html::resetButton('Borrar', ['class' => 'btn btn-secondary']) ?>
+            
             <?= Html::button('<i class="fa fa-file-excel-o"> </i> EXCEL', ['class' => 'btn btn-success', 'id'=>'btn-excel',
                         'onclick'=>'js:{downListado("'.Url::to(['servicio-alumno/exportar-excel']) .'");}']) ?>
+            </div>
         </div>
-
         <?php ActiveForm::end(); ?>
         
     </div>
 
 <?php
  
-$this->registerJs('
+$this->registerJs(' 
     $("#pjax-serviciosalumnos").on("pjax:beforeSend", function (event, data, status, xhr, options) {
+        
         status.data = status.data+$("#formservc").serialize();              
     });
             
     $("document").ready(function(){
-        $("#formservc").on("beforeSubmit",function(e, messages){     
-            alert("dddd");
-            e.preventDefault();
-            $.pjax.reload({container: "#pjax-serviciosalumnos   ", timeout:false, replace: false ,url: urlreload});                                
-            
-            
+        $("#btn-buscar-serviciosalumno").on("click",function(){                
+            $.pjax.reload({container: "#pjax-serviciosalumnos",type:"POST" ,timeout:false, replace: false});   
         });
     });
     

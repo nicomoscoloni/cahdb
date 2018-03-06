@@ -33,6 +33,7 @@ class ServicioOfrecido extends BaseServicioOfrecido
                 ['xfecha_vencimiento', 'date', 'format' => 'php:d-m-Y','message'=>'Ingrese una fecha Valida'],                 
                 ['xfecha_fin','rulesControlFechas'],  
                 [['fecha_inicio'],'rulesControlFechas','skipOnEmpty' => false],
+                 [['devengamiento_automatico'], 'integer'],
              ]
         );
     }
@@ -51,6 +52,15 @@ class ServicioOfrecido extends BaseServicioOfrecido
         );
     }
     
+    public function getXdevengamiento_automatico(){
+        if($this->devengamiento_automatico=='1' || $this->devengamiento_automatico==1 || $this->devengamiento_automatico==true)
+            return 1;
+        else    
+          if($this->devengamiento_automatico=='0' || $this->devengamiento_automatico==0 || $this->devengamiento_automatico==false)
+            return 0;
+    }  
+
+
     /***********************************************************/
     /***********************************************************/
     public static function getServicios(){
@@ -80,6 +90,16 @@ class ServicioOfrecido extends BaseServicioOfrecido
     public function getMiTiposervicio()
     {
         return $this->hasOne(CategoriaServicioOfrecido::className(), ['id' => 'id_tiposervicio']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCantDivisionesAsociadas()
+    {
+        $divisiones = ServicioEstablecimiento::find()->where('id_servicio='.$this->id)->count();        
+        return $divisiones;
+        
     }
   
 

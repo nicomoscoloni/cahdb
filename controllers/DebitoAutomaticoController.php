@@ -104,7 +104,7 @@ class DebitoAutomaticoController extends Controller
         
         return $this->render('view',[
             'model'=>$model,
-            'searchItemsDebito' => $searchItemsDebitos,
+            'searchItemsDebitos' => $searchItemsDebitos,
             'dataMisDebitos' => $dataMisDebitos,
         ]);
     }

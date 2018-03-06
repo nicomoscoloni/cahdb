@@ -49,7 +49,7 @@ yii\bootstrap\Modal::end();
 
       <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <table>
+            <table id='infodebito'>
                 <tr>
                     <td width="25%"> 
                         <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/convenio.png"; ?>" alt="cp_dollar" />  
@@ -70,6 +70,7 @@ yii\bootstrap\Modal::end();
                                 [
                                     'label' => 'Reg. Enviados',
                                     'value' => $model->registros_enviados,
+                                    
                                 ],
                                 [
                                     'label' => 'Reg. Correctos',
@@ -89,13 +90,11 @@ yii\bootstrap\Modal::end();
         </div>
       </div>
         
-        
-        
 
       <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <p>
-                <?= Html::button('<i class="glyphicon glyphicon-floppy-save"></i>  Archivo', ['class' => 'btn btn-primary',
+                <?= Html::button('<i class="glyphicon glyphicon-floppy-save"></i>  Archivo', ['class' => 'btn btn-primary','id'=>'btn-down-archivo',
                         'onclick'=>'js:{downArchivoBanco("'.Url::to(['debito-automatico/descargar-archivo-envio','id'=>$model->id]) .'");}']); ?>
                 
                 <?= Html::button('<i class="glyphicon glyphicon-hand-right"></i>  Convertir a Excel', ['value'=>yii\helpers\Url::to(['convertir-a-excel', 'id' => $model->id]), 'class' => 'btn btn-success','id'=>'btn-verificar']) ?>
@@ -104,6 +103,68 @@ yii\bootstrap\Modal::end();
             </p>    
         </div>
       </div>
+        
+        <div class="row">
+        <div class="col-sm-12 ">
+    
+        <?php \yii\widgets\Pjax::begin(); ?>    <?=     \yii\grid\GridView::widget([
+                    'dataProvider' => $dataMisDebitos,
+                    //'filterModel' => $searchItemsDebitos,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        [
+                            'label' => 'Servicio',
+                            'attribute'=>'id_servicio',
+                            'filter'=>false,
+                            'value' => function($model) {
+                                return $model->detalleMiServicio;
+                            },
+                        ], 
+                        [
+                            'label' => 'Alumno/Familia',
+                            
+                            'value' => function($model) {
+                                return $model->detalleAlumno;
+                            },
+                        ], 
+                        'resultado_procesamiento',                         
+                    ],
+                ]); ?>
+        <?php \yii\widgets\Pjax::end(); ?>
+        </div>
+      </div>
       
     </div>
 </div>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            {
+                element: document.querySelector('#infodebito'),
+                intro: 'Detalle / Información del debito.'
+            }, 
+            {
+                element: document.querySelector('#btn-down-archivo'),
+                intro: 'Descargar archivo a enviar al banco.'
+            },
+            {
+                element: document.querySelector('#btn-verificar'),
+                intro: 'Descargar archivo excel.'
+            },   
+            {
+                element: document.querySelector('#btn-procesa'),
+                intro: 'Presione para procesar la devolución del banco.'
+            }
+        ]
+      });
+      intro.start();
+}      
+", \yii\web\View::POS_END,'ayuda');
+?>

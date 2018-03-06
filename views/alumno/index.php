@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php
             if(Yii::$app->user->can('exportarAlumnos')){?>
                 <p class="pull-right"> 
-                    <?= Html::button('<i class="glyphicon glyphicon-download"> </i> Excel', ['class' => 'btn btn-success btn-xs', 'id'=>'btn-excel',
+                    <?= Html::button('<i class="glyphicon glyphicon-download"> </i> Excel', ['class' => 'btn btn-success btn-xs btn-excel', 'id'=>'btn-excel',
                             'onclick'=>'js:{downListado("'.Url::to(['alumno/exportar-excel']) .'");}']) ?>
                 </p>
             <?php } ?>
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'H.P',
                         'attribute'=>'hijo_profesor',    
-                        'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'hijo_profesor', ['0'=>'NO','1'=>'SI'],['prompt'=>'','class'=>'form-control']),
+                        'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'hijo_profesor', ['0'=>'No','1'=>'Si'],['prompt'=>'','class'=>'form-control']),
                         'value' => function($model) {
                             if($model->hijo_profesor=='0')
                                 return "No";
@@ -109,11 +109,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                     ],
                     ['class' => 'yii\grid\ActionColumn',
-                            'template'=>'{activar} {inactivar}',
-                            'visibleButtons' => [                                   
-                                    'activar' => Yii::$app->user->can('inactivarAlumno'),
-                                    'inactivar' =>Yii::$app->user->can('activarAlumno'),
-                                ],
+                        'template'=>'{activar} {inactivar}',
+                        'headerOptions' => ['class' => 'actionsactivacion'],
                             'buttons' => 
                                [                            
                                 'activar' => function ($url, $model) { 
@@ -139,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],      
                     [
                         'class' => 'yii\grid\ActionColumn',
-                        'headerOptions' => ['width' => '50'],
+                        'headerOptions' => ['width' => '50','class'=>'actionsgrid'],
                         'template'=>'{update} {view}',
                         'visibleButtons' => [                                   
                                     'update' => Yii::$app->user->can('cargarAlumno'),
@@ -167,3 +164,41 @@ $this->params['breadcrumbs'][] = $this->title;
 <style type="text/css">
     .alumnoinactivo{background-color: #F0D595 !important;}
 </style>
+
+<script type="text/javascript">
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: "Listado de Alumnos."
+            },  
+            {
+                element: document.querySelector('.grid-view .filters'),
+                intro: "Filtros para realizar busquedas."
+            },            
+            {
+                element: document.querySelector('.grid-view tbody'),
+                intro: "El resultado de la busqueda sera desplegado en esta sección."
+            },
+            {
+                element: document.querySelector('.actionsactivacion'),
+                intro: "Acciones para activar/inactivar alumno."
+            },
+            {
+                element: document.querySelector('.actionsgrid'),
+                intro: "Acciones para visualizar o editar alumno."
+            },
+            {
+                element: document.querySelector('.btn-excel'),
+                intro: "Descargar archivo excel con detalle del listado."
+            },
+        ]
+      });
+      intro.start();
+}      
+</script>

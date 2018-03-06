@@ -32,7 +32,7 @@ class ServicioOfrecidoController extends Controller
                     [      
                         'actions' => ['admin','delete','view','alta','update'],
                         'allow' => true,
-                        'roles' => ['abmlServicioOfrecido'],
+                        'roles' => ['gestionarServicios'],
                     ],
                     [     
                         'actions' => ['devengar-servicio','eliminar-devengamiento'],
@@ -104,7 +104,7 @@ class ServicioOfrecidoController extends Controller
 
             $searchModelSerAlumnos = new \app\models\search\ServicioAlumnoSearch();
             $searchModelSerAlumnos->id_servicio = $id;
-            $dataProviderSerAlumnos = $searchModelSerAlumnos->search(Yii::$app->request->get());
+            $dataProviderSerAlumnos = $searchModelSerAlumnos->search(Yii::$app->request->post());
         }catch (\Exception $e) {
             Yii::error('View Servicios Ofrecidos '.$e);              
             Yii::$app->session->setFlash('error',Yii::$app->params['operacionFallida']);
@@ -132,7 +132,7 @@ class ServicioOfrecidoController extends Controller
                 Yii::$app->session->setFlash('success',Yii::$app->params['cargaCorrecta']);
                 $transaction->commit();
                 return $this->redirect(['view', 'id' => $model->id]);
-            }           
+            }
         }catch (\Exception $e) {
             Yii::error('Alta Servicios Ofrecidos '.$e);
             $transaction->rollBack();            
@@ -235,7 +235,7 @@ class ServicioOfrecidoController extends Controller
                 $where = 'WHERE sa.id is null';
             if($id !== null){
                 $where.=" and (so.devengamiento_automatico = '1')  and so.id=".$id;    
-            }/*else{
+            }/* else{
                 $where.=" and (so.devengamiento_automatico = '1')  AND ((fecha_vencimiento <=  DATE_ADD(NOW(), INTERVAL + 1 MONTH)))";
             }  */          
             $sql_servicio.=$where;            
@@ -243,44 +243,48 @@ class ServicioOfrecidoController extends Controller
 
             $command_servicios  =  $connection->createCommand($sql_servicio);
             $servicios = $command_servicios->queryAll(); 
-            
-            foreach ($servicios as $servicio){
-                // chequeamos si ya se devengo la matricula                   
-                $modelServicio = new \app\models\ServicioAlumno();
-                $modelServicio->id_alumno = $servicio['idalumno'];
-                $modelServicio->id_servicio = $id;// $servicio['idservicioofrecido'];
-                $modelServicio->estado = ConfController::estadoSA_ABIERTA;
+            if(count($servicios)==0){
+                $txt_resultado = 'No se encontraron alumnos a devengar el servicio.';
+            }else{
+                foreach ($servicios as $servicio){
+                    // chequeamos si ya se devengo la matricula                   
+                    $modelServicio = new \app\models\ServicioAlumno();
+                    $modelServicio->id_alumno = $servicio['idalumno'];
+                    $modelServicio->id_servicio = $id; // $servicio['idservicioofrecido'];
+                    $modelServicio->estado = ConfController::estadoSA_ABIERTA;
 
-                if( $servicio['hijo_profesor']=='0')
-                    $modelServicio->importe_servicio = $servicio['montoservicio'];
-                else
-                    $modelServicio->importe_servicio = $servicio['montoservicio_hijoprofesor'];
+                    if( $servicio['hijo_profesor']=='0')
+                        $modelServicio->importe_servicio = $servicio['montoservicio'];
+                    else
+                        $modelServicio->importe_servicio = $servicio['montoservicio_hijoprofesor'];
 
-                $modelServicio->importe_descuento =0;
-                $modelServicio->importe_abonado =0;                        
-                $modelServicio->fecha_otorgamiento = date('Y-m-d');
-                $valid = $valid && $modelServicio->save();
-
-                $descuentosAlumno = \app\models\BonificacionAlumno::find()->where('id_alumno='. $servicio['idalumno'])->all();
-                $total_descuentos = 0;
-                if(!empty($descuentosAlumno)){
-                    foreach($descuentosAlumno as $descuento){
-                        $modelDescuentoServicio = new \app\models\BonificacionServicioAlumno();
-                        $modelDescuentoServicio->id_bonificacion = $descuento->id_bonificacion;
-                        $bonificacion = \app\models\CategoriaBonificacion::findOne($descuento->id_bonificacion); 
-                        $modelDescuentoServicio->id_servicioalumno = $modelServicio->id;
-                        $total_descuentos += $bonificacion->valor;
-                        $valid = $valid && $modelDescuentoServicio->save();
-                    }
-                    $modelServicio->importe_descuento = ( $modelServicio->importe_servicio * $total_descuentos) / 100;
+                    $modelServicio->importe_descuento =0;
+                    $modelServicio->importe_abonado =0;                        
+                    $modelServicio->fecha_otorgamiento = date('Y-m-d');
                     $valid = $valid && $modelServicio->save();
-                }  
-            }            
+
+                    $descuentosAlumno = \app\models\BonificacionAlumno::find()->where('id_alumno='. $servicio['idalumno'])->all();
+                    $total_descuentos = 0;
+                    if(!empty($descuentosAlumno)){
+                        foreach($descuentosAlumno as $descuento){
+                            $modelDescuentoServicio = new \app\models\BonificacionServicioAlumno();
+                            $modelDescuentoServicio->id_bonificacion = $descuento->id_bonificacion;
+                            $bonificacion = \app\models\CategoriaBonificacion::findOne($descuento->id_bonificacion); 
+                            $modelDescuentoServicio->id_servicioalumno = $modelServicio->id;
+                            $total_descuentos += $bonificacion->valor;
+                            $valid = $valid && $modelDescuentoServicio->save();
+                        }
+                        $modelServicio->importe_descuento = ( $modelServicio->importe_servicio * $total_descuentos) / 100;
+                        $valid = $valid && $modelServicio->save();
+                    }  
+                }
+                $txt_resultado = 'El servicio se devengo con exito.';
+            }
 
             if ($valid){
                 $transaction->commit();
                 Yii::$app->response->format = 'json';
-                return ['error' => '0', 'resultado' => 'EXITO'];
+                return ['error' => '0', 'resultado' => $txt_resultado];
             }else{
                 $transaction->rollback();
                 Yii::$app->response->format = 'json';
@@ -295,6 +299,8 @@ class ServicioOfrecidoController extends Controller
         }
     } //fin DevengamientoMatriculas
 
+    
+    
     public function actionEliminarDevengamiento($id=null){
         try{ 
             $connection= \Yii::$app->db;              

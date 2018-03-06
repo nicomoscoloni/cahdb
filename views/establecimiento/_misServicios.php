@@ -17,7 +17,7 @@ use yii\helpers\Url;
             <div class="pull-right">
                 <p>
                 <?=  Html::a('<i class="fa fa-plus-square"></i> Cargar Servicio', ['establecimiento/nuevo-servicio','est'=>$modelEstablecimiento->id], 
-                        ['class' => 'btn btn-primary btn-alta']); ?>
+                        ['class' => 'btn btn-primary btn-alta','id'=>'btn-alta-servicio']); ?>
                 </p>
             </div>
             <div>
@@ -57,3 +57,30 @@ use yii\helpers\Url;
 </div>
                 </div>
 </div>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Listado de servicios brindados por el establecimiento.'
+            },  
+            {
+                element: document.querySelector('.grid-view .filters'),
+                intro: 'Filtros para realizar busquedas especificas, puede especificar mas de un dato'
+            },  
+            {
+                element: document.querySelector('#btn-alta-servicio'),
+                intro: 'Presione para Gestionar Servicios al establecimiento.'
+            },
+        ]
+      });
+      intro.start();
+} 
+", \yii\web\View::POS_END,'ayuda');
+?>

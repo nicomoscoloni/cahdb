@@ -75,7 +75,27 @@ use yii\helpers\Url;
                                 'value' => function($model) {
                                     return $model->detalleEstado;
                                 },
-                            ],                             
+                            ],
+                           [
+                            'class' => 'yii\grid\ActionColumn',
+                            'headerOptions' => ['width' => '50', 'class'=>'actionsgrid'],
+                            'template'=>'{remover}',
+                            'buttons' => 
+                            [
+                            'remover' => function ($url, $model) {     
+                                    if($model->estado!='A')
+                                        $class='disabled readonly';
+                                    else
+                                    $class='';
+                                            return Html::a( '<i class="fa fa fa-remove"></i>',
+                                                                   ['servicio-alumno/remover', 'id'=>$model['id']],
+                                                                   ['class'=>'btn btn-primary btn-xs '. $class, 'title'=>'Remueve el servicio al alumno','alt'=>'Remueve el servicio al alumno']
+                                                           );
+                                    
+                                   }, 
+                            ],
+                            
+                    ],             
                         ],
                     ]); ?>
                 <?php Pjax::end(); ?>

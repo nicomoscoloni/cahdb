@@ -15,33 +15,23 @@ function inactivarAlumno(xhref){
         },
         callback: function (result) {
             if(result===true){     
-                $("body").loading({message: 'ESPERE... procesando'});
+                $("body").loading({message: 'Aguarde procesando...'});
                 $.ajax({
                      url    : xhref,
                      type   : "post",            
                      dataType: "json",
                      success: function (response){  
-                         if(response.error==0){                             
-                            $.pjax.reload({container:grillaajax, timeout:false}); 
-                            $(document).on('pjax:complete',grillaajax, function() {
-                                new PNotify({
-                                    title: 'Correcto',
-                                    text: response.mensaje,
-                                    icon: 'glyphicon glyphicon-envelope',
-                                    type: 'success'
-                                });   
-                                $("body").loading('stop');
-                                $(document).off('pjax:complete',grillaajax);
-                            });                              
-                         }else{    
-                            $("body").loading('stop');
+                        $("body").loading('stop');
+                        if(response.error==0){
+                            $('#grid-alumnos').yiiGridView('applyFilter');
+                        }else{                            
                             new PNotify({
                                 title: 'Error',
                                 text: response.mensaje,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'error'
                             });
-                         }
+                        }                        
                     },
                     error  : function (error) {    
                         $("body").loading('stop');
@@ -66,7 +56,7 @@ function activarAlumno(xhref){
     grillaajax = '#pjax-alumnos';
     
     bootbox.confirm({
-        message: "Esta seguro que desea INACTIVAR al Alumno?",
+        message: "Esta seguro que desea ACTIVAR al Alumno?",
         buttons: {
             confirm: {
                 label: 'Si',
@@ -79,32 +69,24 @@ function activarAlumno(xhref){
         },
         callback: function (result) {
             if(result===true){     
-                $("body").loading({message: 'ESPERE... procesando'});
+                $("body").loading({message: 'Aguarde procesando...'});
                 $.ajax({
                      url    : xhref,
                      type   : "post",            
                      dataType: "json",
-                     success: function (response){                         
+                     success: function (response){
+                        $("body").loading('stop');
                         if(response.error==0){                             
-                            $.pjax.reload({container:grillaajax,timeout:false}); 
-                            $(document).on('pjax:complete',grillaajax, function() { 
-                                new PNotify({
-                                    title: 'Correcto',
-                                    text: response.mensaje,
-                                    icon: 'glyphicon glyphicon-envelope',
-                                    type: 'success'
-                                });   
-                                $("body").loading('stop');
-                                $(document).off('pjax:complete',grillaajax);
-                            });                              
-                         }else{                            
+                            $('#grid-alumnos').yiiGridView('applyFilter');         
+                        }else{                            
                             new PNotify({
                                 title: 'Error',
                                 text: response.mensaje,
                                 icon: 'glyphicon glyphicon-envelope',
                                 type: 'error'
                             });
-                         }
+                        }
+                        
                     },
                     error  : function (error) {
                         $("body").loading('stop');
@@ -128,8 +110,8 @@ function activarAlumno(xhref){
 /****************************************************************************/
 $(document).ready(function () {
     //bloquemos la pantalla cuando se realiza apetion ajaz del gri de alumnos
-    $(document).on('pjax:send', '#pjax-alumnos', function() {        
-        $('body').loading({message: 'ESPERE... procesando'});
+    $(document).on('pjax:send', '#pjax-alumnos', function() {
+        $('body').loading({message: 'Aguarde procesando...'});
     });          
     //al finalizar lallamada ajax del render de pjax del grid de alumnos
     //actulizamos el combio de divisiones segun el establecimiento

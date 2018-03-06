@@ -16,7 +16,7 @@ EstablecimientoAssets::register($this);
                     <div class="pull-right">
                         <p>
                             <?=  Html::button('<i class="fa fa-plus-square"></i>',  
-                                    ['class' => 'btn btn-primary btn-xs',
+                                    ['class' => 'btn btn-primary btn-xs','id'=>'btn-alta-division',
                                     'onclick'=>'js:divisionescolar.cargarDivision("'.Url::to(['establecimiento/cargar-division','est'=>$modelEstablecimiento->id]) .'");']) ?>
                         </p>
                     </div>
@@ -29,11 +29,12 @@ EstablecimientoAssets::register($this);
                             ]); 
                     ?>    
                     <?= GridView::widget([
+                        'id'=>'grid-divisiones',
                         'dataProvider' => $dataProviderDivisiones,
                         'columns' => [                   
                             'nombre',     
                             ['class' => 'yii\grid\ActionColumn',
-                                'headerOptions' => ['width' => '30'],
+                                'headerOptions' => ['width' => '30','class'=>''],
                                 'template'=>'{view}',    
                                 'visibleButtons' => [                                   
                                     'view' => Yii::$app->user->can('visualizarDivisionEscolar'),
@@ -50,7 +51,7 @@ EstablecimientoAssets::register($this);
                                                    //'visible'=>Yii::$app->user->can('visualizarDivisionEscolar'),
                             ],
                             ['class' => 'yii\grid\ActionColumn',
-                                'headerOptions' => ['width' => '80'],
+                                'headerOptions' => ['width' => '80','class'=>'gestiongrid'],
                                 'template'=>'{update} {delete}',
                                 'visibleButtons' => [                                   
                                     'update' => Yii::$app->user->can('gestionarDivisionesEscolares'),
@@ -101,4 +102,46 @@ EstablecimientoAssets::register($this);
     ]);
         echo "<div id='modalContent'></div>";
     yii\bootstrap\Modal::end();
+?>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Detalles Establecimiento.'
+            },  
+            {
+                element: document.querySelector('#informacionestablecimiento'),
+                intro: 'Detalle datos establecimiento.'
+            },
+            {
+                element: document.querySelector('#drop-menu-establecimientos'),
+                intro: 'Operaciones sobre el establecimiento. Seleccione una tarea a llevar a cabo.'
+            },
+            {
+                element: document.querySelector('#grid-divisiones'),
+                intro: 'Listado de divisiones pertenecientes al establecimiento.'
+            },
+            {
+                element: document.querySelector('#btn-alta-division'),
+                intro: 'Presione para dar de ata una división.'
+            },
+            {
+                element: document.querySelector('.gestiongrid'),
+                intro: 'Botonera edición y eliminación de división.'
+            },
+
+            
+
+        ]
+      });
+      intro.start();
+} 
+", \yii\web\View::POS_END,'ayuda');
 ?>

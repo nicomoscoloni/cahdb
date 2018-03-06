@@ -55,7 +55,7 @@ class EstablecimientoController extends Controller
                     [     
                         'actions' => ['nuevo-servicio','servicios-division','quitar-servicio-division','get-servicios','asignar-servicio-division','mis-servicios-ofrecidos'],
                         'allow' => true,
-                        'roles' => ['gestionarServiciosEstablecimiento'],
+                            'roles' => ['gestionarServiciosEstablecimiento'],
                     ],
                     [     
                         'actions' => ['cargar-division','actualizar-division','eliminar-division','mis-divisiones-escolares'],
@@ -390,6 +390,12 @@ class EstablecimientoController extends Controller
         try{
             $model = new ServicioEstablecimiento();
             $model->establecimiento  = $modelEstablecimiento->id;
+            
+            $queryDivisiones = DivisionEscolar::find()->andWhere(['id_establecimiento' => $modelEstablecimiento->id]);            
+            $dataProviderDivisiones = new ActiveDataProvider([
+                'query' => $queryDivisiones,           
+                'pagination' => false
+            ]);
         }
         catch (\Exception $e){
             Yii::error('Establecimiento - actionNuevoServicio '.$e);
@@ -398,6 +404,7 @@ class EstablecimientoController extends Controller
         }
         return $this->render('asignarServicio', [
             'model' => $model,
+            'dataProviderDivisiones'=>$dataProviderDivisiones
         ]);
     }    
     

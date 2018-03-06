@@ -55,7 +55,10 @@ class AlumnoSearch extends Alumno
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,            
+            'query' => $query,   
+            'sort'=>[
+                'defaultOrder'=>['apellido'=>SORT_ASC, 'nombre'=>SORT_ASC]
+            ]
         ]);
         
         

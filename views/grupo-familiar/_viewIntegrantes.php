@@ -12,7 +12,7 @@ GrupoFamiliarAsset::register($this);
 <?php
     yii\bootstrap\Modal::begin([        
         'id'=>'modalAsignacionResponsable',
-        'header'=>'Asignación de Responsable',
+        'header'=>'Asignación de Responsable.  <a class="btn btn-large btn-success" href="javascript:void(0);" onclick="javascript:ayudaAsignacionResponsable();">Nesecito Ayuda?</a>',
         'class' =>'modal-scrollbar', 
         'size' => 'modal-lg',
         ]);
@@ -23,7 +23,7 @@ GrupoFamiliarAsset::register($this);
 <div class="row">
     <!--col alumnos-->
     <div class="col-xs-6">
-        <div class="box box-solid box-colegio" id="grupo-familiar-index">
+        <div class="box box-solid box-colegio box-alumno-familia" id="grupo-familiar-index">
             <div class="box-header with-border">
                 <i class="fa fa-users"></i> 
                     <h3 class="box-title"> Alumnos / Hijos </h3>       
@@ -62,16 +62,22 @@ GrupoFamiliarAsset::register($this);
     
     <!-- col responsbales -->
     <div class="col-sm-6">
-        <div class="box box-solid box-colegio" id="grupo-familiar-index">
+        <div class="box box-solid box-colegio box-responsbale-familia" id="grupo-familiar-index">
             <div class="box-header with-border">
                 <i class="fa fa-users"></i> 
-                    <h3 class="box-title"> Responsbales </h3> 
+                    <h3 class="box-title"> Responsables </h3> 
                     <?php
             if(Yii::$app->user->can('gestionarResponsable')){
                 echo 
                     Html::button('<i class="fa fa-share-square-o"></i> Asignar Responsable', 
                         ['value' => Url::to(['grupo-familiar/asignar-responsable', 'familia' => $familia]), 
                          'class' => 'btn btn-success btn-xs', 'id' => 'btn-asignar-responsable']);
+                echo " ";
+                echo Html::button(' <i class="fa fa-plus-square"></i> ALTA', 
+                        ['value'=> Url::to(['grupo-familiar/carga-responsable', 'idFamilia'=>$familia]),
+                         'class' => 'btn btn-primary btn-xs','id'=>'btn-alta-responsable',
+                         'onclick'=>'js:{cargarResponsable(this);}'    
+                        ]); 
             } ?>
                </div>
             <div class="box-body">
@@ -84,7 +90,7 @@ GrupoFamiliarAsset::register($this);
                 if(count($responsables)>0){
                     echo '<ul class="todo-list todo-list-responsables">';
                     foreach($responsables as $responsable){                
-                        echo "<li>". $responsable->tipoResponsable->nombre . " ". $responsable->miPersona->apellido .
+                        echo "<li> <span class='label label-warning'>". $responsable->tipoResponsable->nombre . "</span> ". $responsable->miPersona->apellido .
                                 "; ".$responsable->miPersona->nombre;
                         if(Yii::$app->user->can('gestionarResponsable')){
                             echo "<div class='tools tools-responsables'>";

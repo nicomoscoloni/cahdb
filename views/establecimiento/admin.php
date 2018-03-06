@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
           <p class="pull-right">
             <?php
             if(Yii::$app->user->can('cargarEstablecimiento'))
-                echo Html::a('<i class="glyphicon glyphicon-plus"></i>', ['alta'], ['class' => 'btn btn-xs btn-success']) ?>
+                echo Html::a('<i class="glyphicon glyphicon-plus"></i>', ['alta'], ['class' => 'btn btn-xs btn-success btn-alta']) ?>
           </p>
         
                 <?php Pjax::begin([
@@ -40,12 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'mail',
                         'nivel_educativo',
                         ['class' => 'yii\grid\ActionColumn', 
+                         
                          'template'=>'{view} {update}',
-                          'visibleButtons' => [                                   
+                         'visibleButtons' => [                                   
                                     'view' => Yii::$app->user->can('visualizarEstablecimiento'),
                                     'update' =>Yii::$app->user->can('cargarEstablecimiento'),
                                 ],  
-                         'headerOptions' => ['width' => '50'],   
+                         'headerOptions' => ['width' => '50','class'=>''], 
+                         'contentOptions' => ['width' => '50','class'=>'opcionesgrid'], 
+                            
                         ],
                     ],
                 ]); ?>
@@ -53,3 +56,29 @@ $this->params['breadcrumbs'][] = $this->title;
             
     </div>    
 </div>
+<script type="text/javascript">
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [   
+            {
+                element: document.querySelector('.grid-view tbody'),
+                intro: "Listado de Establecimientos."
+            },
+            {
+                element: document.querySelector('.opcionesgrid'),
+                intro: "Gestion establecimiento."
+            },
+            {
+                element: document.querySelector('.btn-alta'),
+                intro: "Si desea realizar una nueva alta, presione sobre este botón."
+            },
+        ]
+      });
+      intro.start();
+}      
+</script>

@@ -11,11 +11,15 @@ CRUDAjaxAsset::register($this);
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\TipoDocumentoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Gestión Generos';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+<?= \app\widgets\modalcrud\ModalCrud::widget(['titulo'=>'Alta/Actualización Generos']); ?>
 <div class="tipo-documento-index">
     
 
-    <div class="box  box-colegio">
+    <div class="box  box-success">
         <div class="box-header with-border">
             <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Sexos/Genero </h3>
         </div>
@@ -71,19 +75,19 @@ function ayuda(){
         doneLabel:'Cerrar',
         steps: [      
             { 
-                intro: "Administracion de Sexos/Generos!"
+                intro: "Administración de Generos."
             },  
             {
                 element: document.querySelector('.grid-view .filters'),
-                intro: "Filtros para realizar busquedas especificas, puede especificar mas de un dato."
+                intro: "Filtros para realizar busquedas específicas, puede completar más de un dato."
             },            
             {
                 element: document.querySelector('.grid-view tbody'),
-                intro: "El resultado de la busqueda sera desplegado en esta seccion."
+                intro: "El resultado de la busqueda será desplegado en esta sección."
             },
             {
                 element: document.querySelector('.btn-alta'),
-                intro: "Si desea realizar una nueva alta, presione sobre este boton."
+                intro: "Si deséa realizar una nueva alta, presione sobre este botón."
             },
         ]
       });

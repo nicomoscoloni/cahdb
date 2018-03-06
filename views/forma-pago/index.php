@@ -8,10 +8,15 @@ use yii\helpers\Url;
 use app\assets\CRUDAjaxAsset;
 CRUDAjaxAsset::register($this);
 
+
+$this->title = 'Gestión Pagos Habilitados';
+$this->params['breadcrumbs'][] = $this->title;
+
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\TipoDocumentoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
+<?= \app\widgets\modalcrud\ModalCrud::widget(['titulo'=>'Alta/Actualización Formas Pago']); ?>
 <div id="tipo-documento-index">
 
     <div class="box box-success">
@@ -21,7 +26,7 @@ CRUDAjaxAsset::register($this);
         <div class="box-body">
             
                 <p class="pull-right">
-                    <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-xs btn-success',
+                    <?=  Html::a('<i class="glyphicon glyphicon-plus"></i>', ['create'], ['class' => 'btn btn-xs btn-success btn-alta',
                         'onclick'=>'js:{cargaAjax("'.Url::to(['forma-pago/create']) .'"); return false;}']) ?>
                 </p>
                     <?php Pjax::begin(['id'=>'pjax-grid','enablePushState' => false]); ?>    
@@ -60,3 +65,32 @@ CRUDAjaxAsset::register($this);
         </div>
     </div>
 </div>
+<script type="text/javascript">
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: "Administración de Pagos Habilitados."
+            },  
+            {
+                element: document.querySelector('.grid-view .filters'),
+                intro: "Filtros para realizar busquedas específicas, puede completar más de un dato."
+            },            
+            {
+                element: document.querySelector('.grid-view tbody'),
+                intro: "El resultado de la busqueda será desplegado en esta sección."
+            },
+            {
+                element: document.querySelector('.btn-alta'),
+                intro: "Si deséa realizar una nueva alta, presione sobre este botón."
+            },
+        ]
+      });
+      intro.start();
+}      
+</script>

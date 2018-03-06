@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
            
             
-            <div class="row"> <!-- row dettales delconvenio -->
+        <div class="row" id="informacionestablecimiento"> <!-- row dettales delconvenio -->
             <div class="col-sm-8 col-sm-offset-2 col-xs-12">
                 <table>
                     <tr>
@@ -32,18 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/escuela.png"; ?>" alt="cp_dollar" />  
                         </td>
                         <td width="60%">
-                            <h3 class="text-light-blue bold"> <?php echo $model->nombre; ?> </h3>
-                            <span class="text-light-blue bold">  Fecha Apertura: </span> <?php echo \Yii::$app->formatter->asDate($model->fecha_apertura); ?><br /> 
-                            <span class="text-light-blue bold">  Dirección: </span> <?php echo $model->calle; ?> <br />
-                            <span class="text-light-blue bold">  Teléfono: </span> <?php echo $model->telefono; ?> <br />
-                            <span class="text-light-blue bold">  Nivel Educativo: </span> <?php echo $model->nivel_educativo; ?> <br />
+                            <h3 class="text-light-blue text-bold"> <?php echo $model->nombre; ?> </h3>
+                            <span class="text-light-blue text-bold">  Fecha Apertura: </span> <?php echo \Yii::$app->formatter->asDate($model->fecha_apertura); ?><br /> 
+                            <span class="text-light-blue text-bold">  Dirección: </span> <?php echo $model->calle; ?> <br />
+                            <span class="text-light-blue text-bold">  Teléfono: </span> <?php echo $model->telefono; ?> <br />
+                            <span class="text-light-blue text-bold">  Nivel Educativo: </span> <?php echo $model->nivel_educativo; ?> <br />
                         </td>
                     </tr>                  
                 </table>          
             </div>
         </div> <!-- fin row dettales del establecimiento -->
         
-        <div class="dropup" id="drop-menu-establecimientos">
+        <div class="dropdown" id="drop-menu-establecimientos">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Opciones
               <span class="caret"></span>
@@ -95,3 +95,30 @@ $this->params['breadcrumbs'][] = $this->title;
         
     </div>
 </div>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Detalles Establecimiento.'
+            },  
+            {
+                element: document.querySelector('#informacionestablecimiento'),
+                intro: 'Detalle datos establecimiento.'
+            },
+            {
+                element: document.querySelector('#drop-menu-establecimientos'),
+                intro: 'Operaciones sobre el establecimiento. Seleccione una tarea a llevar a cabo.'
+            },
+        ]
+      });
+      intro.start();
+} 
+", \yii\web\View::POS_END,'ayuda');
+?>

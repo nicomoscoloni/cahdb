@@ -23,12 +23,12 @@ class CategoriaBonificacionController extends Controller
             'access' => [
                 'class' => \yii\filters\AccessControl::className(),
                 'rules' => [
-                    [                        
+                    [
                         'allow' => true,
-                        'roles' => ['gestionarCategoriaDescuentos'],
+                        'roles' => ['gestionarCategoriaServicios'],
                     ],
                 ],
-            ],  
+            ], 
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -49,25 +49,28 @@ class CategoriaBonificacionController extends Controller
     {
         $transaction = Yii::$app->db->beginTransaction(); 
         try{
-             
+            if($id>5){  
                 if ( $this->findModel($id)->delete() ){
                     $transaction->commit();
                     if (Yii::$app->request->isAjax){                    
                         Yii::$app->response->format = 'json';
-                        return ['error' => '0', 'message' => Yii::$app->params['eliminacionCorrecta']];
+                        return ['error' => '0', 'mensaje' => Yii::$app->params['eliminacionCorrecta']];
                     }else{
                         Yii::$app->session->setFlash('ok',Yii::$app->params['eliminacionCorrecta']);
                         return $this->redirect(['index']);
                     }
                 }
-            
-            
+            }else{
+                Yii::$app->response->format = 'json';
+                return ['error' => '1', 'mensaje' => 'No se puede realizar la eliminación. El registro se encuentra bloqueado'];    
+            }
         }
         catch (\Exception $e){
+            Yii::error('Delete CategoriaBonificacion'.$e);
             $transaction->rollBack();
             if (Yii::$app->request->isAjax){
                 Yii::$app->response->format = 'json';
-                return ['error' => '1', 'message' =>  Yii::$app->params['errorExcepcion']];
+                return ['error' => '1', 'mensaje' =>  Yii::$app->params['errorExcepcion']];
             }else{
                 Yii::$app->session->setFlash('error', Yii::$app->params['errorExcepcion']);
                 return $this->redirect(['index']);
@@ -82,65 +85,58 @@ class CategoriaBonificacionController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function  actionCreate($id=null)
+    public function  actionCreate()
     {
         $transaction = Yii::$app->db->beginTransaction();
+        $mensaje = '';
+        $id = Yii::$app->request->get('id');
         
         try{
-            if(!empty($id))
+            if(!empty($id)){
+                if($id<0)
+                    $mensaje = 'No se puede actualizar el registro, el mismo se encuentra bloqueado';    
                 $model = $this->findModel($id);
+            }
             else
                 $model = new CategoriaBonificacion();
 
-            if ($model->load(Yii::$app->request->post())) {
-                if($model->isNewRecord)
-                    $mensaje = Yii::$app->params['cargaCorrecta'];
-                else
-                    $mensaje = Yii::$app->params['actualizacionCorrecta'];
-                    
+            
+            if ($model->load(Yii::$app->request->post())) {                
+                ($model->isNewRecord)?$mensaje = Yii::$app->params['cargaCorrecta']:$mensaje = Yii::$app->params['actualizacionCorrecta'];
+                $model->tipobonificacion = 'PORCENTUAL';
+            
                 if ($model->save()){                    
                     $transaction->commit();
                     if (Yii::$app->request->isAjax){
                         Yii::$app->response->format = 'json';
-                        return ['carga' => '1', 'error' => '0', 'message' => $mensaje, 'id'=>$model->id];
+                        return ['carga' => '1', 'form'=>'0', 'error' => '0', 'mensaje' => $mensaje, 'id'=>$model->id];
                     }else{
                         Yii::$app->session->setFlash('ok',$mensaje);
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
-                }else{
-                    $transaction->rollBack();
-                    if (Yii::$app->request->isAjax){
-                        Yii::$app->response->format = 'json';
-                        return ['carga' => '0', 'error' => '0', 'message' => Yii::$app->params['operacionFallida'], 
-                                'vista' => $this->renderAjax('create', [
-                                        'model' => $model,
-                                ])];
-                    }else{
-                        return $this->render('create', [
-                            'model' => $model,
-                        ]);
-                    }
-                }
+                }else
+                    $mensaje = Yii::$app->params['operacionFallida'];
             }
             
             //renderizamos las vistas, formulario de carga
             if (Yii::$app->request->isAjax){
-                return $this->renderAjax('create', [
-                    'model' => $model,
-                ]);
+                Yii::$app->response->format = 'json';
+                return ['form' => '1', 'error' => '0', 'mensaje' => $mensaje,
+                        'vista' => $this->renderAjax('create', ['model' => $model]
+                    )];                
             }else{
                 return $this->render('create', [
                     'model' => $model,
                 ]);
             }            
         }catch(\Exception $e){
+            Yii::error('Tipo Documentos - actionCreate'.$e);
             $transaction->rollBack();
             if (Yii::$app->request->isAjax){
                 Yii::$app->response->format = 'json';
-                return ['error' => '1', 'message' => Yii::$app->params['errorExcepcion']];
+                return ['error' => '1', 'mensaje' => Yii::$app->params['errorExcepcion']];
             }else{
-                Yii::$app->session->setFlash('error',Yii::$app->params['errorExcepcion']);
-                
+                Yii::$app->session->setFlash('error',Yii::$app->params['errorExcepcion']);                
             }            
         }        
     } //fin createAjax
@@ -154,14 +150,20 @@ class CategoriaBonificacionController extends Controller
      */
     public function actionIndex()
     {
-        
-        $searchModel = new CategoriaBonificacionSearch;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        try{
+            $searchModel = new CategoriaBonificacionSearch;
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);    
+        }catch(\Exception $e){
+            Yii::error('Index CategoriaBonificacion'.$e);
+            Yii::$app->session->setFlash('error',Yii::$app->params['errorExcepcion']);
+            return $this->redirect(['site/index']);    
+        }
+        
     }
     
     

@@ -31,7 +31,7 @@ class AlumnoController extends Controller
                     [     
                         'actions' => ['listado','mis-divisionesescolares'],
                         'allow' => true,
-                        'roles' => ['listarAlumnos'],
+                            'roles' => ['listarAlumnos'],
                     ],
                     [     
                         'actions' => ['delete'],
@@ -70,9 +70,7 @@ class AlumnoController extends Controller
                     ],
                     
                 ],
-                'denyCallback' => function($rule, $action){                    
-                    return $this->redirect(['site/index']);         
-                }        
+                      
             ],  
             'verbs' => [
                 'class' => VerbFilter::className(),

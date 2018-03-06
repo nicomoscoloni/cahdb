@@ -11,12 +11,15 @@ CRUDAjaxAsset::register($this);
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\TipoDocumentoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Gestión Clasificación Egresos';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div id="egresos-fondofijo-index">
 
     <div class="box box-colegio">
         <div class="box-header with-border">
-            <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Tipo Documentos </h3> 
+            <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Egresos Fondo Fijo </h3> 
         </div>
         <div class="box-body">
             <p class="pull-right">
@@ -71,7 +74,7 @@ function ayuda(){
         doneLabel:'Cerrar',
         steps: [      
             { 
-                intro: "Administracion de Documentos!"
+                intro: "Administración de categorias egresos de fondo fijo."
             },  
             {
                 element: document.querySelector('.grid-view .filters'),

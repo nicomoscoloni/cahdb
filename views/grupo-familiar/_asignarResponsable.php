@@ -15,20 +15,6 @@ use yii\grid\GridView;
 
 
 <input type='hidden' name='familia' id="familia" value="<?= $familia; ?>" />
-        
-<div class="row">
-    <div class="col-xs-12">
-        <?php   
-               
-                echo Html::button(' <i class="fa fa-plus-square"></i> ALTA', 
-                        ['value'=> Url::to(['grupo-familiar/carga-responsable', 'idFamilia'=>$familia]),
-                         'class' => 'btn btn-primary',
-                         'onclick'=>'js:{cargarResponsable(this);}'    
-                        ]); 
-                    ?> 
-       
-    </div>
-</div>
     
 <div class="table-responsive">
     <?php echo GridView::widget([
@@ -42,6 +28,7 @@ use yii\grid\GridView;
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => '{select}',
+                    'headerOptions' => ['class'=>'cuadroselecion'],
                     'header'=>\dmstr\helpers\Html::dropDownList('tipores','',app\models\TipoResponsable::getTipoResponsables(),['class'=>'','id'=>'tipores']) ,
                     'buttons' => [                                    
                         'select' => function ($url, $model, $key) { 
@@ -64,3 +51,48 @@ use yii\grid\GridView;
 
 </div>
 <?php \yii\widgets\Pjax::end() ?>
+
+<script type="text/javascript">
+function ayudaAsignacionResponsable(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            {
+                element: document.querySelector('.grid-view .filters'),
+                intro: "Filtros para realizar busquedas especificas, puede especificar mas de un dato."
+            },            
+            {
+                element: document.querySelector('.cuadroselecion'),
+                intro: "Medio pago adoptado."
+            },
+            
+            {
+                element: document.querySelector('#drop-menu-grupofamiliar'),
+                intro: "Botonera opciones gestionar grupo familiar."
+            }, 
+            
+            {
+                element: document.querySelector('.box-alumno-familia'),
+                intro: "Detalle de los alumnos cargados a la familia."
+            },
+            
+            {
+                element: document.querySelector('.box-responsbale-familia'),
+                intro: "Detalle de los responsables cargados a la familia."
+            },
+            
+            {
+                element: document.querySelector('#btn-asignar-responsable'),
+                intro: "Presione para dar de alta/asignar un nuevo responsable."
+            },
+            
+            
+        ]
+      });
+      intro.start();
+}      
+</script>

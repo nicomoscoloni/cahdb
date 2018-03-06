@@ -191,4 +191,16 @@ class TipoDocumentoController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    public function actionPruebaCorreo(){        
+        if (Yii::$app->mailer->compose('layouts/html',['content' => 'asdsasda'])->setTo('arg.gentile@gmail.com')
+            ->setFrom(['no-reply@hermanosdedonbosco.com' => 'Asociaciòn exalumnos de Don Bosco.'])
+            ->setSubject('Detalle Convenio Pago')
+            ->send()){
+         
+            echo "se envio el correo con exito";
+        }else
+            echo "noooooooooooo";
+            
+    }
 }

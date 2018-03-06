@@ -18,9 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Create Servicio Debito Automatico', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+<?php Pjax::begin(); ?>    <?=    GridView::widget([
+        'dataProvider' => $dataMisDebitos,
+        'filterModel' => $searchItemsDebitos,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 

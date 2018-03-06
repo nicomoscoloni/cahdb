@@ -12,6 +12,7 @@ use Yii;
  * @property integer $id
  * @property string $nombre
  * @property integer $id_establecimiento
+ * @property string $iniciales
  *
  * @property \app\models\Alumno[] $alumnos
  * @property \app\models\Establecimiento $establecimiento
@@ -41,6 +42,7 @@ abstract class DivisionEscolar extends \yii\db\ActiveRecord
             [['nombre', 'id_establecimiento'], 'required'],
             [['id_establecimiento'], 'integer'],
             [['nombre'], 'string', 'max' => 50],
+            [['iniciales'], 'string', 'max' => 25],
             [['id_establecimiento'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Establecimiento::className(), 'targetAttribute' => ['id_establecimiento' => 'id']]
         ];
     }
@@ -54,6 +56,7 @@ abstract class DivisionEscolar extends \yii\db\ActiveRecord
             'id' => 'ID',
             'nombre' => 'Nombre',
             'id_establecimiento' => 'Id Establecimiento',
+            'iniciales' => 'Iniciales',
         ];
     }
 

@@ -58,5 +58,12 @@ public function behaviors()
                     return $element['descripcion'] . '  (Monto: '. $element['valor'].'%)';
                 });
         
-    }     
+    }  
+    
+    /***********************************************************/
+    /***********************************************************/
+    public static function getBonificaciones(){
+        $dropciones = CategoriaBonificacion::find()->asArray()->all();
+        return  ArrayHelper::map($dropciones, 'id', 'descripcion');
+    }    
 }

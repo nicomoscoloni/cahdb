@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\search\ServicioOfrecidoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Servicio Ofrecidos';
+$this->title = 'Servicios Ofrecidos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]); ?>    
                 
             <?= GridView::widget([
+                'id'=>'grid-serviciosofrecidos',
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
@@ -59,16 +60,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => 'fecha_vencimiento',
                         'format'=>'date'
                     ],                
-                    [
-                        'label' => 'Perido',
-                        'value' => function($model, $key, $index, $column) {
-                                return $model->detallePeriodo;
-                            },
-                    ],
+                    
                     [
                         'label' => 'Devenga',
                         'attribute'=>'devengamiento_automatico',
-                        'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'devengamiento_automatico',['0'=>'NO','1'=>'SI'] ,['prompt'=>'TODOS','class'=>'form-control']),
+                        'filter'=> dmstr\helpers\Html::activeDropDownList($searchModel, 'devengamiento_automatico',['0'=>'NO','1'=>'SI'] ,['prompt'=>'-','class'=>'form-control']),
                         'value' => function($model, $key, $index, $column) {
                             if($model->devengamiento_automatico=='0')
                                 return "No";
@@ -87,3 +83,41 @@ $this->params['breadcrumbs'][] = $this->title;
            
     </div>
 </div>
+
+<script type="text/javascript">
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                element: document.querySelector('.box-header'),
+                intro: "Administración de Servicios Ofrecidos. "
+            },  
+            { 
+                element: document.querySelector('#grid-serviciosofrecidos'),
+                intro: "Listado de servicios cargados en el sistema."
+            },
+            {
+                element: document.querySelector('.grid-view .filters'),
+                intro: "Filtros para realizar busquedas especificas, puede especificar más de un dato."
+            },            
+            {
+                element: document.querySelector('.grid-view tbody'),
+                intro: "El resultado de la busqueda sera desplegado en esta sección."
+            },
+            {
+                element: document.querySelector('.btn-alta'),
+                intro: "Si desea realizar una nueva alta, presione sobre este aqui."
+            },
+        ]
+      });
+      intro.start();
+}      
+</script>
+<?php 
+    $this->registerJsFile('@web/js/servicio-ofrecido.js', ['depends'=>[app\assets\AppAsset::className()]]);
+?>

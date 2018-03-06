@@ -26,6 +26,43 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <?php echo $this->render('_viewDatosFamilia', ['model' => $model]); ?>
     
-        <?= app\widgets\buscadorServiciosAlumno\BuscadorServiciosAlumno::widget(['searchModel' => $searchModel,'dataProvider'=>$dataProvider,'buscador'=>false]);                        ?>
+        <?= app\widgets\buscadorServiciosAlumno\BuscadorServiciosAlumno::widget(['searchModel' => $searchModel,'dataProvider'=>$dataProvider,'buscador'=>true]);                        ?>
     </div>
 </div>
+<script type="text/javascript">
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: "Visualizacion y gestion Grupo Familiar."
+            },  
+            {
+                element: document.querySelector('#datafamiliar'),
+                intro: "Datos basicos de la familia."
+            }, 
+            {
+                element: document.querySelector('#drop-menu-grupofamiliar'),
+                intro: "Botonera opciones gestionar grupo familiar."
+            }, 
+            
+            {
+                element: document.querySelector('#reporte-servicios-alumno'),
+                intro: "Servicios asociados a la familia."
+            },
+            
+            
+            
+            
+            
+            
+            
+        ]
+      });
+      intro.start();
+}      
+</script>

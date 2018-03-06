@@ -11,10 +11,14 @@ CRUDAjaxAsset::register($this);
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\TipoDocumentoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Gestión Categoriazación Servicios';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+<?= \app\widgets\modalcrud\ModalCrud::widget(['titulo'=>'Alta/Actualización Categoria Servicios Ofrecidos']); ?>
 <div id="tipo-documento-index">
 
-    <div class="box box-colegio">
+    <div class="box box-success">
         <div class="box-header with-border">
             <i class="glyphicon glyphicon-wrench"></i> <h3 class="box-title"> Categoria Servicios Ofrecidos </h3> 
         </div>
@@ -71,7 +75,7 @@ function ayuda(){
         doneLabel:'Cerrar',
         steps: [      
             { 
-                intro: "Administracion de Documentos!"
+                intro: "Administracion de categorización grupo servicios ofrecidos."
             },  
             {
                 element: document.querySelector('.grid-view .filters'),

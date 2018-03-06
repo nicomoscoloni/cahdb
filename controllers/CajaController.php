@@ -169,7 +169,7 @@ class CajaController extends Controller {
             'key'=>'nroservicio',
             'totalCount' => $queryCount,
             'pagination' => [
-                'pageSize' => 1500,
+                'pageSize' => 3,
             ],
             'sort' => [
                 'attributes' => ['nroservicio', 'idalumno', 'montoservicio','importe_descuento','importe_abonado','tiposervicio'],

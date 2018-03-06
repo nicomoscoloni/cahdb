@@ -4,7 +4,7 @@ $params = require(__DIR__ . '/params.php');
 $db = require(__DIR__ . '/db.php');
 
 $config = [
-    'id' => 'basic',
+    'id' => 'Asociación Hermanos Don Bosco',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language'=>'es',
@@ -26,9 +26,9 @@ $config = [
             'class' => 'yii\swiftmailer\Mailer',
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.gmail.com',
-                'username' => 'arg.gentile@gmail.com',
-                'password' => 'nrgmldp???',
+                'host' => 'mail.hermanosdedonbosco.com',
+                'username' => 'hermanos',
+                'password' => 's5qOh9r50D',
                 'port' => '587',
                 'encryption' => 'tls',
             ],

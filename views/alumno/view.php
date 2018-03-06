@@ -37,19 +37,20 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1">
                 <table>
-                    <tr>
+                    <tr id='tabledataalumno'>
                         <td width="30%"> 
                             <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/family.png"; ?>" alt="familia" />  
                         </td>
                         <td width="60%">
                             <h3 class="text-light-blue bold">    Legajo: <?php echo $model->nro_legajo . "  ". $model->hijo_profesor; ?> </h3>
-                            <span class="text-light-blue bold">  Apellido / Nombre: </span> <?php echo $model->persona->apellido ."; ".$model->persona->nombre; ?> <br />
-                            <span class="text-light-blue bold">  Documento: </span> <?php echo $model->persona->nro_documento; ?> <br />
-                            <span class="text-light-blue bold">  Establecimiento / División: </span> <?php echo $model->divisionescolar->establecimiento->nombre . "  - " . $model->divisionescolar->nombre; ?> <br />
-                            <span class="text-light-blue bold">  Activo: </span> <?php echo $model->soyActivo; ?> <br />
-                            <span class="text-light-blue bold">  Familia / Folio: </span> <?php echo Html::a("<i class='glyphicon glyphicon-eye-open'></i> ". $model->grupofamiliar->apellidos . " / " . $model->grupofamiliar->folio, ['grupo-familiar/view', 'id' => $model->id_grupofamiliar], ['class' => 'btn btn-info']); ?> <br />
+                            <span class="text-light-blue text-bold">  Apellido / Nombre: </span> <?php echo $model->persona->apellido ."; ".$model->persona->nombre; ?> <br />
+                            <span class="text-light-blue text-bold">  Documento: </span> <?php echo $model->persona->nro_documento; ?> <br />
+                            <span class="text-light-blue text-bold">  Establecimiento / División: </span> <?php echo $model->divisionescolar->establecimiento->nombre . "  - " . $model->divisionescolar->nombre; ?> <br />
+                            <span class="text-light-blue text-bold">  Activo: </span> <?php echo $model->soyActivo; ?> <br />
+                            <span class="text-light-blue text-bold">  Familia / Folio: </span> <?php echo Html::a("<i class='glyphicon glyphicon-eye-open'></i> ". $model->grupofamiliar->apellidos . " / " . $model->grupofamiliar->folio, ['grupo-familiar/view', 'id' => $model->id_grupofamiliar], ['class' => 'btn btn-info']); ?> <br />
                            
                             <br />
+                            <p id='bot-gestionalumno'>
                             <?php
                             if(Yii::$app->user->can('cargarAlumno'))
                                 echo Html::a('<i class="fa fa-pencil"></i>', ['empadronamiento', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
@@ -69,6 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'class' => 'btn btn-warning','id'=>'btn-asignar-bonificacion']);    
                             }
                             ?>
+                            </p>
                         </td>
                     </tr>
                 
@@ -136,3 +138,37 @@ $this->params['breadcrumbs'][] = $this->title;
         
     </div>
 </div>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Información - Gestion del Alumno. '
+            },  
+            {
+                element: document.querySelector('#tabledataalumno'),
+                intro: 'Información.'
+            }, 
+            {
+                element: document.querySelector('#bot-gestionalumno'),
+                intro: 'Gestionar gestionar alumno.'
+            },          
+            
+            {
+                element: document.querySelector('#btn-asignar-bonificacion'),
+                intro: 'Asignar bonificación.'
+            },
+            
+        ]
+      });
+      intro.start();
+}
+  
+", \yii\web\View::POS_END,'ayuda');
+?>

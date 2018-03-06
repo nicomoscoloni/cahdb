@@ -1,3 +1,49 @@
+$(document).ready(function () {
+    $(document).on('pjax:beforeSend', '#pjax-familias', function() { 
+        $("body").loading({message: 'Aguarde procesando....'});
+    });
+    $(document).on('pjax:complete', '#pjax-familias', function() { 
+        $("body").loading('stop');
+    });
+});       
+
+/************************************************************/
+/*
+ * Formulario carga de grupo familiar
+ */
+$('#grupofamiliar-id_pago_asociado').on('change',function() { 
+   val = $(this).val();
+
+   $('#grupofamiliar-cbu_cuenta').attr('readonly','readonly');
+   $('#grupofamiliar-nro_tarjetacredito').attr('readonly','readonly');
+   $('#grupofamiliar-tarjeta_banco').attr('readonly','readonly');  
+
+    if (val == '4'){ 
+        $('#grupofamiliar-cbu_cuenta').removeAttr('readonly');                     
+    }
+    if (val== '5'){        
+        $('#grupofamiliar-nro_tarjetacredito').removeAttr('readonly');
+        $('#grupofamiliar-tarjeta_banco').removeAttr('readonly');                      
+    }       
+});
+
+$(document).ready(function(){
+    
+    $('#form-grupofamiliar').on('beforeValidate',function(e){
+        
+        $('#btn-envio').attr('disabled','disabled');
+        $('#btn-envio').html('<i class=\'fa fa-spinner fa-spin\'></i> Procesando...');        
+    });
+    $('#form-grupofamiliar').on('afterValidate',function(e, messages){
+        if ($('#form-grupofamiliar').find('.has-error').length > 0){
+            $('#btn-envio').removeAttr('disabled');
+            $('#btn-envio').html('<i class=\'fa fa-save\'></i> Guardar...');
+        }
+    });
+    
+});     
+
+
 /*
  * Funcionalidad para la asignaciòn de responsables al grupo familiar-
  * 

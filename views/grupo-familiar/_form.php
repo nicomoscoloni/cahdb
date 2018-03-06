@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+
 /* @var $this yii\web\View */
 /* @var $model app\models\GrupoFamiliar */
 /* @var $form yii\widgets\ActiveForm */
@@ -72,42 +73,42 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>
-<?php
-$this->registerJs("        
-    $('#grupofamiliar-id_pago_asociado').on('change',function() { 
-       val = $(this).val();
-       
-       $('#grupofamiliar-cbu_cuenta').attr('readonly','readonly');
-       $('#grupofamiliar-nro_tarjetacredito').attr('readonly','readonly');
-       $('#grupofamiliar-tarjeta_banco').attr('readonly','readonly');  
-       
-        if (val == '4'){ 
-            $('#grupofamiliar-cbu_cuenta').removeAttr('readonly');                     
-        }
-        if (val== '5'){        
-            $('#grupofamiliar-nro_tarjetacredito').removeAttr('readonly');
-            $('#grupofamiliar-tarjeta_banco').removeAttr('readonly');                      
-        }       
-   });
-", \yii\web\View::POS_READY,'selectpagos');
+<?php 
+    $this->registerJsFile('@web/js/grupoFamiliar.js', ['depends'=>[app\assets\AppAsset::className()]]);
 ?>
 
-<?php
-$this->registerJs("
-$(document).ready(function(){
-    $('#form-grupofamiliar').on('beforeValidate',function(e){
-        $('#btn-envio').attr('disabled','disabled');
-        $('#btn-envio').html('<i class=\'fa fa-spinner fa-spin\'></i> Procesando...');        
-    });
-    $('#form-grupofamiliar').on('afterValidate',function(e, messages){
-        if ($('#form-grupofamiliar').find('.has-error').length > 0){
-            $('#btn-envio').removeAttr('disabled');
-            $('#btn-envio').html('<i class=\'fa fa-save\'></i> Guardar...');
-        }
-    });
-    
-});         
-", \yii\web\View::POS_READY,'preventSubmitForm');
-?>
+<script type="text/javascript">
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: "Formulario Alta de Grupo Familiar."
+            },  
+                       
+            {
+                element: document.querySelector('#grupofamiliar-apellidos'),
+                intro: "Apellido del grupo familiar."
+            },
+            {
+                element: document.querySelector('#grupofamiliar-folio'),
+                intro: "Nro de folio."
+            },
+            {
+                element: document.querySelector('#grupofamiliar-id_pago_asociado'),
+                intro: "Indique el pago asosiado, segun el mismo debe completar el CBU o NRO de TC."
+            },           
+            {
+                element: document.querySelector('#btn-envio'),
+                intro: "Presione para confirmar el alta."
+            },
+        ]
+      });
+      intro.start();
+}      
+</script>

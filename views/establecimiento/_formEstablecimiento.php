@@ -18,8 +18,6 @@ use kartik\widgets\DatePicker;
         'formConfig'=> ['labelSpan'=>2,]
     ]); ?>
     
-
-   
             <?= $form->field($model, 'nombre') ?>
         
             <?= $form->field($model, 'xfecha_apertura')->widget(
@@ -44,8 +42,8 @@ use kartik\widgets\DatePicker;
         
 
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-                <?= Html::submitButton("<i class='fa fa-save'></i> " . ' GUARDAR', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'btn-envio']) ?>
+            <div class="col-sm-offset-2 col-sm-10">
+                <?= Html::submitButton("<i class='fa fa-save'></i> " . ' GUARDAR', ['class' => 'btn btn-primary btn-flat btn-block', 'id' => 'btn-envio']) ?>
             </div>
         </div>
 
@@ -69,4 +67,31 @@ $(document).ready(function(){
     
 });         
 ', \yii\web\View::POS_READY,'js-establecimiento');
+?>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Formulario Alta Establecimiento.'
+            },  
+            {
+                element: document.querySelector('#form-establecimiento'),
+                intro: 'Complete los campos segun corresponda.'
+            },
+            {
+                element: document.querySelector('#btn-envio'),
+                intro: 'Presione para confirmar el alta/edición.'
+            },
+        ]
+      });
+      intro.start();
+} 
+", \yii\web\View::POS_END,'ayuda');
 ?>

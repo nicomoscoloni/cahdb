@@ -17,7 +17,7 @@ use yii\helpers\Url;
                 <table>
                     <tr>
                         <td width="25%">
-                            <img class="img-responsive" src="<?php echo Yii::getAlias('@web') . "/images/cajaregistradora.png"; ?>" alt="cp_dollar" />  </td>
+ </td>
                         <td style="padding-left: 10px;"> 
                             <h2 class="text-light-blue bold"> CUENTA <?php echo $modelCuenta->nombre; ?> </h2>
                             <span class="text-light-blue bold text-det-caja"> Fecha Apertura: </span> <span class="bold text-det-caja"><?php echo \Yii::$app->formatter->asDate($modelCuenta->fecha_apertura); ?></span><br /> 

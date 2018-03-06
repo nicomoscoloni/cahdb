@@ -37,7 +37,7 @@ use kartik\date\DatePicker;
         </div>
     </div>
     
-    <div class="row">
+    <div class="row" id='periodo'>
         <div class="col-sm-3">
             <?= $form->field($model, 'xinicio_periodo')->widget(
                     DatePicker::className(),([
@@ -87,4 +87,39 @@ $(document).ready(function(){
     
 });         
 ", \yii\web\View::POS_READY,'preventSubmitForm');
+?>
+<?php
+$this->registerJs("      
+function ayuda(){         
+    var intro = introJs();
+      intro.setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        skipLabel:'Terminar',
+        doneLabel:'Cerrar',
+        steps: [      
+            { 
+                intro: 'Formulario para la generación de un nuevo Debito Automático.'
+            },  
+            {
+                element: document.querySelector('#debitoautomatico-nombre'),
+                intro: 'indique un nombre para identificar al debito. Recomendación NOMBRE DEL MES.'
+            }, 
+            {
+                element: document.querySelector('#debitoautomatico-tipo_archivo'),
+                intro: 'Indique si viaja por CBU o TC.'
+            },
+            {
+                element: document.querySelector('#debitoautomatico-xfecha_debito'),
+                intro: 'Fecha del vencimiento del debito - Fecha final del barrido.'
+            },   
+            {
+                element: document.querySelector('#periodo'),
+                intro: 'Especifique el rango del periodo para barrer con los servicos adherir al debito.'
+            }
+        ]
+      });
+      intro.start();
+}      
+", \yii\web\View::POS_END,'ayuda');
 ?>

@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 <header class="main-header">
 
-    <?= Html::a('SICAP', Yii::$app->homeUrl, ['class' => 'logo']) ?>
+    <?= Html::a('SiCaP', Yii::$app->homeUrl, ['class' => 'logo']) ?>
 
     <nav class="navbar navbar-static-top" role="navigation">
 
@@ -19,13 +19,24 @@ use yii\helpers\Html;
 
             <ul class="nav navbar-nav">
             
+                
+                <li class="dropdown messages-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-life-bouy"></i> Ayuda
+                        
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="header"> <a class="" href="javascript:void(0);" onclick="javascript:ayuda();">Nesecito Ayuda?</a>  </li>
+                        <li class="header"> <a class="" href="<?= yii\helpers\Url::to(['/ayuda/videos-tutoriales']); ?>">Videos Tutoriales</a>  </li>
+                       
+                        
+                    </ul>
+                </li>
                 <li>
-                    <a href="<?= yii\helpers\Url::to (['/site/logout']); ?>" ><i class="fa fa-circle-o"> Salir</i></a>
+                    <a href="<?= yii\helpers\Url::to (['/user/security/logout']); ?>" data-method="post"><i class="fa fa-circle-o"> Salir</i></a>
                 </li>
                 <!-- User Account: style can be found in dropdown.less -->
-                <li>
-                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                </li>
+                
             </ul>
         </div>
     </nav>
